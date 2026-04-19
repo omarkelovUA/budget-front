@@ -5,15 +5,16 @@ export interface ICategory {
   type: 'income' | 'expense';
   name: string;
   icon: string;
-  // color: string; - add later
+  color: string;
 }
 
 export interface IAccount {
   id: number,
   name: string,
+  balance: number,
   currency: string,
   icon: string,
-  // color: string, - add later
+  color: string,
 }
 
 interface BaseTransaction {

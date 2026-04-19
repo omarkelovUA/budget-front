@@ -1,0 +1,79 @@
+.account-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.color-picker {
+  display: flex;
+  gap: 10px;
+}
+
+.color-swatch {
+  display: block;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+input[type="radio"]:checked + .color-swatch {
+  border-color: #000;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+button {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+button:disabled {
+  background-color: #ccc;
+}
+
+.icon-picker {
+  display: flex;
+  gap: 12px;
+}
+
+.icon-option {
+  cursor: pointer;
+}
+
+.icon-option input[type="radio"] {
+  display: none;
+}
+
+.icon-swatch {
+  display: flex;
+  padding: 8px;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  transition: border-color 0.2s;
+}
+
+.icon-swatch img {
+  width: 32px;
+  height: 32px;
+}
+
+.icon-option input[type="radio"]:checked + .icon-swatch {
+  border-color: #007bff;
+  background-color: #e7f1ff;
+}
