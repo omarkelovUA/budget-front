@@ -1,27 +1,10 @@
 import { Injectable } from '@angular/core';
-import { IAccount } from '../model/types';
 import { delay, Observable, of } from 'rxjs';
+import { IAccount } from '../../../model/types';
+import { AccountRepository } from './account-repository';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AccountService {
-  //private http = inject(HttpClient);
-  //   private baseUrl = '/api/accounts';
-  //
-  //   // Повертаємо Observable для використання в resource() або pipe
-  //   getAccounts() {
-  //     return this.http.get<IAccount[]>(this.baseUrl);
-  //   }
-  //
-  //   getAccountById(id: number) {
-  //     return this.http.get<IAccount>(`${this.baseUrl}/${id}`);
-  //   }
-  //
-  //   createAccount(account: Omit<IAccount, 'id'>) {
-  //     return this.http.post<IAccount>(this.baseUrl, account);
-  //   }
-
+@Injectable()
+export class MockAccountRepository extends AccountRepository {
   //TODO - this is temp solution
   private accounts: IAccount[] = [
     {

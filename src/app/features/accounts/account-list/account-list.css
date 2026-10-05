@@ -104,6 +104,13 @@
   color: #adb5bd;
 }
 
+.form-panel {
+  padding: 20px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+}
+
 .status-message {
   text-align: center;
   padding: 40px;

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
-import { IAccount } from '../../model/types';
+import { IAccount } from '../../../model/types';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AccountService } from '../../services/account-service';
+import { AccountRepository } from '../data/account-repository';
 
 @Component({
   selector: 'app-account-form',
@@ -12,7 +12,7 @@ import { AccountService } from '../../services/account-service';
 })
 export class AccountForm {
   private readonly fb = inject(FormBuilder);
-  private readonly accountService = inject(AccountService);
+  private readonly accountRepository = inject(AccountRepository);
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
   protected readonly icons = ['card', 'wallet'];
   protected readonly form = this.fb.group({
@@ -22,8 +22,8 @@ export class AccountForm {
     color: ['green', Validators.required],
   });
 
-  protected readonly account = input<IAccount>();
-  protected readonly edited = output();
+  readonly account = input<IAccount>();
+  readonly edited = output();
 
   constructor() {
     effect(() => {
@@ -40,8 +40,8 @@ export class AccountForm {
     const accountId = this.account()?.id;
     const request$ =
       accountId && accountId > 0
-        ? this.accountService.updateAccount({ ...this.form.value, id: accountId } as IAccount)
-        : this.accountService.createAccount({ ...this.form.value, id: 0 } as IAccount);
+        ? this.accountRepository.updateAccount({ ...this.form.value, id: accountId } as IAccount)
+        : this.accountRepository.createAccount({ ...this.form.value, id: 0 } as IAccount);
 
     request$.subscribe({
       next: (savedAccount) => {

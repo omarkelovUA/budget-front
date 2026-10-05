@@ -1,7 +1,7 @@
 <div class="account-list-container">
   <header class="list-header">
     <h2>Мої рахунки</h2>
-    <button class="add-button" (click)="selectedAccount.set(null)">
+    <button class="add-button" (click)="openCreateForm()">
       <span>+</span> Новий рахунок
     </button>
   </header>
@@ -46,4 +46,10 @@
       </div>
     }
   </div>
+
+  @if (isFormOpen()) {
+    <div class="form-panel">
+      <app-account-form [account]="selectedAccount() ?? undefined" (edited)="onEdited()" />
+    </div>
+  }
 </div>
