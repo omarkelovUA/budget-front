@@ -15,11 +15,13 @@ export class AccountForm {
   private readonly accountRepository = inject(AccountRepository);
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
   protected readonly icons = ['card', 'wallet'];
+  protected readonly visibilities: IAccount['visibility'][] = ['private', 'shared'];
   protected readonly form = this.fb.group({
     name: ['', Validators.required],
     currency: ['UAH', Validators.required],
     icon: ['card', Validators.required],
     color: ['green', Validators.required],
+    visibility: ['private' as IAccount['visibility'], Validators.required],
   });
 
   readonly account = input<IAccount>();

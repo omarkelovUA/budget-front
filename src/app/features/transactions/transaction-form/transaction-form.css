@@ -1,0 +1,60 @@
+.transaction-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  padding: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group select,
+.form-group input[type="number"],
+.form-group input[type="date"] {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+input[type="radio"] {
+  display: none;
+}
+
+.kind-picker {
+  display: flex;
+  gap: 10px;
+}
+
+.kind-option {
+  cursor: pointer;
+}
+
+.kind-label {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 2px solid #ddd;
+  border-radius: 999px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.kind-option input[type="radio"]:checked + .kind-label {
+  border-color: #007bff;
+  background-color: #e7f1ff;
+}
+
+button {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+
+button:disabled {
+  background-color: #ccc;
+}

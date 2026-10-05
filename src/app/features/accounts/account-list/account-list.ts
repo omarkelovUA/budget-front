@@ -3,11 +3,12 @@ import { IAccount } from '../../../model/types';
 import { AccountRepository } from '../data/account-repository';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { AccountForm } from '../account-form/account-form';
+import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-badge';
 
 @Component({
   selector: 'app-account-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AccountForm],
+  imports: [AccountForm, VisibilityBadge],
   templateUrl: './account-list.html',
   styleUrl: './account-list.css',
 })

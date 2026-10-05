@@ -34,6 +34,7 @@
             <div class="account-info">
               <span class="account-name">{{ acc.name }}</span>
               <span class="account-currency">{{ acc.currency }}</span>
+              <app-visibility-badge [visibility]="acc.visibility" />
             </div>
 
             <div class="chevron">›</div>

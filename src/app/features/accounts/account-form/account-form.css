@@ -77,3 +77,25 @@ button:disabled {
   border-color: #007bff;
   background-color: #e7f1ff;
 }
+
+.visibility-picker {
+  display: flex;
+  gap: 10px;
+}
+
+.visibility-option {
+  cursor: pointer;
+}
+
+.visibility-label {
+  display: inline-block;
+  padding: 6px 14px;
+  border: 2px solid #ddd;
+  border-radius: 999px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.visibility-option input[type="radio"]:checked + .visibility-label {
+  border-color: #007bff;
+  background-color: #e7f1ff;
+}

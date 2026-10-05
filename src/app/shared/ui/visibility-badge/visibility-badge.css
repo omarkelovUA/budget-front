@@ -1,0 +1,21 @@
+.visibility-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.visibility-badge.private {
+  background: #e7f1ff;
+  color: #0056b3;
+}
+
+.visibility-badge.shared {
+  background: #eaf7ee;
+  color: #1a7f37;
+}

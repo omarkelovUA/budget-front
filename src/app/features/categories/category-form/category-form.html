@@ -1,0 +1,58 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="category-form">
+  <div class="form-group">
+    <label>Назва</label>
+    <input formControlName="name" placeholder="Наприклад: Продукти" />
+  </div>
+
+  <div class="form-group">
+    <label>Тип</label>
+    <div class="type-picker">
+      @for (type of types; track type) {
+        <label class="type-option">
+          <input type="radio" formControlName="type" [value]="type" />
+          <span class="type-label">{{ type === 'income' ? 'Дохід' : 'Витрата' }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Іконка</label>
+    <div class="icon-picker">
+      @for (icon of icons; track icon) {
+        <label class="icon-option">
+          <input type="radio" formControlName="icon" [value]="'assets/' + icon + '.svg'" />
+          <span class="icon-swatch">
+            <img [src]="'assets/' + icon + '.svg'" [alt]="icon" />
+          </span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Колір</label>
+    <div class="color-picker">
+      @for (color of colors; track color) {
+        <label class="color-option">
+          <input type="radio" formControlName="color" [value]="color" />
+          <span [style.background-color]="color" class="color-swatch"></span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label>Доступ</label>
+    <div class="visibility-picker">
+      @for (visibility of visibilities; track visibility) {
+        <label class="visibility-option">
+          <input type="radio" formControlName="visibility" [value]="visibility" />
+          <span class="visibility-label">{{ visibility === 'shared' ? 'Сімейний' : 'Особистий' }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
+  <button type="submit" [disabled]="form.invalid">Зберегти</button>
+</form>

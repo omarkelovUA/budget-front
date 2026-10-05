@@ -35,5 +35,17 @@
     </div>
   </div>
 
+  <div class="form-group">
+    <label>Доступ</label>
+    <div class="visibility-picker">
+      @for (visibility of visibilities; track visibility) {
+        <label class="visibility-option">
+          <input type="radio" formControlName="visibility" [value]="visibility" />
+          <span class="visibility-label">{{ visibility === 'shared' ? 'Сімейний' : 'Особистий' }}</span>
+        </label>
+      }
+    </div>
+  </div>
+
   <button type="submit" [disabled]="form.invalid">Зберегти</button>
 </form>

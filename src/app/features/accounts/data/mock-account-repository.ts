@@ -14,6 +14,7 @@ export class MockAccountRepository extends AccountRepository {
       currency: 'UAH',
       icon: 'assets/icons/card.svg',
       color: 'green',
+      visibility: 'private',
     },
     {
       id: 2,
@@ -22,6 +23,16 @@ export class MockAccountRepository extends AccountRepository {
       currency: 'UAH',
       icon: 'assets/icons/cash.svg',
       color: 'blue',
+      visibility: 'shared',
+    },
+    {
+      id: 3,
+      name: 'Savings',
+      balance: 1500,
+      currency: 'USD',
+      icon: 'assets/wallet.svg',
+      color: 'yellow',
+      visibility: 'private',
     },
   ];
 

@@ -1,0 +1,13 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { Visibility } from '../../../model/types';
+
+@Component({
+  selector: 'app-visibility-badge',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [],
+  templateUrl: './visibility-badge.html',
+  styleUrl: './visibility-badge.css',
+})
+export class VisibilityBadge {
+  readonly visibility = input.required<Visibility>();
+}

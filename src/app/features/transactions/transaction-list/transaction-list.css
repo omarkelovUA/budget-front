@@ -1,0 +1,123 @@
+.transaction-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  height: 100%;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #212529;
+}
+
+.add-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.add-button:hover {
+  background-color: #0056b3;
+}
+
+.transactions-table {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.transaction-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+}
+
+.tx-date {
+  color: #6c757d;
+  font-size: 0.85rem;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.tx-description {
+  flex: 1;
+  color: #343a40;
+}
+
+.tx-amount {
+  font-weight: 600;
+  width: 100px;
+  text-align: right;
+  color: #495057;
+}
+
+.tx-amount.income {
+  color: #1a7f37;
+}
+
+.tx-amount.expense {
+  color: #c0392b;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: #adb5bd;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.delete-button:hover {
+  color: #c0392b;
+}
+
+.form-panel {
+  padding: 20px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+}
+
+.status-message {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

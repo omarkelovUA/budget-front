@@ -1,0 +1,64 @@
+<div class="budget-list-container">
+  <header class="list-header">
+    <h2>Бюджети</h2>
+    <button class="add-button" (click)="openCreateForm()">
+      <span>+</span> Новий бюджет
+    </button>
+  </header>
+
+  <div class="list-content">
+    @if (budgetsResource.isLoading()) {
+      <div class="status-message">
+        <div class="spinner"></div>
+        <p>Завантаження бюджетів...</p>
+      </div>
+    }
+
+    @else if (budgetsResource.error()) {
+      <div class="status-message error">
+        <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
+      </div>
+    }
+
+    @else {
+      <div class="budgets-grid">
+        @for (budget of budgetsResource.value(); track budget.id) {
+          <div class="budget-card" [class.over]="isOverBudget(budget)">
+            <div class="budget-header">
+              <div class="icon-box" [style.background-color]="budget.category.color">
+                <img [src]="budget.category.icon" [alt]="budget.category.name" />
+              </div>
+              <div class="budget-info">
+                <span class="budget-name">{{ budget.category.name }}</span>
+                <span class="budget-period">{{ budget.period }}</span>
+              </div>
+              <app-visibility-badge [visibility]="budget.visibility" />
+              <button class="delete-button" (click)="deleteBudget(budget)">×</button>
+            </div>
+
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="progressPercent(budget)"></div>
+            </div>
+
+            <div class="budget-amounts">
+              <span>{{ budget.factAmount }} / {{ budget.plannedAmount }}</span>
+              @if (isOverBudget(budget)) {
+                <span class="over-label">Перевищено</span>
+              }
+            </div>
+          </div>
+        } @empty {
+          <div class="status-message">
+            <p>У вас поки немає створених бюджетів.</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  @if (isFormOpen()) {
+    <div class="form-panel">
+      <app-budget-form (created)="onCreated()" />
+    </div>
+  }
+</div>

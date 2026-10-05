@@ -31,6 +31,7 @@ describe('AccountForm', () => {
       currency: 'UAH',
       icon: 'card',
       color: 'green',
+      visibility: 'private',
     });
     expect(form.invalid).toBe(true);
   });
