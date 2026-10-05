@@ -19,4 +19,16 @@ describe('AccountForm', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should initialize form with expected defaults', () => {
+    const form = (component as any).form;
+
+    expect(form.getRawValue()).toEqual({
+      name: '',
+      currency: 'UAH',
+      icon: 'card',
+      color: 'green',
+    });
+    expect(form.invalid).toBe(true);
+  });
 });

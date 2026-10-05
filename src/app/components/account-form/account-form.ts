@@ -1,4 +1,4 @@
-import { Component, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { IAccount } from '../../model/types';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AccountService } from '../../services/account-service';
@@ -6,14 +6,13 @@ import { AccountService } from '../../services/account-service';
 @Component({
   selector: 'app-account-form',
   imports: [ReactiveFormsModule],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './account-form.html',
   styleUrl: './account-form.css',
 })
 export class AccountForm {
   private readonly fb = inject(FormBuilder);
   private readonly accountService = inject(AccountService);
-  protected readonly account = input<IAccount>();
-  protected readonly edited = output();
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
   protected readonly icons = ['card', 'wallet'];
   protected readonly form = this.fb.group({
@@ -22,6 +21,9 @@ export class AccountForm {
     icon: ['card', Validators.required],
     color: ['green', Validators.required],
   });
+
+  protected readonly account = input<IAccount>();
+  protected readonly edited = output();
 
   constructor() {
     effect(() => {
