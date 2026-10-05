@@ -1,19 +1,32 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, FormField, min, required } from '@angular/forms/signals';
 import { IBudget } from '../../../model/types';
 import { BudgetRepository } from '../data/budget-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
 
+interface BudgetFormModel {
+  categoryId: string;
+  period: string;
+  plannedAmount: number;
+  visibility: IBudget['visibility'];
+}
+
+const DEFAULT_MODEL: BudgetFormModel = {
+  categoryId: '',
+  period: new Date().toISOString().slice(0, 7),
+  plannedAmount: 0,
+  visibility: 'private',
+};
+
 @Component({
   selector: 'app-budget-form',
-  imports: [ReactiveFormsModule],
+  imports: [FormField],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './budget-form.html',
   styleUrl: './budget-form.css',
 })
 export class BudgetForm {
-  private readonly fb = inject(FormBuilder);
   private readonly budgetRepository = inject(BudgetRepository);
   private readonly categoryRepository = inject(CategoryRepository);
 
@@ -23,28 +36,28 @@ export class BudgetForm {
     stream: () => this.categoryRepository.getCategories(),
   });
 
-  protected readonly form = this.fb.group({
-    categoryId: [null as number | null, Validators.required],
-    period: [new Date().toISOString().slice(0, 7), Validators.required],
-    plannedAmount: [0, [Validators.required, Validators.min(0.01)]],
-    visibility: ['private' as IBudget['visibility'], Validators.required],
+  private readonly model = signal<BudgetFormModel>({ ...DEFAULT_MODEL });
+  protected readonly form = form(this.model, (f) => {
+    required(f.categoryId);
+    min(f.plannedAmount, 0.01);
   });
 
   readonly created = output();
 
   submit() {
-    if (this.form.invalid) return;
+    if (!this.form().valid()) return;
 
+    const value = this.form().value();
     const categories = this.expenseCategoriesResource.value() ?? [];
-    const category = categories.find((c) => c.id === this.form.value.categoryId);
+    const category = categories.find((c) => c.id === Number(value.categoryId));
     if (!category) return;
 
     this.budgetRepository
       .createBudget({
         category,
-        period: this.form.value.period!,
-        plannedAmount: this.form.value.plannedAmount!,
-        visibility: this.form.value.visibility!,
+        period: value.period,
+        plannedAmount: value.plannedAmount,
+        visibility: value.visibility,
       })
       .subscribe({
         next: () => this.created.emit(),

@@ -1,17 +1,26 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { form, FormField, required } from '@angular/forms/signals';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
 
+type CategoryFormModel = Omit<ICategory, 'id'>;
+
+const DEFAULT_MODEL: CategoryFormModel = {
+  name: '',
+  type: 'expense',
+  icon: 'assets/wallet.svg',
+  color: 'green',
+  visibility: 'private',
+};
+
 @Component({
   selector: 'app-category-form',
-  imports: [ReactiveFormsModule],
+  imports: [FormField],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './category-form.html',
   styleUrl: './category-form.css',
 })
 export class CategoryForm {
-  private readonly fb = inject(FormBuilder);
   private readonly categoryRepository = inject(CategoryRepository);
 
   protected readonly types: ICategory['type'][] = ['income', 'expense'];
@@ -19,12 +28,9 @@ export class CategoryForm {
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
   protected readonly visibilities: ICategory['visibility'][] = ['private', 'shared'];
 
-  protected readonly form = this.fb.group({
-    name: ['', Validators.required],
-    type: ['expense' as ICategory['type'], Validators.required],
-    icon: ['assets/wallet.svg', Validators.required],
-    color: ['green', Validators.required],
-    visibility: ['private' as ICategory['visibility'], Validators.required],
+  private readonly model = signal<CategoryFormModel>({ ...DEFAULT_MODEL });
+  protected readonly form = form(this.model, (f) => {
+    required(f.name);
   });
 
   readonly category = input<ICategory>();
@@ -33,20 +39,23 @@ export class CategoryForm {
   constructor() {
     effect(() => {
       const data = this.category();
-      if (data) {
-        this.form.patchValue(data);
-      }
+      this.model.set(
+        data
+          ? { name: data.name, type: data.type, icon: data.icon, color: data.color, visibility: data.visibility }
+          : { ...DEFAULT_MODEL },
+      );
     });
   }
 
   submit() {
-    if (this.form.invalid) return;
+    if (!this.form().valid()) return;
 
+    const value = this.form().value();
     const categoryId = this.category()?.id;
     const request$ =
       categoryId && categoryId > 0
-        ? this.categoryRepository.updateCategory({ ...this.form.value, id: categoryId } as ICategory)
-        : this.categoryRepository.createCategory({ ...this.form.value, id: 0 } as ICategory);
+        ? this.categoryRepository.updateCategory({ ...value, id: categoryId })
+        : this.categoryRepository.createCategory(value);
 
     request$.subscribe({
       next: () => this.edited.emit(),

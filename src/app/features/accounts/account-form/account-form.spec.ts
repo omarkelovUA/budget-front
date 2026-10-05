@@ -26,13 +26,13 @@ describe('AccountForm', () => {
   it('should initialize form with expected defaults', () => {
     const form = (component as any).form;
 
-    expect(form.getRawValue()).toEqual({
+    expect(form().value()).toEqual({
       name: '',
       currency: 'UAH',
-      icon: 'card',
+      icon: 'assets/card.svg',
       color: 'green',
       visibility: 'private',
     });
-    expect(form.invalid).toBe(true);
+    expect(form().valid()).toBe(false);
   });
 });

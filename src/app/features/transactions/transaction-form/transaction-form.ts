@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, FormField, min } from '@angular/forms/signals';
 import { Transaction } from '../../../model/types';
 import { TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
@@ -8,15 +8,34 @@ import { CategoryRepository } from '../../categories/data/category-repository';
 
 type Kind = 'payment' | 'transfer';
 
+interface TransactionFormModel {
+  kind: Kind;
+  amount: number;
+  date: Date;
+  accountId: string;
+  categoryId: string;
+  fromAccountId: string;
+  toAccountId: string;
+}
+
+const DEFAULT_MODEL: TransactionFormModel = {
+  kind: 'payment',
+  amount: 0,
+  date: new Date(),
+  accountId: '',
+  categoryId: '',
+  fromAccountId: '',
+  toAccountId: '',
+};
+
 @Component({
   selector: 'app-transaction-form',
-  imports: [ReactiveFormsModule],
+  imports: [FormField],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './transaction-form.html',
   styleUrl: './transaction-form.css',
 })
 export class TransactionForm {
-  private readonly fb = inject(FormBuilder);
   private readonly transactionRepository = inject(TransactionRepository);
   private readonly accountRepository = inject(AccountRepository);
   private readonly categoryRepository = inject(CategoryRepository);
@@ -30,46 +49,31 @@ export class TransactionForm {
     stream: () => this.categoryRepository.getCategories(),
   });
 
-  protected readonly form = this.fb.group({
-    kind: ['payment' as Kind, Validators.required],
-    amount: [0, [Validators.required, Validators.min(0.01)]],
-    date: [new Date().toISOString().slice(0, 10), Validators.required],
-    accountId: [null as number | null],
-    categoryId: [null as number | null],
-    fromAccountId: [null as number | null],
-    toAccountId: [null as number | null],
+  private readonly model = signal<TransactionFormModel>({ ...DEFAULT_MODEL });
+  protected readonly form = form(this.model, (f) => {
+    min(f.amount, 0.01);
   });
 
   readonly created = output();
 
   submit() {
-    const value = this.form.value;
-    if (this.form.invalid) return;
+    if (!this.form().valid()) return;
 
+    const value = this.form().value();
     const accounts = this.accountsResource.value() ?? [];
     const categories = this.categoriesResource.value() ?? [];
 
     let transaction: Omit<Transaction, 'id'>;
     if (value.kind === 'transfer') {
-      const fromAccount = accounts.find((a) => a.id === value.fromAccountId);
-      const toAccount = accounts.find((a) => a.id === value.toAccountId);
+      const fromAccount = accounts.find((a) => a.id === Number(value.fromAccountId));
+      const toAccount = accounts.find((a) => a.id === Number(value.toAccountId));
       if (!fromAccount || !toAccount) return;
-      transaction = {
-        amount: value.amount!,
-        date: new Date(value.date!),
-        fromAccount,
-        toAccount,
-      };
+      transaction = { amount: value.amount, date: value.date, fromAccount, toAccount };
     } else {
-      const account = accounts.find((a) => a.id === value.accountId);
-      const category = categories.find((c) => c.id === value.categoryId);
+      const account = accounts.find((a) => a.id === Number(value.accountId));
+      const category = categories.find((c) => c.id === Number(value.categoryId));
       if (!account || !category) return;
-      transaction = {
-        amount: value.amount!,
-        date: new Date(value.date!),
-        account,
-        category,
-      };
+      transaction = { amount: value.amount, date: value.date, account, category };
     }
 
     this.transactionRepository.createTransaction(transaction).subscribe({

@@ -1,7 +1,7 @@
-<form [formGroup]="form" (ngSubmit)="submit()" class="category-form">
+<form novalidate (submit)="$event.preventDefault(); submit()" class="category-form">
   <div class="form-group">
     <label>Назва</label>
-    <input formControlName="name" placeholder="Наприклад: Продукти" />
+    <input [formField]="form.name" placeholder="Наприклад: Продукти" />
   </div>
 
   <div class="form-group">
@@ -9,7 +9,7 @@
     <div class="type-picker">
       @for (type of types; track type) {
         <label class="type-option">
-          <input type="radio" formControlName="type" [value]="type" />
+          <input type="radio" [formField]="form.type" [value]="type" />
           <span class="type-label">{{ type === 'income' ? 'Дохід' : 'Витрата' }}</span>
         </label>
       }
@@ -21,7 +21,7 @@
     <div class="icon-picker">
       @for (icon of icons; track icon) {
         <label class="icon-option">
-          <input type="radio" formControlName="icon" [value]="'assets/' + icon + '.svg'" />
+          <input type="radio" [formField]="form.icon" [value]="'assets/' + icon + '.svg'" />
           <span class="icon-swatch">
             <img [src]="'assets/' + icon + '.svg'" [alt]="icon" />
           </span>
@@ -35,7 +35,7 @@
     <div class="color-picker">
       @for (color of colors; track color) {
         <label class="color-option">
-          <input type="radio" formControlName="color" [value]="color" />
+          <input type="radio" [formField]="form.color" [value]="color" />
           <span [style.background-color]="color" class="color-swatch"></span>
         </label>
       }
@@ -47,12 +47,12 @@
     <div class="visibility-picker">
       @for (visibility of visibilities; track visibility) {
         <label class="visibility-option">
-          <input type="radio" formControlName="visibility" [value]="visibility" />
+          <input type="radio" [formField]="form.visibility" [value]="visibility" />
           <span class="visibility-label">{{ visibility === 'shared' ? 'Сімейний' : 'Особистий' }}</span>
         </label>
       }
     </div>
   </div>
 
-  <button type="submit" [disabled]="form.invalid">Зберегти</button>
+  <button type="submit" [disabled]="!form().valid()">Зберегти</button>
 </form>
