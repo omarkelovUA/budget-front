@@ -1,0 +1,31 @@
+<section class="auth-page">
+  <h2>Вхід</h2>
+
+  <form novalidate (submit)="$event.preventDefault(); submit()" class="auth-form">
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" [formField]="form.email" placeholder="demo@family.app" />
+    </div>
+
+    <div class="form-group">
+      <label>Пароль</label>
+      <input type="password" [formField]="form.password" />
+    </div>
+
+    @if (errorMessage(); as message) {
+      <p class="error">{{ message }}</p>
+    }
+
+    <button type="submit" [disabled]="!form().valid() || pending()">
+      {{ pending() ? 'Вхід...' : 'Увійти' }}
+    </button>
+  </form>
+
+  <div class="divider"><span>або</span></div>
+
+  <button type="button" class="google-button" [disabled]="pending()" (click)="loginWithGoogle()">
+    Увійти через Google
+  </button>
+
+  <p class="switch-link">Немає акаунта? <a routerLink="/register">Зареєструватися</a></p>
+</section>

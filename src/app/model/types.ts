@@ -1,5 +1,27 @@
 export type Visibility = 'private' | 'shared';
 
+export interface IUser {
+  id: number;
+  email: string;
+  displayName: string;
+  // v1 simplification: a user belongs to at most one family at a time (see docs/ARCHITECTURE.md §7).
+  familyId: number | null;
+}
+
+export type FamilyRole = 'admin' | 'member';
+
+export interface IFamilyMember {
+  user: IUser;
+  role: FamilyRole;
+  joinedAt: Date;
+}
+
+export interface IFamily {
+  id: number;
+  name: string;
+  members: IFamilyMember[];
+}
+
 //TODO add Map monthYear is key and amount is value - plan and fact (fact for caching)
 export interface ICategory {
   id: number;

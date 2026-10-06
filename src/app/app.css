@@ -29,3 +29,23 @@
 .app-main {
   padding: 24px;
 }
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-name {
+  color: #495057;
+  font-weight: 500;
+}
+
+.logout-button {
+  padding: 6px 12px;
+  cursor: pointer;
+  background: white;
+  color: #495057;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

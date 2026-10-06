@@ -1,0 +1,134 @@
+.family-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.create-family h2,
+.family-details h2 {
+  margin: 0 0 4px;
+  color: #212529;
+}
+
+.create-family p {
+  color: #6c757d;
+  margin: 0 0 16px;
+}
+
+.family-form,
+.invite-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+}
+
+.invite-form {
+  flex-direction: row;
+  align-items: flex-start;
+  margin-top: 16px;
+}
+
+.invite-form input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+button {
+  padding: 10px 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+button:disabled {
+  background-color: #ccc;
+}
+
+.members-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.member-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+}
+
+.member-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.member-name {
+  font-weight: 600;
+  color: #343a40;
+}
+
+.member-email {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.role-badge {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #e7f1ff;
+  color: #0056b3;
+}
+
+.role-badge.admin {
+  background: #fff3cd;
+  color: #946c00;
+}
+
+.status-message {
+  text-align: center;
+  padding: 40px;
+  color: #6c757d;
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #007bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,83 @@
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 24px;
+  background: #f8f9fa;
+  border-radius: 12px;
+}
+
+.auth-page h2 {
+  margin: 0;
+  color: #212529;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group input {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+.error {
+  margin: 0;
+  color: #dc3545;
+}
+
+button {
+  padding: 10px 16px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+button:disabled {
+  background-color: #ccc;
+}
+
+.google-button {
+  background-color: white;
+  color: #212529;
+  border: 1px solid #ddd;
+}
+
+.google-button:disabled {
+  background-color: #f1f3f5;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-top: 1px solid #ddd;
+}
+
+.switch-link {
+  margin: 0;
+  color: #6c757d;
+  text-align: center;
+}

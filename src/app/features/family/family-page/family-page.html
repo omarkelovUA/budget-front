@@ -1,0 +1,52 @@
+<div class="family-page">
+  @if (!currentUser()?.familyId) {
+    <section class="create-family">
+      <h2>У вас ще немає сім'ї</h2>
+      <p>Створіть сім'ю, щоб ділитися бюджетом з близькими.</p>
+
+      <form novalidate (submit)="$event.preventDefault(); createFamily()" class="family-form">
+        <div class="form-group">
+          <label>Назва сім'ї</label>
+          <input [formField]="createForm.name" placeholder="Наприклад: Родина Шевченків" />
+        </div>
+        <button type="submit" [disabled]="!createForm().valid()">Створити сім'ю</button>
+      </form>
+    </section>
+  } @else {
+    @if (familyResource.isLoading()) {
+      <div class="status-message">
+        <div class="spinner"></div>
+        <p>Завантаження сім'ї...</p>
+      </div>
+    } @else if (familyResource.error()) {
+      <div class="status-message error">
+        <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
+      </div>
+    } @else {
+      @if (familyResource.value(); as family) {
+        <section class="family-details">
+          <h2>{{ family.name }}</h2>
+
+          <div class="members-list">
+            @for (member of family.members; track member.user.id) {
+              <div class="member-row">
+                <div class="member-info">
+                  <span class="member-name">{{ member.user.displayName }}</span>
+                  <span class="member-email">{{ member.user.email }}</span>
+                </div>
+                <span class="role-badge" [class.admin]="member.role === 'admin'">
+                  {{ member.role === 'admin' ? 'Адмін' : 'Учасник' }}
+                </span>
+              </div>
+            }
+          </div>
+
+          <form novalidate (submit)="$event.preventDefault(); inviteMember()" class="invite-form">
+            <input type="email" [formField]="inviteForm.email" placeholder="Email для запрошення" />
+            <button type="submit" [disabled]="!inviteForm().valid()">Запросити</button>
+          </form>
+        </section>
+      }
+    }
+  }
+</div>

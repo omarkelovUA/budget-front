@@ -1,12 +1,19 @@
 <header class="app-header">
   <h1>Family Budget</h1>
-  <nav class="app-nav">
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/accounts" routerLinkActive="active">Accounts</a>
-    <a routerLink="/categories" routerLinkActive="active">Categories</a>
-    <a routerLink="/transactions" routerLinkActive="active">Transactions</a>
-    <a routerLink="/budgets" routerLinkActive="active">Budgets</a>
-  </nav>
+  @if (currentUser(); as user) {
+    <nav class="app-nav">
+      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/accounts" routerLinkActive="active">Accounts</a>
+      <a routerLink="/categories" routerLinkActive="active">Categories</a>
+      <a routerLink="/transactions" routerLinkActive="active">Transactions</a>
+      <a routerLink="/budgets" routerLinkActive="active">Budgets</a>
+      <a routerLink="/family" routerLinkActive="active">Family</a>
+    </nav>
+    <div class="user-menu">
+      <span class="user-name">{{ user.displayName }}</span>
+      <button type="button" class="logout-button" (click)="logout()">Вийти</button>
+    </div>
+  }
 </header>
 
 <main class="app-main">
