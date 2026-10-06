@@ -3,17 +3,17 @@
 
   <form novalidate (submit)="$event.preventDefault(); submit()" class="auth-form">
     <div class="form-group">
-      <label>Email</label>
-      <input type="email" [formField]="form.email" placeholder="demo@family.app" />
+      <label for="login-email">Email</label>
+      <input id="login-email" type="email" [formField]="form.email" placeholder="demo@family.app" />
     </div>
 
     <div class="form-group">
-      <label>Пароль</label>
-      <input type="password" [formField]="form.password" />
+      <label for="login-password">Пароль</label>
+      <input id="login-password" type="password" [formField]="form.password" />
     </div>
 
     @if (errorMessage(); as message) {
-      <p class="error">{{ message }}</p>
+      <p class="error" role="alert">{{ message }}</p>
     }
 
     <button type="submit" [disabled]="!form().valid() || pending()">

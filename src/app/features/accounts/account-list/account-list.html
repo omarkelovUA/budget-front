@@ -1,21 +1,25 @@
 <div class="account-list-container">
   <header class="list-header">
     <h2>Мої рахунки</h2>
-    <button class="add-button" (click)="openCreateForm()">
-      <span>+</span> Новий рахунок
+    <button type="button" class="add-button" (click)="openCreateForm()">
+      <span aria-hidden="true">+</span> Новий рахунок
     </button>
   </header>
 
+  @if (actionError(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
+  }
+
   <div class="list-content">
     @if (accountsResource.isLoading()) {
-      <div class="status-message">
-        <div class="spinner"></div>
+      <div class="status-message" role="status">
+        <div class="spinner" aria-hidden="true"></div>
         <p>Завантаження акаунтів...</p>
       </div>
     }
 
     @else if (accountsResource.error()) {
-      <div class="status-message error">
+      <div class="status-message error" role="alert">
         <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
       </div>
     }
@@ -23,21 +27,22 @@
     @else {
       <div class="accounts-grid">
         @for (acc of accountsResource.value(); track acc.id) {
-          <div class="account-card"
-               [class.active]="selectedAccount()?.id === acc.id"
-               (click)="selectAccount(acc)">
+          <div class="account-card" [class.active]="selectedAccount()?.id === acc.id">
+            <button type="button" class="card-select" (click)="selectAccount(acc)"
+                    [attr.aria-label]="'Редагувати рахунок ' + acc.name">
+              <span class="icon-box" [style.background-color]="acc.color">
+                <img [src]="acc.icon" alt="" />
+              </span>
 
-            <div class="icon-box" [style.background-color]="acc.color">
-              <img [src]="acc.icon" [alt]="acc.name" />
-            </div>
+              <span class="account-info">
+                <span class="account-name">{{ acc.name }}</span>
+                <span class="account-currency">{{ acc.balance }} {{ acc.currency }}</span>
+                <app-visibility-badge [visibility]="acc.visibility" />
+              </span>
+            </button>
 
-            <div class="account-info">
-              <span class="account-name">{{ acc.name }}</span>
-              <span class="account-currency">{{ acc.currency }}</span>
-              <app-visibility-badge [visibility]="acc.visibility" />
-            </div>
-
-            <div class="chevron">›</div>
+            <button type="button" class="delete-button" (click)="deleteAccount(acc)"
+                    [attr.aria-label]="'Видалити рахунок ' + acc.name">×</button>
           </div>
         } @empty {
           <div class="status-message">

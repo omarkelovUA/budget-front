@@ -24,6 +24,11 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (!(err instanceof HttpErrorResponse) || err.status !== 401 || !token) {
         return throwError(() => err);
       }
+      // Someone else already refreshed since this request went out: just retry.
+      const current = authState.accessToken();
+      if (current && current !== token) {
+        return next(withToken(req, current));
+      }
       return authState.refreshAccessToken().pipe(
         switchMap((newToken) => next(withToken(req, newToken))),
         catchError((refreshErr) => {

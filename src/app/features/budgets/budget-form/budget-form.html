@@ -1,7 +1,7 @@
 <form novalidate (submit)="$event.preventDefault(); submit()" class="budget-form">
   <div class="form-group">
-    <label>Категорія витрат</label>
-    <select [formField]="form.categoryId">
+    <label for="budget-categoryId">Категорія витрат</label>
+    <select id="budget-categoryId" [formField]="form.categoryId">
       <option value="" disabled>Оберіть категорію</option>
       @for (cat of expenseCategoriesResource.value(); track cat.id) {
         @if (cat.type === 'expense') {
@@ -12,18 +12,18 @@
   </div>
 
   <div class="form-group">
-    <label>Місяць (РРРР-ММ)</label>
-    <input type="month" [formField]="form.period" />
+    <label for="budget-period">Місяць (РРРР-ММ)</label>
+    <input id="budget-period" type="month" [formField]="form.period" />
   </div>
 
   <div class="form-group">
-    <label>Плановий бюджет</label>
-    <input type="number" [formField]="form.plannedAmount" step="0.01" />
+    <label for="budget-plannedAmount">Плановий бюджет</label>
+    <input id="budget-plannedAmount" type="number" [formField]="form.plannedAmount" step="0.01" />
   </div>
 
   <div class="form-group">
     <label>Доступ</label>
-    <div class="visibility-picker">
+    <div class="visibility-picker" role="radiogroup" aria-label="Доступ">
       @for (visibility of visibilities; track visibility) {
         <label class="visibility-option">
           <input type="radio" [formField]="form.visibility" [value]="visibility" />
@@ -32,6 +32,10 @@
       }
     </div>
   </div>
+
+  @if (errorMessage(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
+  }
 
   <button type="submit" [disabled]="!form().valid()">Зберегти</button>
 </form>

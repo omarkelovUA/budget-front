@@ -1,7 +1,7 @@
 <header class="app-header">
   <h1>Family Budget</h1>
   @if (currentUser(); as user) {
-    <nav class="app-nav">
+    <nav class="app-nav" aria-label="Головна навігація">
       <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
       <a routerLink="/accounts" routerLinkActive="active">Accounts</a>
       <a routerLink="/categories" routerLinkActive="active">Categories</a>

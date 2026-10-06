@@ -12,4 +12,7 @@ export abstract class FamilyRepository {
   abstract createInvite(): Observable<IInvite>;
 
   abstract joinFamily(code: string): Observable<IFamily>;
+
+  // The last admin must promote someone first; the last member leaving deletes the family.
+  abstract leaveFamily(): Observable<void>;
 }

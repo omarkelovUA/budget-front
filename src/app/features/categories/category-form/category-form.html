@@ -1,12 +1,12 @@
 <form novalidate (submit)="$event.preventDefault(); submit()" class="category-form">
   <div class="form-group">
-    <label>Назва</label>
-    <input [formField]="form.name" placeholder="Наприклад: Продукти" />
+    <label for="category-name">Назва</label>
+    <input id="category-name" [formField]="form.name" placeholder="Наприклад: Продукти" />
   </div>
 
   <div class="form-group">
     <label>Тип</label>
-    <div class="type-picker">
+    <div class="type-picker" role="radiogroup" aria-label="Тип">
       @for (type of types; track type) {
         <label class="type-option">
           <input type="radio" [formField]="form.type" [value]="type" />
@@ -18,7 +18,7 @@
 
   <div class="form-group">
     <label>Іконка</label>
-    <div class="icon-picker">
+    <div class="icon-picker" role="radiogroup" aria-label="Іконка">
       @for (icon of icons; track icon) {
         <label class="icon-option">
           <input type="radio" [formField]="form.icon" [value]="'assets/' + icon + '.svg'" />
@@ -32,10 +32,10 @@
 
   <div class="form-group">
     <label>Колір</label>
-    <div class="color-picker">
+    <div class="color-picker" role="radiogroup" aria-label="Колір">
       @for (color of colors; track color) {
         <label class="color-option">
-          <input type="radio" [formField]="form.color" [value]="color" />
+          <input type="radio" [formField]="form.color" [value]="color" [attr.aria-label]="color" />
           <span [style.background-color]="color" class="color-swatch"></span>
         </label>
       }
@@ -44,7 +44,7 @@
 
   <div class="form-group">
     <label>Доступ</label>
-    <div class="visibility-picker">
+    <div class="visibility-picker" role="radiogroup" aria-label="Доступ">
       @for (visibility of visibilities; track visibility) {
         <label class="visibility-option">
           <input type="radio" [formField]="form.visibility" [value]="visibility" />
@@ -53,6 +53,10 @@
       }
     </div>
   </div>
+
+  @if (errorMessage(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
+  }
 
   <button type="submit" [disabled]="!form().valid()">Зберегти</button>
 </form>

@@ -40,7 +40,7 @@
 
 .accounts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
   gap: 16px;
 }
 
@@ -130,4 +130,22 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 720px) {
+  .account-list-container {
+    padding: 12px;
+  }
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  color: #adb5bd;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  color: #c0392b;
 }

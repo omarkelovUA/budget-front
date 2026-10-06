@@ -1,0 +1,68 @@
+import { TestBed } from '@angular/core/testing';
+import { of } from 'rxjs';
+import { Transaction } from '../../../model/types';
+import { TransactionPage, TransactionRepository } from '../data/transaction-repository';
+import { AccountRepository } from '../../accounts/data/account-repository';
+import { CategoryRepository } from '../../categories/data/category-repository';
+import { TransactionList } from './transaction-list';
+
+const tx = (id: string): Transaction =>
+  ({
+    id,
+    amount: 1,
+    date: new Date('2026-10-01'),
+    account: { id: 'a', name: 'Card', currency: 'UAH', icon: '', color: 'green', visibility: 'private' },
+    category: { id: 'c', name: 'Food', type: 'expense', icon: '', color: 'red', visibility: 'private' },
+  }) as Transaction;
+
+describe('TransactionList', () => {
+  const pages: Record<number, TransactionPage> = {
+    0: { items: [tx('1'), tx('2')], hasMore: true },
+    1: { items: [tx('3')], hasMore: false },
+  };
+  let deleted: string[];
+
+  beforeEach(() => {
+    deleted = [];
+    TestBed.configureTestingModule({
+      imports: [TransactionList],
+      providers: [
+        {
+          provide: TransactionRepository,
+          useValue: {
+            getTransactions: (page: number) => of(pages[page]),
+            deleteTransaction: (id: string) => {
+              deleted.push(id);
+              return of(true);
+            },
+          },
+        },
+        { provide: AccountRepository, useValue: { getAccounts: () => of([]) } },
+        { provide: CategoryRepository, useValue: { getCategories: () => of([]) } },
+      ],
+    });
+  });
+
+  const ids = (list: TransactionList) => (list as any).transactions().map((t: Transaction) => t.id);
+
+  it('appends pages until there are no more', () => {
+    const list = TestBed.createComponent(TransactionList).componentInstance;
+    expect(ids(list)).toEqual(['1', '2']);
+    expect((list as any).hasMore()).toBe(true);
+
+    list.loadMore();
+
+    expect(ids(list)).toEqual(['1', '2', '3']);
+    expect((list as any).hasMore()).toBe(false);
+  });
+
+  it('starts again from the first page after a delete', () => {
+    const list = TestBed.createComponent(TransactionList).componentInstance;
+    list.loadMore();
+
+    list.deleteTransaction(tx('3'));
+
+    expect(deleted).toEqual(['3']);
+    expect(ids(list)).toEqual(['1', '2']);
+  });
+});

@@ -29,6 +29,7 @@ export class CategoryForm {
   protected readonly visibilities: ICategory['visibility'][] = ['private', 'shared'];
 
   private readonly model = signal<CategoryFormModel>({ ...DEFAULT_MODEL });
+  protected readonly errorMessage = signal<string | null>(null);
   protected readonly form = form(this.model, (f) => {
     required(f.name);
     // Fixed after creation: the type decides what past payments did to balances.
@@ -52,6 +53,7 @@ export class CategoryForm {
 
   submit() {
     if (!this.form().valid()) return;
+    this.errorMessage.set(null);
 
     const value = this.form().value();
     const categoryId = this.category()?.id;
@@ -62,7 +64,7 @@ export class CategoryForm {
 
     request$.subscribe({
       next: () => this.edited.emit(),
-      error: (err) => console.error('Save failed:', err),
+      error: (err: Error) => this.errorMessage.set(err.message),
     });
   }
 }

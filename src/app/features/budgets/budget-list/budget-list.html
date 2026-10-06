@@ -1,21 +1,25 @@
 <div class="budget-list-container">
   <header class="list-header">
     <h2>Бюджети</h2>
-    <button class="add-button" (click)="openCreateForm()">
-      <span>+</span> Новий бюджет
+    <button type="button" class="add-button" (click)="openCreateForm()">
+      <span aria-hidden="true">+</span> Новий бюджет
     </button>
   </header>
 
+  @if (actionError(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
+  }
+
   <div class="list-content">
     @if (budgetsResource.isLoading()) {
-      <div class="status-message">
-        <div class="spinner"></div>
+      <div class="status-message" role="status">
+        <div class="spinner" aria-hidden="true"></div>
         <p>Завантаження бюджетів...</p>
       </div>
     }
 
     @else if (budgetsResource.error()) {
-      <div class="status-message error">
+      <div class="status-message error" role="alert">
         <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
       </div>
     }
@@ -26,17 +30,20 @@
           <div class="budget-card" [class.over]="isOverBudget(budget)">
             <div class="budget-header">
               <div class="icon-box" [style.background-color]="budget.category.color">
-                <img [src]="budget.category.icon" [alt]="budget.category.name" />
+                <img [src]="budget.category.icon" alt="" />
               </div>
               <div class="budget-info">
                 <span class="budget-name">{{ budget.category.name }}</span>
                 <span class="budget-period">{{ budget.period }}</span>
               </div>
               <app-visibility-badge [visibility]="budget.visibility" />
-              <button class="delete-button" (click)="deleteBudget(budget)">×</button>
+              <button type="button" class="delete-button" (click)="deleteBudget(budget)"
+                      [attr.aria-label]="'Видалити бюджет ' + budget.category.name + ' ' + budget.period">×</button>
             </div>
 
-            <div class="progress-track">
+            <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                 [attr.aria-valuenow]="progressPercent(budget)"
+                 [attr.aria-label]="'Витрачено ' + progressPercent(budget) + '% бюджету'">
               <div class="progress-fill" [style.width.%]="progressPercent(budget)"></div>
             </div>
 

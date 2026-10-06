@@ -15,12 +15,14 @@ import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-
 export class BudgetList {
   private readonly budgetRepository = inject(BudgetRepository);
   protected readonly isFormOpen = signal(false);
+  protected readonly actionError = signal<string | null>(null);
 
   protected readonly budgetsResource = rxResource<IBudget[], undefined>({
     stream: () => this.budgetRepository.getBudgets(),
   });
 
   progressPercent(budget: IBudget): number {
+    if (budget.plannedAmount <= 0) return budget.factAmount > 0 ? 100 : 0;
     return Math.min(100, Math.round((budget.factAmount / budget.plannedAmount) * 100));
   }
 
@@ -33,7 +35,11 @@ export class BudgetList {
   }
 
   deleteBudget(budget: IBudget) {
-    this.budgetRepository.deleteBudget(budget.id).subscribe(() => this.budgetsResource.reload());
+    this.actionError.set(null);
+    this.budgetRepository.deleteBudget(budget.id).subscribe({
+      next: () => this.budgetsResource.reload(),
+      error: (err: Error) => this.actionError.set(err.message),
+    });
   }
 
   onCreated() {

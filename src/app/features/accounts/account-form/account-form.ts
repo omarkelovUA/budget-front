@@ -27,6 +27,7 @@ export class AccountForm {
   protected readonly visibilities: IAccount['visibility'][] = ['private', 'shared'];
 
   private readonly model = signal<AccountFormModel>({ ...DEFAULT_MODEL });
+  protected readonly errorMessage = signal<string | null>(null);
   protected readonly form = form(this.model, (f) => {
     required(f.name);
     required(f.currency);
@@ -50,6 +51,7 @@ export class AccountForm {
 
   submit() {
     if (!this.form().valid()) return;
+    this.errorMessage.set(null);
 
     const value = this.form().value();
     const accountId = this.account()?.id;
@@ -61,7 +63,7 @@ export class AccountForm {
 
     request$.subscribe({
       next: () => this.edited.emit(),
-      error: (err) => console.error('Save failed:', err),
+      error: (err: Error) => this.errorMessage.set(err.message),
     });
   }
 }

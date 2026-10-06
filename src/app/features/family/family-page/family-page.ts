@@ -37,6 +37,8 @@ export class FamilyPage {
   });
 
   protected readonly invite = signal<IInvite | null>(null);
+  // Leaving takes two clicks: the first one only asks for confirmation.
+  protected readonly confirmingLeave = signal(false);
   protected readonly pending = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -64,6 +66,24 @@ export class FamilyPage {
       },
       error: (err: Error) => {
         this.pending.set(false);
+        this.errorMessage.set(err.message);
+      },
+    });
+  }
+
+  leaveFamily() {
+    this.pending.set(true);
+    this.errorMessage.set(null);
+    this.familyRepository.leaveFamily().subscribe({
+      next: () => {
+        this.pending.set(false);
+        this.confirmingLeave.set(false);
+        this.invite.set(null);
+        this.authState.setFamilyId(null);
+      },
+      error: (err: Error) => {
+        this.pending.set(false);
+        this.confirmingLeave.set(false);
         this.errorMessage.set(err.message);
       },
     });

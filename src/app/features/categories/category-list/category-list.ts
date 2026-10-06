@@ -16,6 +16,7 @@ export class CategoryList {
   private readonly categoryRepository = inject(CategoryRepository);
   protected readonly selectedCategory = signal<ICategory | null>(null);
   protected readonly isFormOpen = signal(false);
+  protected readonly actionError = signal<string | null>(null);
 
   protected readonly categoriesResource = rxResource<ICategory[], undefined>({
     stream: () => this.categoryRepository.getCategories(),
@@ -32,7 +33,11 @@ export class CategoryList {
   }
 
   deleteCategory(category: ICategory) {
-    this.categoryRepository.deleteCategory(category.id).subscribe(() => this.categoriesResource.reload());
+    this.actionError.set(null);
+    this.categoryRepository.deleteCategory(category.id).subscribe({
+      next: () => this.categoriesResource.reload(),
+      error: (err: Error) => this.actionError.set(err.message),
+    });
   }
 
   onEdited() {

@@ -37,6 +37,7 @@ export class BudgetForm {
   });
 
   private readonly model = signal<BudgetFormModel>({ ...DEFAULT_MODEL });
+  protected readonly errorMessage = signal<string | null>(null);
   protected readonly form = form(this.model, (f) => {
     required(f.categoryId);
     min(f.plannedAmount, 0.01);
@@ -46,6 +47,7 @@ export class BudgetForm {
 
   submit() {
     if (!this.form().valid()) return;
+    this.errorMessage.set(null);
 
     const value = this.form().value();
     const categories = this.expenseCategoriesResource.value() ?? [];
@@ -61,7 +63,7 @@ export class BudgetForm {
       })
       .subscribe({
         next: () => this.created.emit(),
-        error: (err) => console.error('Save failed:', err),
+        error: (err: Error) => this.errorMessage.set(err.message),
       });
   }
 }

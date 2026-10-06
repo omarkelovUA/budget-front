@@ -57,6 +57,13 @@ export class HttpFamilyRepository extends FamilyRepository {
     );
   }
 
+  leaveFamily(): Observable<void> {
+    return this.http.post<null>(`${FAMILIES}/current/leave`, null).pipe(
+      map(() => undefined),
+      withUserErrors(),
+    );
+  }
+
   joinFamily(code: string): Observable<IFamily> {
     return this.http.post<FamilyDto>(`${FAMILIES}/join`, { code }).pipe(map(toFamily), withUserErrors());
   }

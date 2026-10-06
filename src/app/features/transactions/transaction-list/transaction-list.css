@@ -121,3 +121,30 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+@media (max-width: 720px) {
+  .transaction-list-container {
+    padding: 12px;
+  }
+}
+
+/* Phones: date and description share the first line, badge and amount wrap below. */
+@media (max-width: 720px) {
+  .transaction-row {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+  }
+
+  .tx-description {
+    flex-basis: calc(100% - 110px);
+  }
+}
+
+.load-more {
+  align-self: center;
+  padding: 8px 16px;
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  cursor: pointer;
+}

@@ -6,29 +6,29 @@
 
       <form novalidate (submit)="$event.preventDefault(); createFamily()" class="family-form">
         <div class="form-group">
-          <label>Назва сім'ї</label>
-          <input [formField]="createForm.name" placeholder="Наприклад: Родина Шевченків" />
+          <label for="family-name">Назва сім'ї</label>
+          <input id="family-name" [formField]="createForm.name" placeholder="Наприклад: Родина Шевченків" />
         </div>
         <button type="submit" [disabled]="!createForm().valid() || pending()">Створити сім'ю</button>
       </form>
 
       <form novalidate (submit)="$event.preventDefault(); joinFamily()" class="invite-form">
-        <input [formField]="joinForm.code" placeholder="Код запрошення" />
+        <input [formField]="joinForm.code" placeholder="Код запрошення" aria-label="Код запрошення" />
         <button type="submit" [disabled]="!joinForm().valid() || pending()">Приєднатися</button>
       </form>
 
       @if (errorMessage(); as message) {
-        <p class="error">{{ message }}</p>
+        <p class="form-error" role="alert">{{ message }}</p>
       }
     </section>
   } @else {
     @if (familyResource.isLoading()) {
-      <div class="status-message">
-        <div class="spinner"></div>
+      <div class="status-message" role="status">
+        <div class="spinner" aria-hidden="true"></div>
         <p>Завантаження сім'ї...</p>
       </div>
     } @else if (familyResource.error()) {
-      <div class="status-message error">
+      <div class="status-message error" role="alert">
         <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
       </div>
     } @else {
@@ -62,8 +62,18 @@
             </div>
           }
 
+          <div class="invite-form">
+            @if (confirmingLeave()) {
+              <span>Покинути сім'ю? Спільні дані стануть недоступними.</span>
+              <button type="button" [disabled]="pending()" (click)="leaveFamily()">Так, покинути</button>
+              <button type="button" (click)="confirmingLeave.set(false)">Скасувати</button>
+            } @else {
+              <button type="button" (click)="confirmingLeave.set(true)">Покинути сім'ю</button>
+            }
+          </div>
+
           @if (errorMessage(); as message) {
-            <p class="error">{{ message }}</p>
+            <p class="form-error" role="alert">{{ message }}</p>
           }
         </section>
       }

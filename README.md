@@ -1,59 +1,53 @@
-# BudgetAppFront
+# Family Budget — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.7.
+Angular 22 SPA for Family Budget: private and family-shared accounts, categories,
+transactions and monthly budgets.
 
-## Development server
+- Backend: [`budget-backend`](https://github.com/omarkelovUA/budget-backend) (Spring Boot)
+- Design and roadmap: in the backend repo's
+  [`docs/`](https://github.com/omarkelovUA/budget-backend/tree/dev/docs)
 
-To start a local development server, run:
+## Run locally
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+You need the backend running on `localhost:8080` first. The simplest way needs only
+Docker — in a clone of the backend repo:
 
 ```bash
-ng generate component component-name
+docker compose --profile app up --build
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Then, here (Node 22+; with nvm, `nvm use` picks it up from `.nvmrc`):
 
 ```bash
-ng generate --help
+npm ci
+npm start
 ```
 
-## Building
+Open <http://localhost:4200>, register, and create a family to share data.
 
-To build the project run:
+`npm start` (`ng serve`) proxies `/api`, `/oauth2` and `/login/oauth2` to the backend
+(`src/proxy.conf.json`), so the browser sees a single origin: no CORS setup, and the
+httpOnly refresh cookie works as in production. Restart `ng serve` after changing the
+proxy file.
+
+## Test and build
 
 ```bash
-ng build
+npx ng test --watch=false   # Vitest unit tests
+npx ng build                # production build into dist/
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+CI runs both on every push (`.github/workflows/ci.yml`).
 
-## Running unit tests
+## How it's put together
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+- Standalone components, signals, signal forms; `rxResource` for request-backed state.
+- `src/app/features/<domain>/data/`: one abstract `*Repository` contract per domain plus
+  its `Http*Repository`, wired in `app.config.ts`. Components only see the contract.
+- `src/app/core/auth`: session state — access token in memory only, refreshed from an
+  httpOnly cookie (also restored on page load). `core/http/auth.interceptor.ts` attaches
+  the token and retries once after a refresh on 401.
+- `src/app/core/http/problem.ts`: maps the backend's error `type`s to UI messages.
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Google login works once the backend has Google credentials configured (see the backend
+README).

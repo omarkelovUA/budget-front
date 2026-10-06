@@ -4,7 +4,7 @@ import { map, Observable } from 'rxjs';
 import { API_BASE } from '../../../core/config/api';
 import { withUserErrors } from '../../../core/http/problem';
 import { IAccountRef, ICategory, isTransferTransaction, Transaction } from '../../../model/types';
-import { TransactionRepository } from './transaction-repository';
+import { TransactionPage, TransactionRepository } from './transaction-repository';
 
 // The backend omits the unused pair (account/category vs. fromAccount/toAccount),
 // so isTransferTransaction() keeps working on the parsed JSON.
@@ -22,12 +22,13 @@ interface TransactionDto {
 
 interface Page<T> {
   content: T[];
+  page: number;
+  totalPages: number;
 }
 
 const TRANSACTIONS = `${API_BASE}/transactions`;
 
-// The list UI has no paging yet, so it shows the newest page only.
-const PAGE_SIZE = 200;
+const PAGE_SIZE = 50;
 
 function toTransaction({ kind, ...dto }: TransactionDto): Transaction {
   return { ...dto, date: new Date(dto.date) } as Transaction;
@@ -44,11 +45,14 @@ function toIsoDate(date: Date | string): string {
 export class HttpTransactionRepository extends TransactionRepository {
   private readonly http = inject(HttpClient);
 
-  getTransactions(): Observable<Transaction[]> {
+  getTransactions(page: number): Observable<TransactionPage> {
     return this.http
-      .get<Page<TransactionDto>>(TRANSACTIONS, { params: { size: PAGE_SIZE } })
+      .get<Page<TransactionDto>>(TRANSACTIONS, { params: { page, size: PAGE_SIZE } })
       .pipe(
-        map((page) => page.content.map(toTransaction)),
+        map((result) => ({
+          items: result.content.map(toTransaction),
+          hasMore: result.page + 1 < result.totalPages,
+        })),
         withUserErrors(),
       );
   }

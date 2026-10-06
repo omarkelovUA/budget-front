@@ -50,6 +50,7 @@ export class TransactionForm {
   });
 
   private readonly model = signal<TransactionFormModel>({ ...DEFAULT_MODEL });
+  protected readonly errorMessage = signal<string | null>(null);
   protected readonly form = form(this.model, (f) => {
     min(f.amount, 0.01);
   });
@@ -58,6 +59,7 @@ export class TransactionForm {
 
   submit() {
     if (!this.form().valid()) return;
+    this.errorMessage.set(null);
 
     const value = this.form().value();
     const accounts = this.accountsResource.value() ?? [];
@@ -78,7 +80,7 @@ export class TransactionForm {
 
     this.transactionRepository.createTransaction(transaction).subscribe({
       next: () => this.created.emit(),
-      error: (err) => console.error('Save failed:', err),
+      error: (err: Error) => this.errorMessage.set(err.message),
     });
   }
 }

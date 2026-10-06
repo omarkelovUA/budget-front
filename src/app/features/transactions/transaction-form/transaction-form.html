@@ -1,7 +1,7 @@
 <form novalidate (submit)="$event.preventDefault(); submit()" class="transaction-form">
   <div class="form-group">
     <label>Тип операції</label>
-    <div class="kind-picker">
+    <div class="kind-picker" role="radiogroup" aria-label="Тип операції">
       @for (kind of kinds; track kind) {
         <label class="kind-option">
           <input type="radio" [formField]="form.kind" [value]="kind" />
@@ -12,19 +12,19 @@
   </div>
 
   <div class="form-group">
-    <label>Сума</label>
-    <input type="number" [formField]="form.amount" step="0.01" />
+    <label for="transaction-amount">Сума</label>
+    <input id="transaction-amount" type="number" [formField]="form.amount" step="0.01" />
   </div>
 
   <div class="form-group">
-    <label>Дата</label>
-    <input type="date" [formField]="form.date" />
+    <label for="transaction-date">Дата</label>
+    <input id="transaction-date" type="date" [formField]="form.date" />
   </div>
 
   @if (form.kind().value() === 'payment') {
     <div class="form-group">
-      <label>Рахунок</label>
-      <select [formField]="form.accountId">
+      <label for="transaction-accountId">Рахунок</label>
+      <select id="transaction-accountId" [formField]="form.accountId">
         <option value="" disabled>Оберіть рахунок</option>
         @for (acc of accountsResource.value(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
@@ -33,8 +33,8 @@
     </div>
 
     <div class="form-group">
-      <label>Категорія</label>
-      <select [formField]="form.categoryId">
+      <label for="transaction-categoryId">Категорія</label>
+      <select id="transaction-categoryId" [formField]="form.categoryId">
         <option value="" disabled>Оберіть категорію</option>
         @for (cat of categoriesResource.value(); track cat.id) {
           <option [value]="cat.id">{{ cat.name }} ({{ cat.type === 'income' ? 'дохід' : 'витрата' }})</option>
@@ -43,8 +43,8 @@
     </div>
   } @else {
     <div class="form-group">
-      <label>З рахунку</label>
-      <select [formField]="form.fromAccountId">
+      <label for="transaction-fromAccountId">З рахунку</label>
+      <select id="transaction-fromAccountId" [formField]="form.fromAccountId">
         <option value="" disabled>Оберіть рахунок</option>
         @for (acc of accountsResource.value(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
@@ -53,14 +53,18 @@
     </div>
 
     <div class="form-group">
-      <label>На рахунок</label>
-      <select [formField]="form.toAccountId">
+      <label for="transaction-toAccountId">На рахунок</label>
+      <select id="transaction-toAccountId" [formField]="form.toAccountId">
         <option value="" disabled>Оберіть рахунок</option>
         @for (acc of accountsResource.value(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
         }
       </select>
     </div>
+  }
+
+  @if (errorMessage(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
   }
 
   <button type="submit" [disabled]="!form().valid()">Зберегти</button>
