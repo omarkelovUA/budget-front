@@ -8,5 +8,5 @@ export abstract class CategoryRepository {
 
   abstract updateCategory(category: ICategory): Observable<ICategory>;
 
-  abstract deleteCategory(id: number): Observable<boolean>;
+  abstract deleteCategory(id: string): Observable<boolean>;
 }

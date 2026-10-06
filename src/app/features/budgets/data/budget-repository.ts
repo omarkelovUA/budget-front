@@ -8,5 +8,5 @@ export abstract class BudgetRepository {
 
   abstract updateBudget(budget: IBudget): Observable<IBudget>;
 
-  abstract deleteBudget(id: number): Observable<boolean>;
+  abstract deleteBudget(id: string): Observable<boolean>;
 }

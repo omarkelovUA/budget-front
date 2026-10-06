@@ -3,11 +3,14 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { App } from './app';
 import { routes } from './app.routes';
-import { AuthRepository } from './core/auth/data/auth-repository';
+import { AuthRepository, AuthSession } from './core/auth/data/auth-repository';
 import { AuthState } from './core/auth/auth-state';
-import { IUser } from './model/types';
+import { FamilyRepository } from './features/family/data/family-repository';
 
-const DEMO_USER: IUser = { id: 1, email: 'demo@family.app', displayName: 'Demo User', familyId: 1 };
+const SESSION: AuthSession = {
+  accessToken: 'token',
+  user: { id: 'user-1', email: 'demo@family.app', displayName: 'Demo User' },
+};
 
 describe('App', () => {
   let fixture: ComponentFixture<App>;
@@ -17,7 +20,8 @@ describe('App', () => {
       imports: [App],
       providers: [
         provideRouter(routes),
-        { provide: AuthRepository, useValue: { login: () => of(DEMO_USER) } },
+        { provide: AuthRepository, useValue: { login: () => of(SESSION) } },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(null) } },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(App);
@@ -34,7 +38,7 @@ describe('App', () => {
   });
 
   it('should render navigation links when logged in', () => {
-    TestBed.inject(AuthState).login(DEMO_USER.email, 'password123').subscribe();
+    TestBed.inject(AuthState).login(SESSION.user.email, 'password123').subscribe();
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
     const links = Array.from(compiled.querySelectorAll('nav a')).map((a) => a.textContent?.trim());

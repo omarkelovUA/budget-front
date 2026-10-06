@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { email, form, FormField, required } from '@angular/forms/signals';
+import { form, FormField, required } from '@angular/forms/signals';
+import { Observable } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
+import { IFamily, IInvite } from '../../../model/types';
 import { FamilyRepository } from '../data/family-repository';
 
 @Component({
   selector: 'app-family-page',
-  imports: [FormField],
+  imports: [FormField, DatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './family-page.html',
   styleUrl: './family-page.css',
@@ -20,42 +23,65 @@ export class FamilyPage {
   private readonly createModel = signal({ name: '' });
   protected readonly createForm = form(this.createModel, (f) => required(f.name));
 
-  private readonly inviteModel = signal({ email: '' });
-  protected readonly inviteForm = form(this.inviteModel, (f) => {
-    required(f.email);
-    email(f.email);
-  });
+  private readonly joinModel = signal({ code: '' });
+  protected readonly joinForm = form(this.joinModel, (f) => required(f.code));
 
   protected readonly familyResource = rxResource({
     params: () => this.currentUser()?.familyId ?? undefined,
-    stream: ({ params }) => this.familyRepository.getFamily(params),
+    stream: () => this.familyRepository.getCurrentFamily(),
   });
+
+  protected readonly isAdmin = computed(() => {
+    const userId = this.currentUser()?.id;
+    return this.familyResource.value()?.members.some((m) => m.user.id === userId && m.role === 'admin') ?? false;
+  });
+
+  protected readonly invite = signal<IInvite | null>(null);
+  protected readonly pending = signal(false);
+  protected readonly errorMessage = signal<string | null>(null);
 
   createFamily() {
     if (!this.createForm().valid()) return;
-    const user = this.currentUser();
-    if (!user) return;
+    this.enterFamily(this.familyRepository.createFamily(this.createForm().value().name), () =>
+      this.createModel.set({ name: '' }),
+    );
+  }
 
-    this.familyRepository.createFamily(this.createForm().value().name, user).subscribe({
-      next: (family) => {
-        this.authState.setFamilyId(family.id);
-        this.createModel.set({ name: '' });
+  joinFamily() {
+    if (!this.joinForm().valid()) return;
+    this.enterFamily(this.familyRepository.joinFamily(this.joinForm().value().code), () =>
+      this.joinModel.set({ code: '' }),
+    );
+  }
+
+  createInvite() {
+    this.pending.set(true);
+    this.errorMessage.set(null);
+    this.familyRepository.createInvite().subscribe({
+      next: (invite) => {
+        this.pending.set(false);
+        this.invite.set(invite);
       },
-      error: (err) => console.error('Create family failed:', err),
+      error: (err: Error) => {
+        this.pending.set(false);
+        this.errorMessage.set(err.message);
+      },
     });
   }
 
-  inviteMember() {
-    if (!this.inviteForm().valid()) return;
-    const familyId = this.currentUser()?.familyId;
-    if (!familyId) return;
-
-    this.familyRepository.inviteMember(familyId, this.inviteForm().value().email).subscribe({
-      next: () => {
-        this.inviteModel.set({ email: '' });
-        this.familyResource.reload();
+  private enterFamily(request$: Observable<IFamily>, reset: () => void) {
+    this.pending.set(true);
+    this.errorMessage.set(null);
+    request$.subscribe({
+      next: (family) => {
+        this.pending.set(false);
+        reset();
+        this.authState.setFamilyId(family.id);
       },
-      error: (err) => console.error('Invite failed:', err),
+      error: (err: Error) => {
+        this.pending.set(false);
+        this.errorMessage.set(err.message);
+      },
     });
   }
 }

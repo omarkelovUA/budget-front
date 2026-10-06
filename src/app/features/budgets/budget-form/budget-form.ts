@@ -49,7 +49,7 @@ export class BudgetForm {
 
     const value = this.form().value();
     const categories = this.expenseCategoriesResource.value() ?? [];
-    const category = categories.find((c) => c.id === Number(value.categoryId));
+    const category = categories.find((c) => c.id === value.categoryId);
     if (!category) return;
 
     this.budgetRepository

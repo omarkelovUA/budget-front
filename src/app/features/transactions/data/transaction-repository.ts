@@ -6,5 +6,5 @@ export abstract class TransactionRepository {
 
   abstract createTransaction(transaction: Omit<Transaction, 'id'>): Observable<Transaction>;
 
-  abstract deleteTransaction(id: number): Observable<boolean>;
+  abstract deleteTransaction(id: string): Observable<boolean>;
 }

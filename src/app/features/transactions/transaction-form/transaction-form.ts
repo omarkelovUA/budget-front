@@ -65,13 +65,13 @@ export class TransactionForm {
 
     let transaction: Omit<Transaction, 'id'>;
     if (value.kind === 'transfer') {
-      const fromAccount = accounts.find((a) => a.id === Number(value.fromAccountId));
-      const toAccount = accounts.find((a) => a.id === Number(value.toAccountId));
+      const fromAccount = accounts.find((a) => a.id === value.fromAccountId);
+      const toAccount = accounts.find((a) => a.id === value.toAccountId);
       if (!fromAccount || !toAccount) return;
       transaction = { amount: value.amount, date: value.date, fromAccount, toAccount };
     } else {
-      const account = accounts.find((a) => a.id === Number(value.accountId));
-      const category = categories.find((c) => c.id === Number(value.categoryId));
+      const account = accounts.find((a) => a.id === value.accountId);
+      const category = categories.find((c) => c.id === value.categoryId);
       if (!account || !category) return;
       transaction = { amount: value.amount, date: value.date, account, category };
     }

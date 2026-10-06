@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccountForm } from './account-form';
 import { AccountRepository } from '../data/account-repository';
-import { MockAccountRepository } from '../data/mock-account-repository';
 
 describe('AccountForm', () => {
   let component: AccountForm;
@@ -11,7 +10,7 @@ describe('AccountForm', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [AccountForm],
-      providers: [{ provide: AccountRepository, useClass: MockAccountRepository }],
+      providers: [{ provide: AccountRepository, useValue: {} }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountForm);

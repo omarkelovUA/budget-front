@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './core/auth/auth.guard';
+import { authGuard, guestGuard, oauthCallbackGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -13,6 +13,8 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/auth/register-page/register-page').then((m) => m.RegisterPage),
   },
+  // The backend redirects here after a Google login; the guard always redirects on.
+  { path: 'auth/callback', canActivate: [oauthCallbackGuard], children: [] },
   {
     path: '',
     canActivateChild: [authGuard],

@@ -1,11 +1,12 @@
 export type Visibility = 'private' | 'shared';
 
+// Ids are UUID strings issued by the backend.
 export interface IUser {
-  id: number;
+  id: string;
   email: string;
   displayName: string;
   // v1 simplification: a user belongs to at most one family at a time (see docs/ARCHITECTURE.md §7).
-  familyId: number | null;
+  familyId: string | null;
 }
 
 export type FamilyRole = 'admin' | 'member';
@@ -16,15 +17,20 @@ export interface IFamilyMember {
   joinedAt: Date;
 }
 
+export interface IInvite {
+  code: string;
+  expiresAt: Date;
+}
+
 export interface IFamily {
-  id: number;
+  id: string;
   name: string;
   members: IFamilyMember[];
 }
 
 //TODO add Map monthYear is key and amount is value - plan and fact (fact for caching)
 export interface ICategory {
-  id: number;
+  id: string;
   type: 'income' | 'expense';
   name: string;
   icon: string;
@@ -33,7 +39,7 @@ export interface ICategory {
 }
 
 export interface IAccount {
-  id: number,
+  id: string,
   name: string,
   balance: number,
   currency: string,
@@ -42,8 +48,13 @@ export interface IAccount {
   visibility: Visibility,
 }
 
+// How a transaction shows the accounts it touches: no balance, since a family
+// member can see a transfer from someone's private account without seeing the
+// account itself (docs/ARCHITECTURE.md §3.2).
+export type IAccountRef = Omit<IAccount, 'balance'>;
+
 export interface IBudget {
-  id: number;
+  id: string;
   category: ICategory;
   period: string; // 'YYYY-MM'
   plannedAmount: number;
@@ -52,13 +63,14 @@ export interface IBudget {
 }
 
 interface BaseTransaction {
-  id: number;
+  id: string;
   amount: number;
   date: Date;
+  note?: string;
 }
 
 interface PaymentTransaction extends BaseTransaction {
-  account: IAccount;
+  account: IAccountRef;
   category: ICategory;
   fromAccount?: never;
   toAccount?: never;
@@ -67,8 +79,8 @@ interface PaymentTransaction extends BaseTransaction {
 interface TransferTransaction extends BaseTransaction {
   account?: never;
   category?: never;
-  fromAccount: IAccount;
-  toAccount: IAccount;
+  fromAccount: IAccountRef;
+  toAccount: IAccountRef;
 }
 
 export type Transaction = PaymentTransaction | TransferTransaction;

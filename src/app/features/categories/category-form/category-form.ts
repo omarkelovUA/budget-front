@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
-import { form, FormField, required } from '@angular/forms/signals';
+import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
 
@@ -31,6 +31,9 @@ export class CategoryForm {
   private readonly model = signal<CategoryFormModel>({ ...DEFAULT_MODEL });
   protected readonly form = form(this.model, (f) => {
     required(f.name);
+    // Fixed after creation: the type decides what past payments did to balances.
+    disabled(f.type, () => this.category() !== undefined);
+    disabled(f.visibility, () => this.category() !== undefined);
   });
 
   readonly category = input<ICategory>();
@@ -53,7 +56,7 @@ export class CategoryForm {
     const value = this.form().value();
     const categoryId = this.category()?.id;
     const request$ =
-      categoryId && categoryId > 0
+      categoryId
         ? this.categoryRepository.updateCategory({ ...value, id: categoryId })
         : this.categoryRepository.createCategory(value);
 

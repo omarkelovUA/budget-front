@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
-import { form, FormField, required } from '@angular/forms/signals';
+import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { IAccount } from '../../../model/types';
 import { AccountRepository } from '../data/account-repository';
 
@@ -30,6 +30,8 @@ export class AccountForm {
   protected readonly form = form(this.model, (f) => {
     required(f.name);
     required(f.currency);
+    // The backend rejects moving an existing account between private and shared.
+    disabled(f.visibility, () => this.account() !== undefined);
   });
 
   readonly account = input<IAccount>();
@@ -53,7 +55,7 @@ export class AccountForm {
     const accountId = this.account()?.id;
     const balance = this.account()?.balance ?? 0;
     const request$ =
-      accountId && accountId > 0
+      accountId
         ? this.accountRepository.updateAccount({ ...value, balance, id: accountId })
         : this.accountRepository.createAccount({ ...value, balance });
 

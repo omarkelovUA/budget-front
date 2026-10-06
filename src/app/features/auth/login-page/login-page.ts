@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { Observable } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
@@ -15,6 +15,7 @@ import { IUser } from '../../../model/types';
 export class LoginPage {
   private readonly authState = inject(AuthState);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   private readonly model = signal({ email: '', password: '' });
   protected readonly form = form(this.model, (f) => {
@@ -24,7 +25,14 @@ export class LoginPage {
   });
 
   protected readonly pending = signal(false);
-  protected readonly errorMessage = signal<string | null>(null);
+  // Set when the backend's Google login redirects back with ?error=oauth.
+  protected readonly errorMessage = signal<string | null>(
+    this.route.snapshot.queryParamMap.get('error') === 'oauth'
+      ? this.route.snapshot.queryParamMap.get('reason') === 'email-not-verified'
+        ? 'Email вашого Google-акаунта не підтверджено'
+        : 'Не вдалося увійти через Google'
+      : null,
+  );
 
   submit() {
     if (!this.form().valid()) return;
@@ -33,7 +41,8 @@ export class LoginPage {
   }
 
   loginWithGoogle() {
-    this.run(this.authState.loginWithGoogle());
+    this.pending.set(true);
+    this.authState.loginWithGoogle();
   }
 
   private run(request$: Observable<IUser>) {

@@ -14,3 +14,14 @@ export const guestGuard: CanActivateFn = () => {
   const router = inject(Router);
   return authState.isAuthenticated() ? router.createUrlTree(['/dashboard']) : true;
 };
+
+// Where the backend sends the browser after a Google login. The page load
+// already restored the session from the new refresh cookie (restoreSession at
+// startup), so all that's left is to route on.
+export const oauthCallbackGuard: CanActivateFn = () => {
+  const authState = inject(AuthState);
+  const router = inject(Router);
+  return authState.isAuthenticated()
+    ? router.createUrlTree(['/dashboard'])
+    : router.createUrlTree(['/login'], { queryParams: { error: 'oauth' } });
+};

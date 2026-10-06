@@ -2,15 +2,24 @@
   @if (!currentUser()?.familyId) {
     <section class="create-family">
       <h2>У вас ще немає сім'ї</h2>
-      <p>Створіть сім'ю, щоб ділитися бюджетом з близькими.</p>
+      <p>Створіть сім'ю, щоб ділитися бюджетом з близькими, або приєднайтеся за кодом запрошення.</p>
 
       <form novalidate (submit)="$event.preventDefault(); createFamily()" class="family-form">
         <div class="form-group">
           <label>Назва сім'ї</label>
           <input [formField]="createForm.name" placeholder="Наприклад: Родина Шевченків" />
         </div>
-        <button type="submit" [disabled]="!createForm().valid()">Створити сім'ю</button>
+        <button type="submit" [disabled]="!createForm().valid() || pending()">Створити сім'ю</button>
       </form>
+
+      <form novalidate (submit)="$event.preventDefault(); joinFamily()" class="invite-form">
+        <input [formField]="joinForm.code" placeholder="Код запрошення" />
+        <button type="submit" [disabled]="!joinForm().valid() || pending()">Приєднатися</button>
+      </form>
+
+      @if (errorMessage(); as message) {
+        <p class="error">{{ message }}</p>
+      }
     </section>
   } @else {
     @if (familyResource.isLoading()) {
@@ -41,10 +50,21 @@
             }
           </div>
 
-          <form novalidate (submit)="$event.preventDefault(); inviteMember()" class="invite-form">
-            <input type="email" [formField]="inviteForm.email" placeholder="Email для запрошення" />
-            <button type="submit" [disabled]="!inviteForm().valid()">Запросити</button>
-          </form>
+          @if (isAdmin()) {
+            <div class="invite-form">
+              <button type="button" [disabled]="pending()" (click)="createInvite()">Створити код запрошення</button>
+              @if (invite(); as invite) {
+                <span>
+                  Код: <strong>{{ invite.code }}</strong>
+                  (дійсний до {{ invite.expiresAt | date: 'dd.MM.yyyy' }}, одноразовий)
+                </span>
+              }
+            </div>
+          }
+
+          @if (errorMessage(); as message) {
+            <p class="error">{{ message }}</p>
+          }
         </section>
       }
     }

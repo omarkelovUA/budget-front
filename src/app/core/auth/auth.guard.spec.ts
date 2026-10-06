@@ -1,12 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter, Router, UrlTree } from '@angular/router';
 import { of } from 'rxjs';
-import { IUser } from '../../model/types';
-import { AuthRepository } from './data/auth-repository';
+import { FamilyRepository } from '../../features/family/data/family-repository';
+import { AuthRepository, AuthSession } from './data/auth-repository';
 import { AuthState } from './auth-state';
-import { authGuard, guestGuard } from './auth.guard';
+import { authGuard, guestGuard, oauthCallbackGuard } from './auth.guard';
 
-const USER: IUser = { id: 1, email: 'demo@family.app', displayName: 'Demo User', familyId: 1 };
+const SESSION: AuthSession = {
+  accessToken: 'token',
+  user: { id: 'user-1', email: 'demo@family.app', displayName: 'Demo User' },
+};
 
 describe('auth guards', () => {
   const run = (guard: typeof authGuard) =>
@@ -14,7 +17,11 @@ describe('auth guards', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: AuthRepository, useValue: { login: () => of(USER) } }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthRepository, useValue: { login: () => of(SESSION) } },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(null) } },
+      ],
     });
   });
 
@@ -25,7 +32,7 @@ describe('auth guards', () => {
   });
 
   it('authGuard lets authenticated users through', () => {
-    TestBed.inject(AuthState).login(USER.email, 'x').subscribe();
+    TestBed.inject(AuthState).login(SESSION.user.email, 'x').subscribe();
     expect(run(authGuard)).toBe(true);
   });
 
@@ -33,8 +40,17 @@ describe('auth guards', () => {
     expect(run(guestGuard)).toBe(true);
   });
 
+  it('oauthCallbackGuard sends a restored session to /dashboard', () => {
+    TestBed.inject(AuthState).login(SESSION.user.email, 'x').subscribe();
+    expect(urlOf(run(oauthCallbackGuard))).toBe('/dashboard');
+  });
+
+  it('oauthCallbackGuard sends a failed Google login back to /login with an error', () => {
+    expect(urlOf(run(oauthCallbackGuard))).toBe('/login?error=oauth');
+  });
+
   it('guestGuard redirects authenticated users to /dashboard', () => {
-    TestBed.inject(AuthState).login(USER.email, 'x').subscribe();
+    TestBed.inject(AuthState).login(SESSION.user.email, 'x').subscribe();
     expect(urlOf(run(guestGuard))).toBe('/dashboard');
   });
 });

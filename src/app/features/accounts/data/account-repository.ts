@@ -8,5 +8,5 @@ export abstract class AccountRepository {
 
   abstract updateAccount(account: IAccount): Observable<IAccount>;
 
-  abstract deleteAccount(id: number): Observable<boolean>;
+  abstract deleteAccount(id: string): Observable<boolean>;
 }
