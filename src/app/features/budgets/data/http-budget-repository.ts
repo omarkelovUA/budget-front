@@ -22,8 +22,9 @@ function toRequest(budget: Omit<IBudget, 'id' | 'factAmount'>) {
 export class HttpBudgetRepository extends BudgetRepository {
   private readonly http = inject(HttpClient);
 
-  getBudgets(): Observable<IBudget[]> {
-    return this.http.get<IBudget[]>(BUDGETS).pipe(withUserErrors());
+  getBudgets(period?: string): Observable<IBudget[]> {
+    const params = period ? { period } : undefined;
+    return this.http.get<IBudget[]>(BUDGETS, { params }).pipe(withUserErrors());
   }
 
   createBudget(budget: Omit<IBudget, 'id' | 'factAmount'>): Observable<IBudget> {

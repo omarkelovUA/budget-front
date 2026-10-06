@@ -1,3 +1,125 @@
-<div class="dashboard-placeholder">
-  <p>Огляд бюджету з'явиться тут на наступному етапі.</p>
+<div class="dashboard">
+  <header class="dashboard-header">
+    <h2>Огляд</h2>
+    <div class="month-switcher" role="group" aria-label="Обраний місяць">
+      <button type="button" (click)="previousMonth()" aria-label="Попередній місяць">‹</button>
+      <span class="month-label" aria-live="polite">{{ periodLabel() }}</span>
+      <button type="button" (click)="nextMonth()" [disabled]="isCurrentMonth()" aria-label="Наступний місяць">›</button>
+    </div>
+  </header>
+
+  @if (!currentUser()?.familyId) {
+    <p class="hint">
+      Ви бачите лише особисті дані. <a routerLink="/family">Створіть сім'ю або приєднайтеся до неї</a>,
+      щоб вести спільний бюджет.
+    </p>
+  }
+
+  <div class="dashboard-grid">
+    <section class="panel" aria-labelledby="balances-title">
+      <h3 id="balances-title">Баланс</h3>
+      @if (accountsResource.isLoading()) {
+        <p class="muted" role="status">Завантаження...</p>
+      } @else if (accountsResource.error()) {
+        <p class="form-error" role="alert">Не вдалося завантажити рахунки.</p>
+      } @else {
+        @for (balance of balances(); track balance.currency) {
+          <div class="balance-row">
+            <span class="big-number">{{ money(balance.total, balance.currency) }}</span>
+            <span class="muted">
+              особисті {{ money(balance.private, balance.currency) }} ·
+              сімейні {{ money(balance.shared, balance.currency) }}
+            </span>
+          </div>
+        } @empty {
+          <p class="muted">Рахунків ще немає. <a routerLink="/accounts">Створіть перший рахунок</a>.</p>
+        }
+      }
+    </section>
+
+    <section class="panel" aria-labelledby="month-title">
+      <h3 id="month-title">За місяць</h3>
+      @if (summaryResource.isLoading()) {
+        <p class="muted" role="status">Завантаження...</p>
+      } @else if (summaryResource.error()) {
+        <p class="form-error" role="alert">Не вдалося завантажити підсумки.</p>
+      } @else {
+        @for (summary of summaryResource.value(); track summary.currency) {
+          <dl class="summary">
+            <div><dt>Доходи</dt><dd class="income">{{ money(summary.income, summary.currency) }}</dd></div>
+            <div><dt>Витрати</dt><dd class="expense">{{ money(summary.expense, summary.currency) }}</dd></div>
+            <div>
+              <dt>Різниця</dt>
+              <dd [class.income]="summary.income >= summary.expense" [class.expense]="summary.income < summary.expense">
+                {{ money(summary.income - summary.expense, summary.currency) }}
+              </dd>
+            </div>
+          </dl>
+        } @empty {
+          <p class="muted">У цьому місяці ще немає платежів.</p>
+        }
+      }
+    </section>
+
+    <section class="panel" aria-labelledby="budgets-title">
+      <h3 id="budgets-title">Бюджети</h3>
+      @if (budgetsResource.isLoading()) {
+        <p class="muted" role="status">Завантаження...</p>
+      } @else if (budgetsResource.error()) {
+        <p class="form-error" role="alert">Не вдалося завантажити бюджети.</p>
+      } @else {
+        @for (budget of budgetsResource.value(); track budget.id) {
+          <div class="budget-row" [class.over]="isOverBudget(budget)">
+            <div class="budget-line">
+              <span>{{ budget.category.name }}</span>
+              <span class="muted">
+                {{ budget.factAmount }} / {{ budget.plannedAmount }}
+                @if (isOverBudget(budget)) {
+                  <span class="over-label">перевищено</span>
+                }
+              </span>
+            </div>
+            <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                 [attr.aria-valuenow]="progressPercent(budget)"
+                 [attr.aria-label]="budget.category.name + ': витрачено ' + progressPercent(budget) + '%'">
+              <div class="progress-fill" [style.width.%]="progressPercent(budget)"></div>
+            </div>
+          </div>
+        } @empty {
+          <p class="muted">Бюджетів на цей місяць немає. <a routerLink="/budgets">Створити бюджет</a></p>
+        }
+      }
+    </section>
+
+    <section class="panel" aria-labelledby="recent-title">
+      <h3 id="recent-title">Останні транзакції</h3>
+      @if (recentResource.isLoading()) {
+        <p class="muted" role="status">Завантаження...</p>
+      } @else if (recentResource.error()) {
+        <p class="form-error" role="alert">Не вдалося завантажити транзакції.</p>
+      } @else {
+        <ul class="recent">
+          @for (tx of recentResource.value(); track tx.id) {
+            <li>
+              <span class="muted">{{ tx.date | date: 'dd.MM' }}</span>
+              <span class="recent-description">
+                @if (isTransfer(tx)) {
+                  {{ tx.fromAccount.name }} → {{ tx.toAccount.name }}
+                } @else {
+                  {{ tx.category.name }}
+                }
+              </span>
+              <span [class.income]="!isTransfer(tx) && tx.category.type === 'income'"
+                    [class.expense]="!isTransfer(tx) && tx.category.type === 'expense'">
+                {{ signedAmount(tx) }}
+              </span>
+            </li>
+          } @empty {
+            <li class="muted">Транзакцій ще немає.</li>
+          }
+        </ul>
+        <a routerLink="/transactions" class="more-link">Усі транзакції →</a>
+      }
+    </section>
+  </div>
 </div>

@@ -1,5 +1,174 @@
-.dashboard-placeholder {
-  padding: 40px;
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.dashboard-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.month-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.month-switcher button {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+}
+
+.month-switcher button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.month-label {
+  min-width: 140px;
   text-align: center;
+  font-weight: 500;
+}
+
+.hint {
+  margin: 0;
+  padding: 12px 16px;
+  background: #f0f7ff;
+  border-radius: 8px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+  gap: 16px;
+}
+
+.panel {
+  padding: 20px;
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+}
+
+.panel h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.muted {
   color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.balance-row {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.big-number {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin: 0 0 12px;
+}
+
+.summary dt {
+  color: #6c757d;
+  font-size: 0.85rem;
+}
+
+.summary dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.income {
+  color: #198754;
+}
+
+.expense {
+  color: #dc3545;
+}
+
+.budget-row {
+  margin-bottom: 12px;
+}
+
+.budget-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.progress-track {
+  height: 8px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #007bff;
+}
+
+.budget-row.over .progress-fill {
+  background: #dc3545;
+}
+
+.over-label {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.recent {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+}
+
+.recent li {
+  display: flex;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.recent-description {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.more-link {
+  font-size: 0.9rem;
+}
+
+@media (max-width: 480px) {
+  .summary {
+    grid-template-columns: 1fr;
+  }
 }

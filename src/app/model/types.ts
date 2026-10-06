@@ -62,6 +62,14 @@ export interface IBudget {
   visibility: Visibility;
 }
 
+// One currency's payments in a month (transfers excluded). Amounts in different
+// currencies are never added together - there's no FX in v1.
+export interface IMonthSummary {
+  currency: string;
+  income: number;
+  expense: number;
+}
+
 interface BaseTransaction {
   id: string;
   amount: number;

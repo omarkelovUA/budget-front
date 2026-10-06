@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { API_BASE } from '../../../core/config/api';
 import { withUserErrors } from '../../../core/http/problem';
-import { IAccountRef, ICategory, isTransferTransaction, Transaction } from '../../../model/types';
+import { IAccountRef, ICategory, IMonthSummary, isTransferTransaction, Transaction } from '../../../model/types';
 import { TransactionPage, TransactionRepository } from './transaction-repository';
 
 // The backend omits the unused pair (account/category vs. fromAccount/toAccount),
@@ -55,6 +55,12 @@ export class HttpTransactionRepository extends TransactionRepository {
         })),
         withUserErrors(),
       );
+  }
+
+  getMonthSummary(period: string): Observable<IMonthSummary[]> {
+    return this.http
+      .get<IMonthSummary[]>(`${TRANSACTIONS}/summary`, { params: { period } })
+      .pipe(withUserErrors());
   }
 
   createTransaction(transaction: Omit<Transaction, 'id'>): Observable<Transaction> {

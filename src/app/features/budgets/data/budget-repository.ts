@@ -2,7 +2,8 @@ import { Observable } from 'rxjs';
 import { IBudget } from '../../../model/types';
 
 export abstract class BudgetRepository {
-  abstract getBudgets(): Observable<IBudget[]>;
+  // Optionally narrowed to one month ('YYYY-MM').
+  abstract getBudgets(period?: string): Observable<IBudget[]>;
 
   abstract createBudget(budget: Omit<IBudget, 'id' | 'factAmount'>): Observable<IBudget>;
 
