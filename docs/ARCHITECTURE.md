@@ -1,6 +1,6 @@
 # Family Budget — Frontend Architecture
 
-Status: draft v0.5 · 2026-10-07
+Status: draft v0.6 · 2026-10-07
 Companion doc: [PLAN.md](../../PLAN.md) (workspace root) (roadmap, phases, open decisions)
 Backend, domain rules, API and security: [backend ARCHITECTURE.md][backend-arch]
 
@@ -64,6 +64,15 @@ The backend enforces these; the UI only has to present them correctly:
   (`canRecordOn`), and the transaction list shows delete only when `editable`.
 - Closing an account moves its balance to another open, same-currency account the user
   can record on, then archives it. The close dialog only offers such targets.
+- **Settings** (header → *Налаштування*, `SettingsDialog`): for now just the default
+  currency, picked by the backend from the browser's region at sign-up. New accounts
+  start in it.
+- **Family transfers** (`FamilyTransfers` on the accounts page): send money from an
+  own account to a family member, *collect* what's waiting into an own account in the
+  same currency, or *take back* what wasn't collected yet. The money waits in a
+  transient account, which never shows up in account lists or pickers. On the
+  dashboard, money a user sent that hasn't been collected stays in their totals
+  (*у дорозі*).
 - Family invitations are addressed to an email and only usable once that email is
   verified, i.e. the user signed in with Google. Otherwise the family page offers Google
   sign-in instead of the list. Accepting while already in a family moves the user out of

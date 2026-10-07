@@ -6,16 +6,19 @@ import { AccessBadge } from '../../../shared/ui/access-badge/access-badge';
 import { AccountRepository } from '../data/account-repository';
 import { AccountClose } from '../account-close/account-close';
 import { AccountForm } from '../account-form/account-form';
+import { FamilyTransfers } from '../../family-transfers/family-transfers/family-transfers';
+import { AuthState } from '../../../core/auth/auth-state';
 
 @Component({
   selector: 'app-account-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AccountForm, AccountClose, AccessBadge, NgTemplateOutlet],
+  imports: [AccountForm, AccountClose, AccessBadge, NgTemplateOutlet, FamilyTransfers],
   templateUrl: './account-list.html',
   styleUrl: './account-list.css',
 })
 export class AccountList {
   private readonly accountRepository = inject(AccountRepository);
+  protected readonly currentUser = inject(AuthState).currentUser;
   protected readonly selectedAccount = signal<IAccount | null>(null);
   protected readonly closingAccount = signal<IAccount | null>(null);
   protected readonly isFormOpen = signal(false);

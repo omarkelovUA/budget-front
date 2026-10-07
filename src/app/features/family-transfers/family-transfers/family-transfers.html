@@ -1,0 +1,87 @@
+<section class="family-transfers" aria-labelledby="in-transit-title">
+  <h3 id="in-transit-title">Перекази в сім'ї</h3>
+
+  @if (transfersResource.value(); as transfers) {
+    @for (group of [
+      { title: 'Чекають на вас', items: transfers.incoming, mode: 'collect', action: 'Отримати', who: 'Від' },
+      { title: 'Надіслані, ще не отримані', items: transfers.outgoing, mode: 'takeBack', action: 'Забрати назад', who: 'Для' },
+    ]; track group.title) {
+      @if (group.items.length > 0) {
+        <h4>{{ group.title }}</h4>
+        @for (transfer of group.items; track transfer.id) {
+          <div class="transit-row">
+            <span>{{ group.who }}: <strong>{{ transfer.counterpart.displayName }}</strong></span>
+            <span class="amount">{{ transfer.amount | number: '1.2-2' }} {{ transfer.currency }}</span>
+            <button type="button" [disabled]="pending()" (click)="startWithdraw(transfer, $any(group.mode))">
+              {{ group.action }}
+            </button>
+          </div>
+          @if (withdrawing()?.transfer?.id === transfer.id) {
+            <div class="withdraw-panel">
+              @if (targetsFor(transfer).length === 0) {
+                <p class="form-error" role="alert">
+                  Немає вашого рахунку у {{ transfer.currency }}. Створіть його, щоб отримати гроші.
+                </p>
+              } @else {
+                <label>
+                  На рахунок
+                  <select [value]="targetId()" (change)="targetId.set($any($event.target).value)">
+                    @for (account of targetsFor(transfer); track account.id) {
+                      <option [value]="account.id">{{ account.name }}</option>
+                    }
+                  </select>
+                </label>
+                <label>
+                  Сума (порожньо — усе)
+                  <input
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    [value]="withdrawAmount()"
+                    (input)="withdrawAmount.set($any($event.target).value)"
+                  />
+                </label>
+                <button type="button" [disabled]="pending()" (click)="confirmWithdraw()">Підтвердити</button>
+              }
+              <button type="button" class="secondary" (click)="withdrawing.set(null)">Скасувати</button>
+            </div>
+          }
+        }
+      }
+    }
+  }
+
+  @if (recipients().length > 0) {
+    <form novalidate class="send-form" (submit)="$event.preventDefault(); send()">
+      <h4>Надіслати члену сім'ї</h4>
+      <label>
+        З рахунку
+        <select [formField]="sendForm.fromAccountId">
+          <option value="" disabled>Оберіть рахунок</option>
+          @for (account of ownAccounts(); track account.id) {
+            <option [value]="account.id">{{ account.name }} ({{ account.balance }} {{ account.currency }})</option>
+          }
+        </select>
+      </label>
+      <label>
+        Кому
+        <select [formField]="sendForm.recipientId">
+          <option value="" disabled>Оберіть учасника</option>
+          @for (member of recipients(); track member.id) {
+            <option [value]="member.id">{{ member.displayName }}</option>
+          }
+        </select>
+      </label>
+      <label>
+        Сума
+        <input type="number" [formField]="sendForm.amount" />
+      </label>
+      <button type="submit" [disabled]="pending() || !sendForm().valid()">Надіслати</button>
+      <p class="hint">Гроші чекатимуть, доки отримувач не перекаже їх на свій рахунок.</p>
+    </form>
+  }
+
+  @if (errorMessage(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
+  }
+</section>

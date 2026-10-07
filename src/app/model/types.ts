@@ -99,7 +99,26 @@ export interface AccountInput {
 
 // How a transaction shows the accounts it touches: no balance, since a
 // transaction can be visible through one account while the other one isn't.
-export type IAccountRef = Pick<IAccount, 'id' | 'name' | 'currency' | 'icon' | 'color' | 'access' | 'closed'>;
+// inTransit marks a transient account between family members (see IInTransit);
+// the backend always sends it, regular accounts picked in a form just lack it.
+export type IAccountRef = Pick<IAccount, 'id' | 'name' | 'currency' | 'icon' | 'color' | 'access' | 'closed'> & {
+  inTransit?: boolean;
+};
+
+// Money sent to a family member that they haven't collected yet. Each ordered pair
+// (sender -> recipient) and currency has its own transient account; id is that
+// account's. It still counts for the sender until collected.
+export interface IInTransit {
+  id: string;
+  counterpart: { id: string; displayName: string };
+  currency: string;
+  amount: number;
+}
+
+export interface IFamilyTransfers {
+  outgoing: IInTransit[];
+  incoming: IInTransit[];
+}
 
 // Only open accounts the user owns or has shared access to take transactions.
 export function canRecordOn(account: Pick<IAccount, 'access' | 'closed'>): boolean {

@@ -17,6 +17,8 @@ import { HttpAuthRepository } from './core/auth/data/http-auth-repository';
 import { FamilyRepository } from './features/family/data/family-repository';
 import { HttpFamilyRepository } from './features/family/data/http-family-repository';
 import { SettingsRepository } from './features/settings/data/settings-repository';
+import { FamilyTransferRepository } from './features/family-transfers/data/family-transfer-repository';
+import { HttpFamilyTransferRepository } from './features/family-transfers/data/http-family-transfer-repository';
 import { HttpSettingsRepository } from './features/settings/data/http-settings-repository';
 import { AuthState } from './core/auth/auth-state';
 import { authInterceptor } from './core/http/auth.interceptor';
@@ -36,5 +38,6 @@ export const appConfig: ApplicationConfig = {
     { provide: AuthRepository, useClass: HttpAuthRepository },
     { provide: FamilyRepository, useClass: HttpFamilyRepository },
     { provide: SettingsRepository, useClass: HttpSettingsRepository },
+    { provide: FamilyTransferRepository, useClass: HttpFamilyTransferRepository },
   ],
 };

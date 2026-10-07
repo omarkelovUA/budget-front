@@ -34,6 +34,9 @@
               @if (balance.visible) {
                 · перегляд {{ money(balance.visible, balance.currency) }}
               }
+              @if (balance.inTransit) {
+                · у дорозі {{ money(balance.inTransit, balance.currency) }}
+              }
             </span>
           </div>
         } @empty {

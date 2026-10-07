@@ -59,6 +59,10 @@
     }
   </div>
 
+  @if (currentUser()?.familyId && accountsResource.hasValue()) {
+    <app-family-transfers [accounts]="accountsResource.value()" (changed)="accountsResource.reload()" />
+  }
+
   <ng-template #cardBody let-acc>
     <span class="icon-box" [style.background-color]="acc.color">
       <img [src]="acc.icon" alt="" />

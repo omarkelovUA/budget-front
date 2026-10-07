@@ -1,0 +1,83 @@
+.family-transfers {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.family-transfers h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.family-transfers h4 {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.transit-row,
+.withdraw-panel,
+.send-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+}
+
+.withdraw-panel {
+  background: #f0f7ff;
+}
+
+.amount {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+}
+
+select,
+input {
+  padding: 6px 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+
+button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #ccc;
+}
+
+button.secondary {
+  background-color: #e9ecef;
+  color: #343a40;
+}
+
+.send-form h4 {
+  width: 100%;
+  margin: 0;
+}
+
+.hint {
+  width: 100%;
+  margin: 0;
+  font-size: 0.8rem;
+  color: #6c757d;
+}

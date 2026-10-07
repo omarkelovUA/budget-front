@@ -7,6 +7,7 @@ import { BudgetRepository } from '../budgets/data/budget-repository';
 import { TransactionRepository } from '../transactions/data/transaction-repository';
 import { AuthRepository } from '../../core/auth/data/auth-repository';
 import { FamilyRepository } from '../family/data/family-repository';
+import { FamilyTransferRepository } from '../family-transfers/data/family-transfer-repository';
 import { balancesByCurrency, Dashboard } from './dashboard';
 
 const account = (currency: string, balance: number, access: IAccount['access']): IAccount => ({
@@ -41,8 +42,17 @@ describe('balancesByCurrency', () => {
         account('UAH', 7, 'visible'),
       ]),
     ).toEqual([
-      { currency: 'UAH', total: 157, owner: 100, shared: 50, visible: 7 },
-      { currency: 'USD', total: 5, owner: 0, shared: 5, visible: 0 },
+      { currency: 'UAH', total: 157, owner: 100, shared: 50, visible: 7, inTransit: 0 },
+      { currency: 'USD', total: 5, owner: 0, shared: 5, visible: 0, inTransit: 0 },
+    ]);
+  });
+
+  it('keeps money sent to family members in the sender\'s totals until it is collected', () => {
+    const sent = [{ id: 't', counterpart: { id: 'b', displayName: 'Bob' }, currency: 'PLN', amount: 30 }];
+
+    expect(balancesByCurrency([account('UAH', 100, 'owner')], sent)).toEqual([
+      { currency: 'PLN', total: 30, owner: 0, shared: 0, visible: 0, inTransit: 30 },
+      { currency: 'UAH', total: 100, owner: 100, shared: 0, visible: 0, inTransit: 0 },
     ]);
   });
 });
@@ -75,6 +85,7 @@ describe('Dashboard', () => {
         },
         { provide: AuthRepository, useValue: {} },
         { provide: FamilyRepository, useValue: {} },
+        { provide: FamilyTransferRepository, useValue: {} },
       ],
     });
   });

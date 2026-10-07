@@ -4,18 +4,21 @@ import { RouterLink } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { AuthState } from '../../core/auth/auth-state';
-import { IAccount, IBudget, isTransferTransaction, Transaction } from '../../model/types';
+import { IAccount, IBudget, IInTransit, isTransferTransaction, Transaction } from '../../model/types';
+import { FamilyTransferRepository } from '../family-transfers/data/family-transfer-repository';
 import { AccountRepository } from '../accounts/data/account-repository';
 import { BudgetRepository } from '../budgets/data/budget-repository';
 import { TransactionRepository } from '../transactions/data/transaction-repository';
 
-// By the user's access: their own accounts, shared with them, only visible.
+// By the user's access: their own accounts, shared with them, only visible; plus
+// money they sent to family members that hasn't been collected yet (still theirs).
 export interface CurrencyBalance {
   currency: string;
   total: number;
   owner: number;
   shared: number;
   visible: number;
+  inTransit: number;
 }
 
 const RECENT_COUNT = 5;
@@ -30,19 +33,22 @@ function shiftPeriod(period: string, months: number): string {
 }
 
 // Per currency, never summed across currencies (no FX in v1).
-export function balancesByCurrency(accounts: IAccount[]): CurrencyBalance[] {
+export function balancesByCurrency(accounts: IAccount[], sentInTransit: IInTransit[] = []): CurrencyBalance[] {
   const byCurrency = new Map<string, CurrencyBalance>();
+  const entryFor = (currency: string) => {
+    const entry = byCurrency.get(currency) ?? { currency, total: 0, owner: 0, shared: 0, visible: 0, inTransit: 0 };
+    byCurrency.set(currency, entry);
+    return entry;
+  };
   for (const account of accounts) {
-    const entry = byCurrency.get(account.currency) ?? {
-      currency: account.currency,
-      total: 0,
-      owner: 0,
-      shared: 0,
-      visible: 0,
-    };
+    const entry = entryFor(account.currency);
     entry.total += account.balance;
     if (account.access !== 'none') entry[account.access] += account.balance;
-    byCurrency.set(account.currency, entry);
+  }
+  for (const transfer of sentInTransit) {
+    const entry = entryFor(transfer.currency);
+    entry.total += transfer.amount;
+    entry.inTransit += transfer.amount;
   }
   return [...byCurrency.values()].sort((a, b) => a.currency.localeCompare(b.currency));
 }
@@ -58,6 +64,7 @@ export class Dashboard {
   private readonly accountRepository = inject(AccountRepository);
   private readonly budgetRepository = inject(BudgetRepository);
   private readonly transactionRepository = inject(TransactionRepository);
+  private readonly familyTransferRepository = inject(FamilyTransferRepository);
 
   protected readonly currentUser = inject(AuthState).currentUser;
   protected readonly isTransfer = isTransferTransaction;
@@ -75,7 +82,13 @@ export class Dashboard {
   protected readonly accountsResource = rxResource({
     stream: () => this.accountRepository.getAccounts(),
   });
-  protected readonly balances = computed(() => balancesByCurrency(this.accountsResource.value() ?? []));
+  private readonly transfersResource = rxResource({
+    params: () => this.currentUser()?.familyId ?? undefined,
+    stream: () => this.familyTransferRepository.getInTransit(),
+  });
+  protected readonly balances = computed(() =>
+    balancesByCurrency(this.accountsResource.value() ?? [], this.transfersResource.value()?.outgoing ?? []),
+  );
 
   protected readonly summaryResource = rxResource({
     params: () => this.period(),
