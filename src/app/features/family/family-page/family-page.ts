@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { form, FormField, required } from '@angular/forms/signals';
+import { email, form, FormField, required } from '@angular/forms/signals';
 import { Observable } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
-import { IFamily, IInvite } from '../../../model/types';
+import { IFamily } from '../../../model/types';
 import { FamilyRepository } from '../data/family-repository';
+
+// Members plus pending invitations (enforced by the backend).
+export const MAX_FAMILY_SIZE = 10;
 
 @Component({
   selector: 'app-family-page',
@@ -19,16 +22,31 @@ export class FamilyPage {
   private readonly familyRepository = inject(FamilyRepository);
 
   protected readonly currentUser = this.authState.currentUser;
+  protected readonly maxFamilySize = MAX_FAMILY_SIZE;
 
   private readonly createModel = signal({ name: '' });
   protected readonly createForm = form(this.createModel, (f) => required(f.name));
 
-  private readonly joinModel = signal({ code: '' });
-  protected readonly joinForm = form(this.joinModel, (f) => required(f.code));
+  private readonly inviteModel = signal({ email: '' });
+  protected readonly inviteForm = form(this.inviteModel, (f) => {
+    required(f.email);
+    email(f.email);
+  });
 
   protected readonly familyResource = rxResource({
     params: () => this.currentUser()?.familyId ?? undefined,
     stream: () => this.familyRepository.getCurrentFamily(),
+  });
+
+  protected readonly invitationsResource = rxResource({
+    params: () => this.currentUser()?.familyId ?? undefined,
+    stream: () => this.familyRepository.getInvitations(),
+  });
+
+  // null value = the user's email isn't verified (never signed in with Google).
+  protected readonly receivedResource = rxResource({
+    params: () => this.currentUser()?.id,
+    stream: () => this.familyRepository.getReceivedInvitations(),
   });
 
   protected readonly isAdmin = computed(() => {
@@ -36,9 +54,13 @@ export class FamilyPage {
     return this.familyResource.value()?.members.some((m) => m.user.id === userId && m.role === 'admin') ?? false;
   });
 
-  protected readonly invite = signal<IInvite | null>(null);
-  // Leaving takes two clicks: the first one only asks for confirmation.
+  protected readonly seatsTaken = computed(
+    () => (this.familyResource.value()?.members.length ?? 0) + (this.invitationsResource.value()?.length ?? 0),
+  );
+
+  // Leaving and switching families take two clicks: the first one only asks for confirmation.
   protected readonly confirmingLeave = signal(false);
+  protected readonly confirmingAccept = signal<string | null>(null);
   protected readonly pending = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 
@@ -49,57 +71,65 @@ export class FamilyPage {
     );
   }
 
-  joinFamily() {
-    if (!this.joinForm().valid()) return;
-    this.enterFamily(this.familyRepository.joinFamily(this.joinForm().value().code), () =>
-      this.joinModel.set({ code: '' }),
-    );
+  invite() {
+    if (!this.inviteForm().valid()) return;
+    this.run(this.familyRepository.invite(this.inviteForm().value().email), () => {
+      this.inviteModel.set({ email: '' });
+      this.invitationsResource.reload();
+    });
   }
 
-  createInvite() {
-    this.pending.set(true);
-    this.errorMessage.set(null);
-    this.familyRepository.createInvite().subscribe({
-      next: (invite) => {
-        this.pending.set(false);
-        this.invite.set(invite);
-      },
-      error: (err: Error) => {
-        this.pending.set(false);
-        this.errorMessage.set(err.message);
-      },
-    });
+  revokeInvitation(id: string) {
+    this.run(this.familyRepository.revokeInvitation(id), () => this.invitationsResource.reload());
+  }
+
+  acceptInvitation(id: string) {
+    // Joining another family means leaving the current one, so ask first.
+    if (this.currentUser()?.familyId && this.confirmingAccept() !== id) {
+      this.confirmingAccept.set(id);
+      return;
+    }
+    this.confirmingAccept.set(null);
+    this.enterFamily(this.familyRepository.acceptInvitation(id), () => this.receivedResource.reload());
+  }
+
+  declineInvitation(id: string) {
+    this.run(this.familyRepository.declineInvitation(id), () => this.receivedResource.reload());
+  }
+
+  loginWithGoogle() {
+    this.authState.loginWithGoogle();
   }
 
   leaveFamily() {
-    this.pending.set(true);
-    this.errorMessage.set(null);
-    this.familyRepository.leaveFamily().subscribe({
-      next: () => {
-        this.pending.set(false);
+    this.run(
+      this.familyRepository.leaveFamily(),
+      () => {
         this.confirmingLeave.set(false);
-        this.invite.set(null);
         this.authState.setFamilyId(null);
       },
-      error: (err: Error) => {
-        this.pending.set(false);
-        this.confirmingLeave.set(false);
-        this.errorMessage.set(err.message);
-      },
-    });
+      () => this.confirmingLeave.set(false),
+    );
   }
 
   private enterFamily(request$: Observable<IFamily>, reset: () => void) {
+    this.run(request$, (family) => {
+      reset();
+      this.authState.setFamilyId(family.id);
+    });
+  }
+
+  private run<T>(request$: Observable<T>, onSuccess: (value: T) => void, onError?: () => void) {
     this.pending.set(true);
     this.errorMessage.set(null);
     request$.subscribe({
-      next: (family) => {
+      next: (value) => {
         this.pending.set(false);
-        reset();
-        this.authState.setFamilyId(family.id);
+        onSuccess(value);
       },
       error: (err: Error) => {
         this.pending.set(false);
+        onError?.();
         this.errorMessage.set(err.message);
       },
     });

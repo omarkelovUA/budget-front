@@ -1,8 +1,56 @@
 <div class="family-page">
+  @if (receivedResource.hasValue()) {
+    @let received = receivedResource.value();
+    @if (received === null) {
+      <section class="received-invitations">
+        <p class="hint">
+          Запрошення до сім'ї прив'язані до email. Щоб їх побачити й прийняти, підтвердьте свій email входом через Google.
+        </p>
+        <button type="button" (click)="loginWithGoogle()">Увійти через Google</button>
+      </section>
+    } @else if (received.length > 0) {
+      <section class="received-invitations">
+        <h2>Запрошення для вас</h2>
+        @for (invitation of received; track invitation.id) {
+          <div class="invitation-row">
+            <div class="member-info">
+              <span class="member-name">{{ invitation.familyName }}</span>
+              <span class="member-email">
+                Запрошує {{ invitation.invitedBy }} · учасників: {{ invitation.memberCount }} · дійсне до
+                {{ invitation.expiresAt | date: 'dd.MM.yyyy' }}
+              </span>
+            </div>
+            <div class="row-actions">
+              @if (confirmingAccept() === invitation.id) {
+                <span class="warning">
+                  Ви покинете поточну сім'ю. Якщо ви її останній учасник, її буде видалено.
+                </span>
+                <button type="button" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">
+                  Так, перейти
+                </button>
+                <button type="button" class="secondary" (click)="confirmingAccept.set(null)">Скасувати</button>
+              } @else {
+                <button type="button" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">Прийняти</button>
+                <button
+                  type="button"
+                  class="secondary"
+                  [disabled]="pending()"
+                  (click)="declineInvitation(invitation.id)"
+                >
+                  Відхилити
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </section>
+    }
+  }
+
   @if (!currentUser()?.familyId) {
     <section class="create-family">
       <h2>У вас ще немає сім'ї</h2>
-      <p>Створіть сім'ю, щоб ділитися бюджетом з близькими, або приєднайтеся за кодом запрошення.</p>
+      <p>Створіть сім'ю, щоб ділитися бюджетом з близькими, або прийміть запрошення від когось із них.</p>
 
       <form novalidate (submit)="$event.preventDefault(); createFamily()" class="family-form">
         <div class="form-group">
@@ -11,15 +59,6 @@
         </div>
         <button type="submit" [disabled]="!createForm().valid() || pending()">Створити сім'ю</button>
       </form>
-
-      <form novalidate (submit)="$event.preventDefault(); joinFamily()" class="invite-form">
-        <input [formField]="joinForm.code" placeholder="Код запрошення" aria-label="Код запрошення" />
-        <button type="submit" [disabled]="!joinForm().valid() || pending()">Приєднатися</button>
-      </form>
-
-      @if (errorMessage(); as message) {
-        <p class="form-error" role="alert">{{ message }}</p>
-      }
     </section>
   } @else {
     @if (familyResource.isLoading()) {
@@ -35,6 +74,7 @@
       @if (familyResource.value(); as family) {
         <section class="family-details">
           <h2>{{ family.name }}</h2>
+          <p class="hint">Людей у сім'ї разом із запрошеними: {{ seatsTaken() }} / {{ maxFamilySize }}</p>
 
           <div class="members-list">
             @for (member of family.members; track member.user.id) {
@@ -50,16 +90,43 @@
             }
           </div>
 
-          @if (isAdmin()) {
-            <div class="invite-form">
-              <button type="button" [disabled]="pending()" (click)="createInvite()">Створити код запрошення</button>
-              @if (invite(); as invite) {
-                <span>
-                  Код: <strong>{{ invite.code }}</strong>
-                  (дійсний до {{ invite.expiresAt | date: 'dd.MM.yyyy' }}, одноразовий)
-                </span>
+          @if (invitationsResource.value()?.length) {
+            <h3>Очікують відповіді</h3>
+            <div class="members-list">
+              @for (invitation of invitationsResource.value(); track invitation.id) {
+                <div class="member-row">
+                  <div class="member-info">
+                    <span class="member-name">{{ invitation.email }}</span>
+                    <span class="member-email">дійсне до {{ invitation.expiresAt | date: 'dd.MM.yyyy' }}</span>
+                  </div>
+                  @if (isAdmin()) {
+                    <button
+                      type="button"
+                      class="secondary"
+                      [disabled]="pending()"
+                      (click)="revokeInvitation(invitation.id)"
+                      [attr.aria-label]="'Скасувати запрошення ' + invitation.email"
+                    >
+                      Скасувати
+                    </button>
+                  }
+                </div>
               }
             </div>
+          }
+
+          @if (isAdmin()) {
+            <form novalidate (submit)="$event.preventDefault(); invite()" class="invite-form">
+              <input
+                type="email"
+                [formField]="inviteForm.email"
+                placeholder="Email учасника"
+                aria-label="Email учасника"
+              />
+              <button type="submit" [disabled]="!inviteForm().valid() || pending() || seatsTaken() >= maxFamilySize">
+                Запросити
+              </button>
+            </form>
           }
 
           <div class="invite-form">
@@ -71,12 +138,12 @@
               <button type="button" (click)="confirmingLeave.set(true)">Покинути сім'ю</button>
             }
           </div>
-
-          @if (errorMessage(); as message) {
-            <p class="form-error" role="alert">{{ message }}</p>
-          }
         </section>
       }
     }
+  }
+
+  @if (errorMessage(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
   }
 </div>

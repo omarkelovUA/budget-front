@@ -17,8 +17,22 @@ export interface IFamilyMember {
   joinedAt: Date;
 }
 
-export interface IInvite {
-  code: string;
+// A pending invitation as the inviting family sees it. The email is the key:
+// whoever signs in with it (verified by Google) can accept.
+export interface IInvitation {
+  id: string;
+  email: string;
+  createdAt: Date;
+  expiresAt: Date;
+}
+
+// A pending invitation addressed to the current user's email.
+export interface IReceivedInvitation {
+  id: string;
+  familyId: string;
+  familyName: string;
+  invitedBy: string;
+  memberCount: number;
   expiresAt: Date;
 }
 

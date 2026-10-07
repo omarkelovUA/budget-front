@@ -132,3 +132,54 @@ button:disabled {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.family-details h3 {
+  margin: 16px 0 8px;
+  font-size: 1rem;
+  color: #343a40;
+}
+
+.hint {
+  color: #6c757d;
+  margin: 0 0 12px;
+}
+
+.received-invitations {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.received-invitations h2 {
+  margin: 0 0 4px;
+  color: #212529;
+}
+
+.invitation-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: white;
+  border: 1px solid #b6d4fe;
+  border-radius: 10px;
+}
+
+.row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.warning {
+  color: #946c00;
+  font-size: 0.85rem;
+}
+
+button.secondary {
+  background-color: #e9ecef;
+  color: #343a40;
+}

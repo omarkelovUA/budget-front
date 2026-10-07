@@ -1,6 +1,6 @@
 # Family Budget — Frontend Architecture
 
-Status: draft v0.3 · 2026-10-07
+Status: draft v0.4 · 2026-10-07
 Companion doc: [PLAN.md](../../PLAN.md) (workspace root) (roadmap, phases, open decisions)
 Backend, domain rules, API and security: [backend ARCHITECTURE.md][backend-arch]
 
@@ -56,6 +56,11 @@ The backend enforces these; the UI only has to present them correctly:
 
 - A user belongs to at most one family in v1. Without a family, only private data exists
   and creating anything `shared` fails (`no-family`).
+- Family invitations are addressed to an email and only usable once that email is
+  verified, i.e. the user signed in with Google. Otherwise the family page offers Google
+  sign-in instead of the list. Accepting while already in a family moves the user out of
+  it, so the page asks for confirmation first. A family holds at most 10 people, pending
+  invitations included.
 - Visibility is fixed at creation, and so is a category's income/expense type — edit
   forms don't offer to change them.
 - A transaction shows the accounts it touches as `IAccountRef` (no `balance`): a family
@@ -71,9 +76,7 @@ The backend enforces these; the UI only has to present them correctly:
 - Angular 22, standalone components only (no NgModules).
 - **Signals** for all local/component state; `signal()`, `computed()`, `effect()`,
   `linkedSignal()` where appropriate.
-- Forms use `ReactiveFormsModule` today. Moving to **Signal Forms**
-  (`@angular/forms/signals`) is tracked as its own phase so the migration doesn't get
-  entangled with new features.
+- All forms use **Signal Forms** (`@angular/forms/signals`; migrated in M4).
 - `rxResource` for request-backed state; plain `resource()` where a request is driven by a
   signal instead of an `Observable`.
 - No NgRx / global store library. Domain state lives in per-domain **signal-based
@@ -99,7 +102,7 @@ src/app/
     categories/
     transactions/
     budgets/
-    family/                 # family creation, invites, member list, role management
+    family/                 # family creation, email invitations, member list
     auth/                   # login and register pages
     dashboard/              # aggregated overview (balances, month summary)
   app.routes.ts             # lazy-loaded per feature
