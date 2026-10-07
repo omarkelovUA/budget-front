@@ -52,20 +52,53 @@ export interface ICategory {
   visibility: Visibility;
 }
 
-export interface IAccount {
-  id: string,
-  name: string,
-  balance: number,
-  currency: string,
-  icon: string,
-  color: string,
-  visibility: Visibility,
+// Every account has one owner, who gives family members access per person:
+// 'visible' = sees it, 'shared' = also records transactions on it. Members
+// without a grant don't see it (docs/ARCHITECTURE.md §3.2).
+export type GrantLevel = 'visible' | 'shared';
+
+// The current user's access; 'none' only appears on the other side of a
+// transaction they can see through another account.
+export type AccountAccess = 'owner' | GrantLevel | 'none';
+
+export interface IAccountGrant {
+  userId: string;
+  displayName: string;
+  level: GrantLevel;
 }
 
-// How a transaction shows the accounts it touches: no balance, since a family
-// member can see a transfer from someone's private account without seeing the
-// account itself (docs/ARCHITECTURE.md §3.2).
-export type IAccountRef = Omit<IAccount, 'balance'>;
+export interface IAccount {
+  id: string;
+  name: string;
+  balance: number;
+  currency: string;
+  icon: string;
+  color: string;
+  owner: { id: string; displayName: string };
+  access: AccountAccess;
+  // Only sent to the owner.
+  grants?: IAccountGrant[];
+  closed: boolean;
+}
+
+// What the owner sends on create/update; grants replace the whole list.
+export interface AccountInput {
+  name: string;
+  balance: number;
+  currency: string;
+  icon: string;
+  color: string;
+  grants: { userId: string; level: GrantLevel }[];
+}
+
+// How a transaction shows the accounts it touches: no balance, since a
+// transaction can be visible through one account while the other one isn't.
+export type IAccountRef = Pick<IAccount, 'id' | 'name' | 'currency' | 'icon' | 'color' | 'access' | 'closed'>;
+
+// Only open accounts the user owns or has shared access to take transactions.
+export function canRecordOn(account: Pick<IAccount, 'access' | 'closed'>): boolean {
+  return !account.closed && (account.access === 'owner' || account.access === 'shared');
+}
 
 export interface IBudget {
   id: string;
@@ -89,6 +122,8 @@ interface BaseTransaction {
   amount: number;
   date: Date;
   note?: string;
+  // Whether the current user may delete it (decided by the backend).
+  editable: boolean;
 }
 
 interface PaymentTransaction extends BaseTransaction {
@@ -107,17 +142,21 @@ interface TransferTransaction extends BaseTransaction {
 
 export type Transaction = PaymentTransaction | TransferTransaction;
 
+// What the form records; the backend decides id and editable.
+export type NewTransaction = Omit<Transaction, 'id' | 'editable'>;
+
 export function isTransferTransaction(transaction: Transaction): transaction is TransferTransaction {
   return transaction.fromAccount !== undefined;
 }
 
-// A transaction has no owner of its own - its visibility is derived from the
-// account(s) it touches (shared if any touched account is shared).
-export function getTransactionVisibility(transaction: Transaction): Visibility {
-  if (isTransferTransaction(transaction)) {
-    return transaction.fromAccount.visibility === 'shared' || transaction.toAccount.visibility === 'shared'
-      ? 'shared'
-      : 'private';
-  }
-  return transaction.account.visibility;
+const ACCESS_RANK: Record<AccountAccess, number> = { none: 0, visible: 1, shared: 2, owner: 3 };
+
+// A transaction has no owner of its own: it's shown with the most limited
+// access the user has among the accounts it touches that they can see.
+export function getTransactionAccess(transaction: Transaction): AccountAccess {
+  const accounts = isTransferTransaction(transaction)
+    ? [transaction.fromAccount, transaction.toAccount]
+    : [transaction.account];
+  const seen = accounts.map((a) => a.access).filter((access) => access !== 'none');
+  return seen.reduce((lowest, access) => (ACCESS_RANK[access] < ACCESS_RANK[lowest] ? access : lowest), 'owner');
 }

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { getTransactionVisibility, isTransferTransaction, Transaction } from '../../../model/types';
+import { getTransactionAccess, isTransferTransaction, Transaction } from '../../../model/types';
 import { TransactionRepository } from '../data/transaction-repository';
 import { TransactionForm } from '../transaction-form/transaction-form';
-import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-badge';
+import { AccessBadge } from '../../../shared/ui/access-badge/access-badge';
 
 @Component({
   selector: 'app-transaction-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TransactionForm, VisibilityBadge, DatePipe],
+  imports: [TransactionForm, AccessBadge, DatePipe],
   templateUrl: './transaction-list.html',
   styleUrl: './transaction-list.css',
 })
@@ -17,7 +17,7 @@ export class TransactionList {
   private readonly transactionRepository = inject(TransactionRepository);
   protected readonly isFormOpen = signal(false);
   protected readonly isTransfer = isTransferTransaction;
-  protected readonly visibilityOf = getTransactionVisibility;
+  protected readonly accessOf = getTransactionAccess;
 
   // Pages are appended as the user asks for more; the backend already sorts newest first.
   protected readonly transactions = signal<Transaction[]>([]);

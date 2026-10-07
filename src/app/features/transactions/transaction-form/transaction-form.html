@@ -26,7 +26,7 @@
       <label for="transaction-accountId">Рахунок</label>
       <select id="transaction-accountId" [formField]="form.accountId">
         <option value="" disabled>Оберіть рахунок</option>
-        @for (acc of accountsResource.value(); track acc.id) {
+        @for (acc of usableAccounts(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
         }
       </select>
@@ -46,7 +46,7 @@
       <label for="transaction-fromAccountId">З рахунку</label>
       <select id="transaction-fromAccountId" [formField]="form.fromAccountId">
         <option value="" disabled>Оберіть рахунок</option>
-        @for (acc of accountsResource.value(); track acc.id) {
+        @for (acc of usableAccounts(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
         }
       </select>
@@ -56,7 +56,7 @@
       <label for="transaction-toAccountId">На рахунок</label>
       <select id="transaction-toAccountId" [formField]="form.toAccountId">
         <option value="" disabled>Оберіть рахунок</option>
-        @for (acc of accountsResource.value(); track acc.id) {
+        @for (acc of usableAccounts(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
         }
       </select>

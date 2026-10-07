@@ -149,3 +149,59 @@
 .delete-button:hover {
   color: #c0392b;
 }
+
+.account-group h3 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.account-card.readonly {
+  cursor: default;
+}
+
+.account-card.readonly:hover {
+  transform: none;
+}
+
+.card-select {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  padding: 0;
+  background: none;
+  border: none;
+  text-align: left;
+  font: inherit;
+  cursor: inherit;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.account-meta {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  color: #c0392b;
+}

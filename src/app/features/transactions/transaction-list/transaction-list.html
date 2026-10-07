@@ -38,7 +38,11 @@
               }
             </div>
 
-            <app-visibility-badge [visibility]="visibilityOf(tx)" />
+            @if (accessOf(tx) !== 'owner') {
+              <app-access-badge [access]="accessOf(tx)" />
+            } @else {
+              <span></span>
+            }
 
             <div class="tx-amount"
                  [class.income]="!isTransfer(tx) && tx.category.type === 'income'"
@@ -46,8 +50,12 @@
               {{ isTransfer(tx) ? '' : (tx.category.type === 'income' ? '+' : '-') }}{{ tx.amount }}
             </div>
 
-            <button type="button" class="delete-button" (click)="deleteTransaction(tx)"
-                    [attr.aria-label]="'Видалити транзакцію від ' + (tx.date | date: 'dd.MM.yyyy') + ' на ' + tx.amount">×</button>
+            @if (tx.editable) {
+              <button type="button" class="delete-button" (click)="deleteTransaction(tx)"
+                      [attr.aria-label]="'Видалити транзакцію від ' + (tx.date | date: 'dd.MM.yyyy') + ' на ' + tx.amount">×</button>
+            } @else {
+              <span></span>
+            }
           </div>
         } @empty {
           <div class="status-message">

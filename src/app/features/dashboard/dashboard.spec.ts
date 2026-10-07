@@ -9,14 +9,16 @@ import { AuthRepository } from '../../core/auth/data/auth-repository';
 import { FamilyRepository } from '../family/data/family-repository';
 import { balancesByCurrency, Dashboard } from './dashboard';
 
-const account = (currency: string, balance: number, visibility: IAccount['visibility']): IAccount => ({
+const account = (currency: string, balance: number, access: IAccount['access']): IAccount => ({
   id: `${currency}-${balance}`,
   name: 'A',
   balance,
   currency,
   icon: '',
   color: 'green',
-  visibility,
+  owner: { id: 'o', displayName: 'Owner' },
+  access,
+  closed: false,
 });
 
 const food: ICategory = { id: 'c', type: 'expense', name: 'Food', icon: '', color: 'red', visibility: 'shared' };
@@ -30,12 +32,17 @@ const budget = (id: string, planned: number, fact: number): IBudget => ({
 });
 
 describe('balancesByCurrency', () => {
-  it('totals per currency and splits private from shared, never mixing currencies', () => {
+  it('totals per currency and splits by access, never mixing currencies', () => {
     expect(
-      balancesByCurrency([account('UAH', 100, 'private'), account('USD', 5, 'shared'), account('UAH', 50, 'shared')]),
+      balancesByCurrency([
+        account('UAH', 100, 'owner'),
+        account('USD', 5, 'shared'),
+        account('UAH', 50, 'shared'),
+        account('UAH', 7, 'visible'),
+      ]),
     ).toEqual([
-      { currency: 'UAH', total: 150, private: 100, shared: 50 },
-      { currency: 'USD', total: 5, private: 0, shared: 5 },
+      { currency: 'UAH', total: 157, owner: 100, shared: 50, visible: 7 },
+      { currency: 'USD', total: 5, owner: 0, shared: 5, visible: 0 },
     ]);
   });
 });
@@ -49,7 +56,7 @@ describe('Dashboard', () => {
       imports: [Dashboard],
       providers: [
         provideRouter([]),
-        { provide: AccountRepository, useValue: { getAccounts: () => of([account('UAH', 100, 'private')]) } },
+        { provide: AccountRepository, useValue: { getAccounts: () => of([account('UAH', 100, 'owner')]) } },
         {
           provide: BudgetRepository,
           useValue: {

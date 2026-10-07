@@ -27,8 +27,13 @@
           <div class="balance-row">
             <span class="big-number">{{ money(balance.total, balance.currency) }}</span>
             <span class="muted">
-              особисті {{ money(balance.private, balance.currency) }} ·
-              сімейні {{ money(balance.shared, balance.currency) }}
+              мої {{ money(balance.owner, balance.currency) }}
+              @if (balance.shared) {
+                · спільні зі мною {{ money(balance.shared, balance.currency) }}
+              }
+              @if (balance.visible) {
+                · перегляд {{ money(balance.visible, balance.currency) }}
+              }
             </span>
           </div>
         } @empty {

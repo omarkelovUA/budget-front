@@ -3,7 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { API_BASE } from '../../../core/config/api';
 import { withUserErrors } from '../../../core/http/problem';
-import { IAccount } from '../../../model/types';
+import { AccountInput, IAccount } from '../../../model/types';
 import { AccountRepository } from './account-repository';
 
 const ACCOUNTS = `${API_BASE}/accounts`;
@@ -16,11 +16,11 @@ export class HttpAccountRepository extends AccountRepository {
     return this.http.get<IAccount[]>(ACCOUNTS).pipe(withUserErrors());
   }
 
-  createAccount(account: Omit<IAccount, 'id'>): Observable<IAccount> {
+  createAccount(account: AccountInput): Observable<IAccount> {
     return this.http.post<IAccount>(ACCOUNTS, account).pipe(withUserErrors());
   }
 
-  updateAccount({ id, ...account }: IAccount): Observable<IAccount> {
+  updateAccount(id: string, account: AccountInput): Observable<IAccount> {
     return this.http.put<IAccount>(`${ACCOUNTS}/${id}`, account).pipe(withUserErrors());
   }
 
@@ -29,5 +29,9 @@ export class HttpAccountRepository extends AccountRepository {
       map(() => true),
       withUserErrors(),
     );
+  }
+
+  closeAccount(id: string, targetAccountId: string | null): Observable<IAccount> {
+    return this.http.post<IAccount>(`${ACCOUNTS}/${id}/close`, { targetAccountId }).pipe(withUserErrors());
   }
 }

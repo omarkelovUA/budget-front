@@ -3,7 +3,14 @@ import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { API_BASE } from '../../../core/config/api';
 import { withUserErrors } from '../../../core/http/problem';
-import { IAccountRef, ICategory, IMonthSummary, isTransferTransaction, Transaction } from '../../../model/types';
+import {
+  IAccountRef,
+  ICategory,
+  IMonthSummary,
+  isTransferTransaction,
+  NewTransaction,
+  Transaction,
+} from '../../../model/types';
 import { TransactionPage, TransactionRepository } from './transaction-repository';
 
 // The backend omits the unused pair (account/category vs. fromAccount/toAccount),
@@ -14,6 +21,7 @@ interface TransactionDto {
   amount: number;
   date: string;
   note?: string;
+  editable: boolean;
   account?: IAccountRef;
   category?: ICategory;
   fromAccount?: IAccountRef;
@@ -63,7 +71,7 @@ export class HttpTransactionRepository extends TransactionRepository {
       .pipe(withUserErrors());
   }
 
-  createTransaction(transaction: Omit<Transaction, 'id'>): Observable<Transaction> {
+  createTransaction(transaction: NewTransaction): Observable<Transaction> {
     const common = {
       amount: transaction.amount,
       date: toIsoDate(transaction.date),

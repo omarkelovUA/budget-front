@@ -1,23 +1,23 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { Transaction } from '../../../model/types';
+import { AccountAccess, Transaction } from '../../../model/types';
 import { TransactionPage, TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
 import { TransactionList } from './transaction-list';
 
-const tx = (id: string): Transaction =>
-  ({
-    id,
-    amount: 1,
-    date: new Date('2026-10-01'),
-    account: { id: 'a', name: 'Card', currency: 'UAH', icon: '', color: 'green', visibility: 'private' },
-    category: { id: 'c', name: 'Food', type: 'expense', icon: '', color: 'red', visibility: 'private' },
-  }) as Transaction;
+const tx = (id: string, editable = true, access: AccountAccess = 'owner'): Transaction => ({
+  id,
+  amount: 1,
+  date: new Date('2026-10-01'),
+  editable,
+  account: { id: 'a', name: 'Card', currency: 'UAH', icon: '', color: 'green', access, closed: false },
+  category: { id: 'c', name: 'Food', type: 'expense', icon: '', color: 'red', visibility: 'private' },
+});
 
 describe('TransactionList', () => {
   const pages: Record<number, TransactionPage> = {
-    0: { items: [tx('1'), tx('2')], hasMore: true },
+    0: { items: [tx('1'), tx('2', false, 'visible')], hasMore: true },
     1: { items: [tx('3')], hasMore: false },
   };
   let deleted: string[];
@@ -54,6 +54,18 @@ describe('TransactionList', () => {
 
     expect(ids(list)).toEqual(['1', '2', '3']);
     expect((list as any).hasMore()).toBe(false);
+  });
+
+  it('offers delete only for editable transactions and badges accounts that are not the user\'s', async () => {
+    const fixture = TestBed.createComponent(TransactionList);
+    await fixture.whenStable();
+    const rows = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.transaction-row'));
+
+    expect(rows.map((r) => r.querySelector('.delete-button') !== null)).toEqual([true, false]);
+    expect(rows.map((r) => r.querySelector('app-access-badge')?.textContent?.trim() ?? null)).toEqual([
+      null,
+      'Перегляд',
+    ]);
   });
 
   it('starts again from the first page after a delete', () => {

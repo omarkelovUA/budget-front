@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { IMonthSummary, Transaction } from '../../../model/types';
+import { IMonthSummary, NewTransaction, Transaction } from '../../../model/types';
 
 // One page of the newest-first transaction list.
 export interface TransactionPage {
@@ -13,7 +13,7 @@ export abstract class TransactionRepository {
   // period is 'YYYY-MM'.
   abstract getMonthSummary(period: string): Observable<IMonthSummary[]>;
 
-  abstract createTransaction(transaction: Omit<Transaction, 'id'>): Observable<Transaction>;
+  abstract createTransaction(transaction: NewTransaction): Observable<Transaction>;
 
   abstract deleteTransaction(id: string): Observable<boolean>;
 }

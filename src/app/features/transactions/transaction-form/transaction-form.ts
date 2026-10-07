@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, min } from '@angular/forms/signals';
-import { Transaction } from '../../../model/types';
+import { canRecordOn, NewTransaction } from '../../../model/types';
 import { TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
@@ -45,6 +45,9 @@ export class TransactionForm {
   protected readonly accountsResource = rxResource({
     stream: () => this.accountRepository.getAccounts(),
   });
+  // Only accounts the user owns or has shared access to; "visible" ones take no
+  // transactions in either direction.
+  protected readonly usableAccounts = computed(() => (this.accountsResource.value() ?? []).filter(canRecordOn));
   protected readonly categoriesResource = rxResource({
     stream: () => this.categoryRepository.getCategories(),
   });
@@ -62,10 +65,10 @@ export class TransactionForm {
     this.errorMessage.set(null);
 
     const value = this.form().value();
-    const accounts = this.accountsResource.value() ?? [];
+    const accounts = this.usableAccounts();
     const categories = this.categoriesResource.value() ?? [];
 
-    let transaction: Omit<Transaction, 'id'>;
+    let transaction: NewTransaction;
     if (value.kind === 'transfer') {
       const fromAccount = accounts.find((a) => a.id === value.fromAccountId);
       const toAccount = accounts.find((a) => a.id === value.toAccountId);

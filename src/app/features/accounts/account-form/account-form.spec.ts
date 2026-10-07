@@ -1,37 +1,91 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AccountForm } from './account-form';
+import { of } from 'rxjs';
+import { AuthState } from '../../../core/auth/auth-state';
+import { AuthRepository } from '../../../core/auth/data/auth-repository';
+import { AccountInput, IFamily } from '../../../model/types';
+import { FamilyRepository } from '../../family/data/family-repository';
 import { AccountRepository } from '../data/account-repository';
+import { AccountForm } from './account-form';
+
+const user = (id: string, displayName: string) => ({ id, email: `${id}@x.com`, displayName, familyId: 'f' });
+
+const FAMILY: IFamily = {
+  id: 'f',
+  name: 'Smiths',
+  members: [
+    { user: user('me', 'Me'), role: 'admin', joinedAt: new Date() },
+    { user: user('bob', 'Bob'), role: 'member', joinedAt: new Date() },
+    { user: user('carol', 'Carol'), role: 'member', joinedAt: new Date() },
+  ],
+};
 
 describe('AccountForm', () => {
   let component: AccountForm;
   let fixture: ComponentFixture<AccountForm>;
+  let created: AccountInput[];
 
   beforeEach(async () => {
+    created = [];
     await TestBed.configureTestingModule({
       imports: [AccountForm],
-      providers: [{ provide: AccountRepository, useValue: {} }],
+      providers: [
+        {
+          provide: AccountRepository,
+          useValue: {
+            createAccount: (input: AccountInput) => {
+              created.push(input);
+              return of({});
+            },
+          },
+        },
+        {
+          provide: AuthRepository,
+          useValue: { login: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
+        },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(FAMILY) } },
+      ],
     }).compileComponents();
 
+    TestBed.inject(AuthState).login('me@x.com', 'x').subscribe();
     fixture = TestBed.createComponent(AccountForm);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
   it('should initialize form with expected defaults', () => {
     const form = (component as any).form;
 
-    expect(form().value()).toEqual({
-      name: '',
-      currency: 'UAH',
-      icon: 'assets/card.svg',
-      color: 'green',
-      visibility: 'private',
-    });
+    expect(form().value()).toEqual({ name: '', currency: 'UAH', icon: 'assets/card.svg', color: 'green' });
     expect(form().valid()).toBe(false);
+  });
+
+  it('lists the other family members, hidden by default', () => {
+    const rows = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.member-access'));
+
+    expect(rows.map((r) => r.querySelector('.member-name')?.textContent?.trim())).toEqual(['Bob', 'Carol']);
+    expect(rows.map((r) => (r.querySelector('input:checked') as HTMLInputElement).value)).toEqual([
+      'hidden',
+      'hidden',
+    ]);
+  });
+
+  it('sends only the members given access', () => {
+    (component as any).model.set({ name: 'Joint', currency: 'UAH', icon: 'assets/card.svg', color: 'green' });
+    component.setAccess('bob', 'shared');
+    component.setAccess('carol', 'visible');
+    component.setAccess('carol', 'hidden');
+
+    component.submit();
+
+    expect(created).toEqual([
+      {
+        name: 'Joint',
+        currency: 'UAH',
+        icon: 'assets/card.svg',
+        color: 'green',
+        balance: 0,
+        grants: [{ userId: 'bob', level: 'shared' }],
+      },
+    ]);
   });
 });

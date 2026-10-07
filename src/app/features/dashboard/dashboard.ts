@@ -9,11 +9,13 @@ import { AccountRepository } from '../accounts/data/account-repository';
 import { BudgetRepository } from '../budgets/data/budget-repository';
 import { TransactionRepository } from '../transactions/data/transaction-repository';
 
+// By the user's access: their own accounts, shared with them, only visible.
 export interface CurrencyBalance {
   currency: string;
   total: number;
-  private: number;
+  owner: number;
   shared: number;
+  visible: number;
 }
 
 const RECENT_COUNT = 5;
@@ -34,11 +36,12 @@ export function balancesByCurrency(accounts: IAccount[]): CurrencyBalance[] {
     const entry = byCurrency.get(account.currency) ?? {
       currency: account.currency,
       total: 0,
-      private: 0,
+      owner: 0,
       shared: 0,
+      visible: 0,
     };
     entry.total += account.balance;
-    entry[account.visibility] += account.balance;
+    if (account.access !== 'none') entry[account.access] += account.balance;
     byCurrency.set(account.currency, entry);
   }
   return [...byCurrency.values()].sort((a, b) => a.currency.localeCompare(b.currency));

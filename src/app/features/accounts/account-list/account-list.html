@@ -1,6 +1,6 @@
 <div class="account-list-container">
   <header class="list-header">
-    <h2>Мої рахунки</h2>
+    <h2>Рахунки</h2>
     <button type="button" class="add-button" (click)="openCreateForm()">
       <span aria-hidden="true">+</span> Новий рахунок
     </button>
@@ -25,37 +25,70 @@
     }
 
     @else {
-      <div class="accounts-grid">
-        @for (acc of accountsResource.value(); track acc.id) {
-          <div class="account-card" [class.active]="selectedAccount()?.id === acc.id">
-            <button type="button" class="card-select" (click)="selectAccount(acc)"
-                    [attr.aria-label]="'Редагувати рахунок ' + acc.name">
-              <span class="icon-box" [style.background-color]="acc.color">
-                <img [src]="acc.icon" alt="" />
-              </span>
-
-              <span class="account-info">
-                <span class="account-name">{{ acc.name }}</span>
-                <span class="account-currency">{{ acc.balance }} {{ acc.currency }}</span>
-                <app-visibility-badge [visibility]="acc.visibility" />
-              </span>
-            </button>
-
-            <button type="button" class="delete-button" (click)="deleteAccount(acc)"
-                    [attr.aria-label]="'Видалити рахунок ' + acc.name">×</button>
+      @for (group of groups(); track group.title) {
+        <section class="account-group" [attr.aria-label]="group.title">
+          <h3>{{ group.title }}</h3>
+          <div class="accounts-grid">
+            @for (acc of group.accounts; track acc.id) {
+              <div class="account-card" [class.active]="selectedAccount()?.id === acc.id" [class.readonly]="acc.access !== 'owner'">
+                @if (acc.access === 'owner') {
+                  <button type="button" class="card-select" (click)="selectAccount(acc)"
+                          [attr.aria-label]="'Редагувати рахунок ' + acc.name">
+                    <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: acc }" />
+                  </button>
+                  <div class="card-actions">
+                    <button type="button" class="text-button" (click)="startClosing(acc)"
+                            [attr.aria-label]="'Закрити рахунок ' + acc.name">Закрити</button>
+                    <button type="button" class="delete-button" (click)="deleteAccount(acc)"
+                            [attr.aria-label]="'Видалити рахунок ' + acc.name">×</button>
+                  </div>
+                } @else {
+                  <div class="card-select">
+                    <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: acc }" />
+                  </div>
+                }
+              </div>
+            } @empty {
+              <div class="status-message">
+                <p>У вас поки немає створених рахунків.</p>
+              </div>
+            }
           </div>
-        } @empty {
-          <div class="status-message">
-            <p>У вас поки немає створених рахунків.</p>
-          </div>
-        }
-      </div>
+        </section>
+      }
     }
   </div>
+
+  <ng-template #cardBody let-acc>
+    <span class="icon-box" [style.background-color]="acc.color">
+      <img [src]="acc.icon" alt="" />
+    </span>
+    <span class="account-info">
+      <span class="account-name">{{ acc.name }}</span>
+      <span class="account-currency">{{ acc.balance }} {{ acc.currency }}</span>
+      <app-access-badge [access]="acc.access" />
+      @if (acc.access !== 'owner') {
+        <span class="account-meta">Власник: {{ acc.owner.displayName }}</span>
+      } @else if (sharedWith(acc)) {
+        <span class="account-meta">Доступ: {{ sharedWith(acc) }}</span>
+      }
+    </span>
+  </ng-template>
 
   @if (isFormOpen()) {
     <div class="form-panel">
       <app-account-form [account]="selectedAccount() ?? undefined" (edited)="onEdited()" />
+    </div>
+  }
+
+  @if (closingAccount(); as account) {
+    <div class="form-panel">
+      <app-account-close
+        [account]="account"
+        [accounts]="accountsResource.value() ?? []"
+        (closed)="onClosed()"
+        (cancelled)="closingAccount.set(null)"
+      />
     </div>
   }
 </div>

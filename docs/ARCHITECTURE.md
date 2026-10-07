@@ -1,6 +1,6 @@
 # Family Budget — Frontend Architecture
 
-Status: draft v0.4 · 2026-10-07
+Status: draft v0.5 · 2026-10-07
 Companion doc: [PLAN.md](../../PLAN.md) (workspace root) (roadmap, phases, open decisions)
 Backend, domain rules, API and security: [backend ARCHITECTURE.md][backend-arch]
 
@@ -56,13 +56,21 @@ The backend enforces these; the UI only has to present them correctly:
 
 - A user belongs to at most one family in v1. Without a family, only private data exists
   and creating anything `shared` fails (`no-family`).
+- Accounts have one owner, who sets each family member to hidden / visible / shared
+  (`IAccount.access` is the current user's level; `grants` only reaches the owner). The
+  account form shows that per-member editor, and only the owner can edit, close or delete
+  an account. The account list groups accounts into *mine / shared with me / visible to
+  me*. Transaction pickers offer only open accounts the user may record on
+  (`canRecordOn`), and the transaction list shows delete only when `editable`.
+- Closing an account moves its balance to another open, same-currency account the user
+  can record on, then archives it. The close dialog only offers such targets.
 - Family invitations are addressed to an email and only usable once that email is
   verified, i.e. the user signed in with Google. Otherwise the family page offers Google
   sign-in instead of the list. Accepting while already in a family moves the user out of
   it, so the page asks for confirmation first. A family holds at most 10 people, pending
   invitations included.
-- Visibility is fixed at creation, and so is a category's income/expense type — edit
-  forms don't offer to change them.
+- A category's or budget's visibility is fixed at creation, and so is a category's
+  income/expense type — edit forms don't offer to change them.
 - A transaction shows the accounts it touches as `IAccountRef` (no `balance`): a family
   member can see a transfer from someone's private account without seeing that account.
 - Transactions are create/delete only; deleting can fail with `transaction-not-editable`
@@ -93,7 +101,7 @@ src/app/
     http/                   # authInterceptor, ProblemDetail → message mapping (problem.ts)
     config/                 # API base path (api.ts)
   shared/                   # dumb, reusable, no domain knowledge
-    ui/                     # visibility-badge, …
+    ui/                     # visibility-badge (categories/budgets), access-badge (accounts), …
   model/                    # shared TypeScript interfaces/types (types.ts)
   features/
     accounts/
