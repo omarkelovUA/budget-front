@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { catchError, MonoTypeOperatorFunction, throwError } from 'rxjs';
 
 // Backend errors are RFC 9457 ProblemDetails whose `type` ends in a stable slug
-// (docs/ARCHITECTURE.md §5.4); the UI shows its own text for each one.
+// (docs/ARCHITECTURE.md §4.5); the UI shows its own text for each one.
 const PROBLEM_TYPE_BASE = 'https://familybudget.app/problems/';
 
 const MESSAGES: Record<string, string> = {

@@ -1,155 +1,68 @@
-# Family Budget — Architecture
+# Family Budget — Frontend Architecture
 
-Status: draft v0.1 · 2026-10-05
-Companion doc: [PLAN.md](./PLAN.md) (roadmap, phases, open decisions)
+Status: draft v0.3 · 2026-10-07
+Companion doc: [PLAN.md](../../PLAN.md) (workspace root) (roadmap, phases, open decisions)
+Backend, domain rules, API and security: [backend ARCHITECTURE.md][backend-arch]
 
-## 1. Purpose
+[backend-arch]: https://github.com/omarkelovUA/budget-backend/blob/main/docs/ARCHITECTURE.md
+
+## 1. Purpose and scope
 
 Family Budget lets a household track money together while each member keeps some of it
-private. A user can:
+private: every account, category, transaction and budget is either **private** (only its
+owner sees it) or **shared** (every member of the user's family sees it).
 
-- manage **private** accounts, categories, transactions and budgets visible only to them,
-- manage **shared** (family-wide) accounts, categories, transactions and budgets visible to
-  every member of their family,
-- belong to exactly one family at a time (v1 simplification, see §7).
+This document covers the Angular SPA only. The system-wide design — domain model and its
+rules, REST API conventions, error types, authentication and authorization — lives in the
+[backend ARCHITECTURE.md][backend-arch] and is only referenced here.
 
-This document describes the target system shape. It is intentionally stack-accurate but
-implementation-light — concrete code arrives phase by phase per [PLAN.md](./PLAN.md).
-
-## 2. High-level system
+## 2. System context
 
 ```mermaid
 flowchart LR
-    subgraph Client["Browser"]
-        FE["Angular 22 SPA\n(signals, signal forms)"]
-    end
+    FE["Angular 22 SPA\n(this repo)"]
+    API["Spring Boot API\n(/api/v1)"]
+    IDP["Google OAuth2"]
 
-    subgraph Server["Spring Boot API"]
-        SEC["Security filter chain\n(JWT + OAuth2 login)"]
-        API["REST controllers (/api/v1)"]
-        SVC["Service layer"]
-        REPO["Spring Data JPA repositories"]
-    end
-
-    DB[("PostgreSQL")]
-    IDP["OAuth2 provider\n(Google)"]
-
-    FE -- "HTTPS / JSON\nBearer JWT" --> SEC --> API --> SVC --> REPO --> DB
-    FE -. "OAuth2 Authorization Code\n+ PKCE (redirect)" .-> IDP
-    IDP -. "id_token / code" .-> SEC
+    FE -- "HTTPS / JSON\nBearer JWT" --> API
+    FE -. "full-page redirect\n/oauth2/authorization/google" .-> API
+    API -. "Authorization Code + PKCE" .-> IDP
 ```
 
-- **Frontend** is a single Angular SPA. No server-side rendering requirement for v1.
-- **Backend** is a single Spring Boot modular-monolith (not microservices — scope doesn't
-  justify the operational cost yet; see §8 for the tradeoff).
-- **Auth** has two entry points that both resolve to the same backend-issued JWT session:
-  password login (JWT) and OAuth2/OIDC login (Google first). See §6.
-- **Database** is one PostgreSQL instance; one schema, Flyway-versioned.
+- Single SPA, no server-side rendering requirement for v1.
+- Talks only to the backend's REST API; it never talks to Google directly (the OAuth2 flow
+  runs entirely on the backend, see §4.4).
 
-## 3. Domain model
+## 3. Client data model
 
-### 3.1 Entities
+### 3.1 Types
 
-```mermaid
-erDiagram
-    USER ||--o{ FAMILY_MEMBERSHIP : has
-    FAMILY ||--o{ FAMILY_MEMBERSHIP : has
-    USER ||--o{ ACCOUNT : "owns (private)"
-    FAMILY ||--o{ ACCOUNT : "owns (shared)"
-    USER ||--o{ CATEGORY : "owns (private, optional)"
-    FAMILY ||--o{ CATEGORY : "owns (shared, optional)"
-    ACCOUNT ||--o{ TRANSACTION : "source/destination"
-    CATEGORY ||--o{ TRANSACTION : classifies
-    USER ||--o{ BUDGET : "owns (private)"
-    FAMILY ||--o{ BUDGET : "owns (shared)"
-    CATEGORY ||--o{ BUDGET : limits
-    USER ||--o{ TRANSACTION : "recorded by"
+`src/app/model/types.ts` holds the shared interfaces (`IUser`, `IFamily`, `IAccount`,
+`IAccountRef`, `ICategory`, `Transaction`, `IBudget`, …). They follow the API's wire
+format rather than the database shape:
 
-    USER {
-        uuid id
-        string email
-        string displayName
-        string passwordHash "null if OAuth-only"
-        uuid activeFamilyId "nullable"
-    }
-    FAMILY {
-        uuid id
-        string name
-        uuid createdBy
-    }
-    FAMILY_MEMBERSHIP {
-        uuid userId
-        uuid familyId
-        enum role "ADMIN | MEMBER"
-        timestamp joinedAt
-    }
-    ACCOUNT {
-        uuid id
-        enum ownerType "USER | FAMILY"
-        uuid ownerId
-        string name
-        decimal balance
-        string currency
-        string icon
-        string color
-    }
-    CATEGORY {
-        uuid id
-        enum ownerType "USER | FAMILY | SYSTEM"
-        uuid ownerId "null for SYSTEM"
-        enum type "INCOME | EXPENSE"
-        string name
-        string icon
-        string color
-    }
-    TRANSACTION {
-        uuid id
-        enum kind "PAYMENT | TRANSFER"
-        decimal amount
-        date occurredOn
-        uuid recordedByUserId
-        uuid accountId "payment"
-        uuid categoryId "payment"
-        uuid fromAccountId "transfer"
-        uuid toAccountId "transfer"
-        string note
-    }
-    BUDGET {
-        uuid id
-        enum ownerType "USER | FAMILY"
-        uuid ownerId
-        uuid categoryId
-        string period "YYYY-MM"
-        decimal plannedAmount
-        decimal factAmount "cached, recomputed from transactions"
-    }
-```
+- Ids are UUID strings issued by the backend.
+- Sharing is a `visibility: 'private' | 'shared'` field, not the backend's
+  `ownerType`/`ownerId`.
+- Enum values are lower-case (`'income'`, `'payment'`, `'admin'`, …).
 
-### 3.2 Ownership / sharing rule
+The exact differences between these types and the JSON (ISO dates, ids instead of embedded
+objects on create, the transaction page wrapper) are listed in the backend doc §3.3 and
+handled inside the `Http*Repository` classes (§4.3).
 
-Every shareable aggregate (`Account`, `Category`, `Budget`) carries `ownerType` +
-`ownerId` instead of a boolean "shared" flag:
+### 3.2 Visibility rules the UI relies on
 
-- `ownerType = USER, ownerId = <userId>` → private, visible only to that user.
-- `ownerType = FAMILY, ownerId = <familyId>` → shared, visible to every member of that
-  family.
+The backend enforces these; the UI only has to present them correctly:
 
-This single polymorphic-owner pattern avoids duplicating each table into
-`*_private` / `*_shared` variants and keeps authorization logic in one place
-(see §6.3). `Transaction` has no owner of its own — its visibility is derived from the
-account(s) it touches.
-
-A user has exactly one `activeFamilyId` in v1. Creating/joining a family is a deliberate
-action (invite code or email invite); users who don't belong to one only ever see private
-data. Multi-family-per-user is listed as a v2 idea, not built now (§7).
-
-### 3.3 Relationship to current frontend types
-
-`src/app/model/types.ts` already has `IAccount`, `ICategory`, `Transaction`. They map
-almost directly onto §3.1 but currently have no owner/visibility field. Phase F2 in the
-plan extends them with `ownerType`/`ownerId` (or a simpler `visibility: 'private' | 'shared'`
-derived client-side) before the sharing UI is built — see
-[PLAN.md](./PLAN.md).
+- A user belongs to at most one family in v1. Without a family, only private data exists
+  and creating anything `shared` fails (`no-family`).
+- Visibility is fixed at creation, and so is a category's income/expense type — edit
+  forms don't offer to change them.
+- A transaction shows the accounts it touches as `IAccountRef` (no `balance`): a family
+  member can see a transfer from someone's private account without seeing that account.
+- Transactions are create/delete only; deleting can fail with `transaction-not-editable`
+  when the caller can't access all of its accounts.
+- Month totals come back per currency and are never summed across currencies.
 
 ## 4. Frontend architecture (Angular)
 
@@ -158,43 +71,39 @@ derived client-side) before the sharing UI is built — see
 - Angular 22, standalone components only (no NgModules).
 - **Signals** for all local/component state; `signal()`, `computed()`, `effect()`,
   `linkedSignal()` where appropriate.
-- **Signal Forms** (`@angular/forms/signals`) replacing the current `ReactiveFormsModule`
-  usage in `account-form.ts` once the project is on v22 — tracked as its own phase so the
-  migration doesn't get entangled with new features.
-- `rxResource` (already in use in `account-list.ts`) for request-backed state; plain
-  `resource()` where a request is driven by a signal instead of an `Observable`.
+- Forms use `ReactiveFormsModule` today. Moving to **Signal Forms**
+  (`@angular/forms/signals`) is tracked as its own phase so the migration doesn't get
+  entangled with new features.
+- `rxResource` for request-backed state; plain `resource()` where a request is driven by a
+  signal instead of an `Observable`.
 - No NgRx / global store library. Domain state lives in per-domain **signal-based
   services** (`providedIn: 'root'`), each exposing readonly signals + methods — the same
   shape a lightweight SignalStore would have, without the extra dependency. Revisit only
   if cross-feature state coordination actually gets painful.
 
-### 4.2 Folder structure (target)
+### 4.2 Folder structure
 
 ```
 src/app/
   core/                     # app-wide singletons, no UI
-    auth/                   # auth state service, login/refresh flows, route guards
-    http/                   # interceptors (auth header, error mapping, retry)
-    config/                 # environment/config access
+    auth/                   # AuthState, route guards; data/ = AuthRepository + http impl
+    http/                   # authInterceptor, ProblemDetail → message mapping (problem.ts)
+    config/                 # API base path (api.ts)
   shared/                   # dumb, reusable, no domain knowledge
-    ui/                     # buttons, icon-picker, color-picker, modal, form controls
-    pipes/ directives/
-  model/                    # shared TypeScript interfaces/types (today: types.ts)
+    ui/                     # visibility-badge, …
+  model/                    # shared TypeScript interfaces/types (types.ts)
   features/
     accounts/
-      data/                 # AccountRepository interface + mock & http implementations
-      account-list/ account-form/ ...
+      data/                 # AccountRepository contract + HttpAccountRepository
+      account-list/ account-form/
     categories/
     transactions/
     budgets/
     family/                 # family creation, invites, member list, role management
+    auth/                   # login and register pages
     dashboard/              # aggregated overview (balances, month summary)
   app.routes.ts             # lazy-loaded per feature
 ```
-
-Today's `services/account-service.ts` and `components/account-list|account-form/*` map
-onto `features/accounts/*` — a rename/move, not a rewrite, happens when that feature
-area is revisited (see PLAN M2/M6).
 
 ### 4.3 Mock-first data layer (the "dumb hardcoded service" strategy)
 
@@ -204,161 +113,70 @@ then swap in real HTTP without touching components.
 ```mermaid
 flowchart LR
     Component --> Repo["XRepository (abstract class / injection token)"]
-    Repo -. "provided today" .-> Mock["MockXRepository\n(in-memory array + rxjs delay)"]
-    Repo -. "provided from Phase F6 onward" .-> Http["HttpXRepository\n(HttpClient calls to Spring API)"]
+    Repo -. "until M9" .-> Mock["MockXRepository\n(in-memory array + rxjs delay)"]
+    Repo -. "from M9 onward" .-> Http["HttpXRepository\n(HttpClient calls to Spring API)"]
 ```
 
 - Each domain defines a repository **contract** (abstract class, so it's a valid DI
-  token) returning `Observable<T>` — matching today's `AccountService` method shapes
-  (`getAccounts/create/update/delete`) so the contract barely has to change.
-- Two implementations: `Mock*Repository` (current style: in-memory arrays + `delay()` to
-  simulate latency, including simulated validation errors) and, later, `Http*Repository`.
+  token) returning `Observable<T>`.
 - Components/pages inject the **abstract contract**, never a concrete implementation —
   swapping is a one-line change in `app.config.ts` providers (or per-environment
-  provider), not a component rewrite. This is the one structural rule worth adopting now,
-  before more features are built on top of today's concrete `AccountService`.
-- Mock data should intentionally include edge cases (zero balances, multiple currencies,
-  a shared + a private account, an over-budget category) so UI states aren't discovered
-  late.
+  provider), not a component rewrite.
+- While mocks existed they deliberately covered edge cases (zero balances, multiple
+  currencies, a shared + a private account, an over-budget category) so UI states
+  weren't discovered late.
 
-### 4.4 Auth on the frontend (mocked until backend exists)
+As of M9 the mocks are deleted: every contract has only its `Http*Repository`
+implementation, mapping DTOs (UUID ids, ISO date strings, ids instead of embedded
+objects on create) and turning backend `ProblemDetail` types into user-facing messages
+(`core/http/problem.ts`).
 
-- `core/auth` exposes a signal-based `AuthStateService` (current user, tokens, family
-  membership) behind the same mock-then-real swap as §4.3.
-- Route guards (`canActivate` functional guards) check auth state signal; family-scoped
-  routes also check `activeFamilyId`.
-- Real implementation later: store access token in memory (not localStorage) + refresh
-  token flow via httpOnly cookie, see §6.2.
+### 4.4 Auth on the frontend
 
-## 5. Backend architecture (Spring Boot)
+The server side of the flow (token issuing, refresh-token rotation, Google login) is in
+the backend doc §6. On the client:
 
-### 5.1 Stack
+- `core/auth/AuthState` holds the current user and the access token in signals —
+  memory only, never localStorage. The user's `familyId` is looked up via
+  `GET /families/current` right after a session starts.
+- `provideAppInitializer` calls `restoreSession()` before the first route guard runs:
+  a `POST /auth/refresh` with the httpOnly cookie, so a reload keeps the user logged in.
+- `authInterceptor` adds the bearer token to `/api` calls (not `/api/v1/auth/*`). On a
+  401 it refreshes once — concurrent 401s share one refresh, since each refresh rotates
+  the cookie — and retries; if refreshing fails it clears the session and goes to
+  `/login`.
+- Google login is a full-page navigation to `/oauth2/authorization/google`. The backend
+  redirects back to `/auth/callback`; by then the startup refresh has already restored
+  the session, so `oauthCallbackGuard` just routes to `/dashboard` (or to
+  `/login?error=oauth` on failure).
+- Route guards (`authGuard`, `guestGuard`) are functional `canActivate` guards on the
+  auth signal.
 
-- Spring Boot 3.x, Java 21+.
-- Spring Web (REST), Spring Security, Spring Data JPA, Flyway, Bean Validation.
-- PostgreSQL (Docker Compose for local dev).
-- MapStruct for entity↔DTO mapping (avoids hand-written boilerplate mappers).
-- Testing: JUnit 5 + Testcontainers (real Postgres in integration tests, not H2).
+### 4.5 Error handling
 
-### 5.2 Module / package layout
+The backend returns every error as a `ProblemDetail` with a stable `type` URI (list in
+the backend doc §5.4). `core/http/problem.ts` maps the type slug to a user-facing message,
+so components switch on the problem type, never on the bare HTTP status.
 
-Package-by-feature, not package-by-layer, to keep each domain's controller/service/repo/
-entity/dto together:
+### 4.6 Local dev
 
-```
-com.familybudget
-  common/            # ProblemDetail error handling, pagination, auditing base entity
-  security/          # JWT filter, OAuth2 success handler, JWT issuing/validation, roles
-  user/              # User entity, registration, profile
-  family/            # Family, FamilyMembership, invites
-  account/
-  category/
-  transaction/
-  budget/
-```
+`ng serve` proxies `/api`, `/oauth2` and `/login/oauth2` to the backend
+(`src/proxy.conf.json`), so the browser sees one origin — no CORS, and the refresh
+cookie (`Path=/api/v1/auth`, `SameSite=Strict`) behaves as in production. Running the
+backend locally is described in the backend repo's `docs/LOCAL-DEV.md`.
 
-Each feature package: `*Controller`, `*Service`, `*Repository`, `*Entity`, `dto/`,
-`*Mapper`. Cross-feature calls go through the other feature's `*Service`, never its
-repository — keeps future extraction into separate services possible without a rewrite.
+## 5. Key decisions & why
 
-### 5.3 API conventions
-
-- Base path `/api/v1`, resource-oriented REST (`GET/POST/PATCH/DELETE /accounts`, etc.).
-- All list endpoints return only what the caller is authorized to see (own private data
-  ∪ their active family's shared data) — enforced in the service layer, not trusted from
-  query params.
-- Errors as RFC 7807 `ProblemDetail` with a stable `type`/`code` field the frontend can
-  switch on (not just an HTTP status).
-- Pagination via `page`/`size` query params + `Page<T>` response wrapper for
-  transaction lists.
-
-### 5.4 Error handling
-
-A single `@RestControllerAdvice` translates domain exceptions (`NotFoundException`,
-`ForbiddenException`, `ValidationException`, Spring Security exceptions) into consistent
-`ProblemDetail` responses. Frontend's HTTP error interceptor (§4.4) depends on this shape
-being stable from day one.
-
-## 6. Security design
-
-### 6.1 Two login paths, one session model
-
-```mermaid
-sequenceDiagram
-    participant FE as Angular SPA
-    participant API as Spring Boot
-    participant IDP as Google OAuth2
-
-    alt Password login
-        FE->>API: POST /api/v1/auth/login {email, password}
-        API->>API: verify password, issue access+refresh JWT
-        API-->>FE: access token (body) + refresh token (httpOnly cookie)
-    else OAuth2 login
-        FE->>IDP: redirect, Authorization Code + PKCE
-        IDP-->>FE: redirect back with code
-        FE->>API: GET /login/oauth2/code/google?code=...
-        API->>IDP: exchange code for id_token
-        API->>API: find-or-create User from verified id_token claims
-        API->>API: issue access+refresh JWT (same as password path)
-        API-->>FE: access token (body) + refresh token (httpOnly cookie)
-    end
-
-    FE->>API: subsequent requests with "Authorization: Bearer <access>"
-    API->>API: JWT filter validates signature+expiry, loads auth context
-```
-
-Both paths converge on the same backend-issued JWT — the rest of the API never has to
-know whether a session started via password or Google. This is the key simplification:
-OAuth2 is a *login method*, not a parallel authorization system.
-
-### 6.2 Token handling
-
-- Short-lived **access token** (JWT, ~15 min), returned in the response body, held in
-  frontend memory only (never localStorage, to limit XSS blast radius).
-- Longer-lived **refresh token**, httpOnly + Secure + SameSite=Strict cookie, used only
-  against a `/auth/refresh` endpoint; rotated on every use.
-- Logout clears the refresh cookie server-side (denylist or short-lived token family
-  invalidation — exact mechanism decided in the backend security phase, not blocking the
-  architecture now).
-
-### 6.3 Authorization (private vs. shared data)
-
-- Every request carries the authenticated `userId` (from JWT) resolved server-side to
-  their current `activeFamilyId`.
-- Repository queries for `Account`/`Category`/`Budget`/`Transaction` are always scoped to
-  `ownerType=USER AND ownerId=:userId OR ownerType=FAMILY AND ownerId=:activeFamilyId` —
-  centralized in the service layer (§5.2) so no controller can accidentally leak
-  cross-family data.
-- Mutating a `FAMILY`-owned resource additionally checks the caller is a member (any
-  role) of that family; family-management actions (invite, remove member, change role)
-  require `ADMIN`.
-
-### 6.4 Transport/infra
-
-- HTTPS everywhere (even local dev via mkcert, to catch cookie/`Secure` issues early).
-- CORS restricted to the known frontend origin(s) per environment.
-
-## 7. Explicit v1 simplifications (revisit later, not now)
-
-- One active family per user (no multi-family switching).
-- Single currency assumed per account; no cross-currency conversion/FX.
-- Budgets are monthly (`period = YYYY-MM`); no custom date ranges yet.
-- No recurring-transaction scheduler.
-- `Budget.factAmount` is a cached/recomputed value, not transactionally maintained on
-  every write — acceptable staleness window, revisit if it causes visible lag.
-
-## 8. Key decisions & why
+System-wide decisions (two repos, sharing model, auth design, backend stack) are in the
+backend doc §8.
 
 | Decision | Choice | Why |
 |---|---|---|
-| Repos | Two repos (`budget-app-front` existing, new `budget-app-backend`) | Different stacks/lifecycles/CI; a monorepo buys nothing here since there's no shared build tooling between Angular and Spring Boot. Keep this doc + PLAN.md in the frontend repo for now (it exists today); mirror or move to the backend repo once that exists — whichever the user prefers at that point. |
-| Backend topology | Modular monolith | Family Budget's scope (a handful of bounded contexts, one team) doesn't justify microservice operational cost. Package-by-feature keeps a future split possible. |
 | Frontend state | Per-domain signal services, no NgRx | Matches Angular's current direction (signals as the primitive); avoids a global-store dependency the app's complexity doesn't need yet. |
-| Mock-to-real swap | Abstract repository contract + DI token/provider swap | Lets UI work start immediately (per user's request) without a later rewrite; only the provider wiring changes. |
-| Sharing model | Polymorphic `ownerType/ownerId` on Account/Category/Budget | One mental model and one authorization check path instead of duplicated private/shared tables or scattered boolean flags. |
-| Auth | JWT access token (body) + refresh token (httpOnly cookie); OAuth2 as alternate login only | Standard, well-understood SPA pattern; OAuth2 complexity isolated to the login step instead of leaking into every authorization decision. |
+| Mock-to-real swap | Abstract repository contract + DI token/provider swap | Let UI work start before the backend existed without a later rewrite; only the provider wiring changed. |
+| Access token storage | Memory only, refresh via httpOnly cookie | Limits XSS blast radius; a reload recovers the session through `/auth/refresh`. |
 
-## 9. Open questions
+## 6. Open questions
 
-Tracked with owners/status in [PLAN.md §Open decisions](./PLAN.md#open-decisions) —
+Tracked with owners/status in [PLAN.md §Open decisions](../../PLAN.md#open-decisions) —
 not repeated here to avoid the two docs drifting out of sync.

@@ -3,7 +3,7 @@ import { IUser } from '../../../model/types';
 
 // A started session: the short-lived access token (kept in memory only) and the
 // user it belongs to. The refresh token never reaches JS - it's an httpOnly
-// cookie (docs/ARCHITECTURE.md §6.2).
+// cookie (docs/ARCHITECTURE.md §4.4).
 export interface AuthSession {
   accessToken: string;
   user: Omit<IUser, 'familyId'>;

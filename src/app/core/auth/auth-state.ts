@@ -14,7 +14,7 @@ export class AuthState {
   readonly currentUser = this.user.asReadonly();
   readonly isAuthenticated = computed(() => this.user() !== null);
 
-  // In memory only, never localStorage (docs/ARCHITECTURE.md §6.2). A reload
+  // In memory only, never localStorage (docs/ARCHITECTURE.md §4.4). A reload
   // loses it; restoreSession() gets a new one from the refresh cookie.
   private readonly token = signal<string | null>(null);
   readonly accessToken = this.token.asReadonly();

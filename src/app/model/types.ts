@@ -5,7 +5,7 @@ export interface IUser {
   id: string;
   email: string;
   displayName: string;
-  // v1 simplification: a user belongs to at most one family at a time (see docs/ARCHITECTURE.md §7).
+  // v1 simplification: a user belongs to at most one family at a time (see docs/ARCHITECTURE.md §3.2).
   familyId: string | null;
 }
 
