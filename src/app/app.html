@@ -11,8 +11,10 @@
     </nav>
     <div class="user-menu">
       <span class="user-name">{{ user.displayName }}</span>
+      <button type="button" class="logout-button" (click)="openSettings()">Налаштування</button>
       <button type="button" class="logout-button" (click)="logout()">Вийти</button>
     </div>
+    <app-settings-dialog />
   }
 </header>
 

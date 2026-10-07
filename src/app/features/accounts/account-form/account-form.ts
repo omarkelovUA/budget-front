@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal, untracked } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { AuthState } from '../../../core/auth/auth-state';
 import { GrantLevel, IAccount } from '../../../model/types';
 import { FamilyRepository } from '../../family/data/family-repository';
+import { SettingsRepository } from '../../settings/data/settings-repository';
 import { AccountRepository } from '../data/account-repository';
 
 interface AccountFormModel {
@@ -33,6 +34,7 @@ export type MemberAccess = GrantLevel | 'hidden';
 export class AccountForm {
   private readonly accountRepository = inject(AccountRepository);
   private readonly familyRepository = inject(FamilyRepository);
+  private readonly settingsRepository = inject(SettingsRepository);
   private readonly currentUser = inject(AuthState).currentUser;
 
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
@@ -61,6 +63,11 @@ export class AccountForm {
     stream: () => this.familyRepository.getCurrentFamily(),
   });
 
+  // New accounts start in the user's default currency (settings).
+  private readonly settingsResource = rxResource({
+    stream: () => this.settingsRepository.getSettings(),
+  });
+
   // Everyone in the family except the owner (the current user).
   protected readonly members = computed(() => {
     const userId = this.currentUser()?.id;
@@ -74,6 +81,12 @@ export class AccountForm {
         data ? { name: data.name, currency: data.currency, icon: data.icon, color: data.color } : { ...DEFAULT_MODEL },
       );
       this.memberAccess.set(Object.fromEntries((data?.grants ?? []).map((g) => [g.userId, g.level])));
+    });
+    effect(() => {
+      const currency = this.settingsResource.value()?.defaultCurrency;
+      if (!currency || untracked(this.account)) return;
+      // Only while the user hasn't picked a currency themselves.
+      this.model.update((m) => (m.currency === DEFAULT_MODEL.currency ? { ...m, currency } : m));
     });
   }
 

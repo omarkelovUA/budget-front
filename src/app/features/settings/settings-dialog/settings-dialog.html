@@ -1,0 +1,31 @@
+<dialog #dialog class="settings-dialog" aria-labelledby="settings-title">
+  <form novalidate (submit)="$event.preventDefault(); save()">
+    <h2 id="settings-title">Налаштування</h2>
+
+    @if (loading()) {
+      <p class="muted" role="status">Завантаження...</p>
+    } @else {
+      <div class="form-group">
+        <label for="settings-currency">Основна валюта</label>
+        <input id="settings-currency" list="settings-currencies" [formField]="form.defaultCurrency" />
+        <datalist id="settings-currencies">
+          @for (currency of currencies; track currency) {
+            <option [value]="currency"></option>
+          }
+        </datalist>
+        <p class="hint">
+          З неї починаються нові рахунки та перекази членам сім'ї. Код ISO 4217, наприклад UAH або EUR.
+        </p>
+      </div>
+    }
+
+    @if (errorMessage(); as message) {
+      <p class="form-error" role="alert">{{ message }}</p>
+    }
+
+    <div class="actions">
+      <button type="submit" [disabled]="loading() || pending() || !form().valid()">Зберегти</button>
+      <button type="button" class="secondary" (click)="close()">Скасувати</button>
+    </div>
+  </form>
+</dialog>

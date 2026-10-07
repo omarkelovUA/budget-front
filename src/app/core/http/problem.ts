@@ -26,6 +26,7 @@ const MESSAGES: Record<string, string> = {
   'account-closed': 'Рахунок закрито',
   'grantee-not-in-family': "Доступ можна надати лише іншим учасникам вашої сім'ї",
   'close-target-required': 'Оберіть рахунок, на який перенести залишок',
+  'invalid-currency': 'Невідомий код валюти',
   'category-in-use': 'Спершу видаліть транзакції та бюджети цієї категорії',
   'currency-mismatch': 'Переказ між рахунками в різних валютах не підтримується',
   'transaction-not-editable': 'Ця транзакція стосується рахунку, до якого у вас немає доступу',

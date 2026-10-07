@@ -1,3 +1,9 @@
+// The current user's own settings (more to come); defaultCurrency is ISO 4217,
+// picked from the region at sign-up.
+export interface IUserSettings {
+  defaultCurrency: string;
+}
+
 export type Visibility = 'private' | 'shared';
 
 // Ids are UUID strings issued by the backend.

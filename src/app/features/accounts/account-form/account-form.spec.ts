@@ -4,6 +4,7 @@ import { AuthState } from '../../../core/auth/auth-state';
 import { AuthRepository } from '../../../core/auth/data/auth-repository';
 import { AccountInput, IFamily } from '../../../model/types';
 import { FamilyRepository } from '../../family/data/family-repository';
+import { SettingsRepository } from '../../settings/data/settings-repository';
 import { AccountRepository } from '../data/account-repository';
 import { AccountForm } from './account-form';
 
@@ -43,6 +44,7 @@ describe('AccountForm', () => {
           useValue: { login: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
         },
         { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(FAMILY) } },
+        { provide: SettingsRepository, useValue: { getSettings: () => of({ defaultCurrency: 'PLN' }) } },
       ],
     }).compileComponents();
 
@@ -52,10 +54,10 @@ describe('AccountForm', () => {
     await fixture.whenStable();
   });
 
-  it('should initialize form with expected defaults', () => {
+  it('starts a new account in the default currency from settings', () => {
     const form = (component as any).form;
 
-    expect(form().value()).toEqual({ name: '', currency: 'UAH', icon: 'assets/card.svg', color: 'green' });
+    expect(form().value()).toEqual({ name: '', currency: 'PLN', icon: 'assets/card.svg', color: 'green' });
     expect(form().valid()).toBe(false);
   });
 

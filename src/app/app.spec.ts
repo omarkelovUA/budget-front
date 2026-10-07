@@ -6,6 +6,7 @@ import { routes } from './app.routes';
 import { AuthRepository, AuthSession } from './core/auth/data/auth-repository';
 import { AuthState } from './core/auth/auth-state';
 import { FamilyRepository } from './features/family/data/family-repository';
+import { SettingsRepository } from './features/settings/data/settings-repository';
 
 const SESSION: AuthSession = {
   accessToken: 'token',
@@ -22,6 +23,7 @@ describe('App', () => {
         provideRouter(routes),
         { provide: AuthRepository, useValue: { login: () => of(SESSION) } },
         { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(null) } },
+        { provide: SettingsRepository, useValue: {} },
       ],
     }).compileComponents();
     fixture = TestBed.createComponent(App);
