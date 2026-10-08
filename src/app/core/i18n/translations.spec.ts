@@ -1,4 +1,5 @@
 import { KNOWN_PROBLEMS } from '../http/problem';
+import { ACCOUNT_ICONS, CATEGORY_ICONS } from '../../shared/ui/icon-picker/icons';
 import en from '../../../i18n/en.json';
 import uk from '../../../i18n/uk.json';
 
@@ -18,5 +19,10 @@ describe('translation files', () => {
   it('have a message for every known problem type', () => {
     const errorKeys = keys(en.errors);
     expect([...KNOWN_PROBLEMS].filter((type) => !errorKeys.includes(type))).toEqual([]);
+  });
+
+  it('have a name for every icon the pickers offer', () => {
+    const iconKeys = keys(en.icons);
+    expect([...ACCOUNT_ICONS, ...CATEGORY_ICONS].filter((icon) => !iconKeys.includes(icon))).toEqual([]);
   });
 });

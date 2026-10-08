@@ -114,7 +114,8 @@ src/app/
     i18n/                   # languages, LanguageService, translation loader
     config/                 # API base path (api.ts)
   shared/                   # dumb, reusable, no domain knowledge
-    ui/                     # visibility-badge (categories/budgets), access-badge (accounts), …
+    ui/                     # visibility-badge (categories/budgets), access-badge (accounts),
+                            # icon-picker (icon lists in icons.ts; SVGs in public/assets)
   model/                    # shared TypeScript interfaces/types (types.ts)
   features/
     accounts/

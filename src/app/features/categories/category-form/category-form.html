@@ -18,16 +18,7 @@
 
   <div class="form-group">
     <label>{{ t('common.icon') }}</label>
-    <div class="icon-picker" role="radiogroup" [attr.aria-label]="t('common.icon')">
-      @for (icon of icons; track icon) {
-        <label class="icon-option">
-          <input type="radio" [formField]="form.icon" [value]="'assets/' + icon + '.svg'" />
-          <span class="icon-swatch">
-            <img [src]="'assets/' + icon + '.svg'" [alt]="icon" />
-          </span>
-        </label>
-      }
-    </div>
+    <app-icon-picker [formField]="form.icon" [icons]="icons" [label]="t('common.icon')" />
   </div>
 
   <div class="form-group">

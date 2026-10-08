@@ -1,0 +1,17 @@
+<div class="icon-picker" role="radiogroup" [attr.aria-label]="label()" *transloco="let t">
+  @for (icon of icons(); track icon) {
+    <label class="icon-option" [title]="t('icons.' + icon)">
+      <input
+        type="radio"
+        class="visually-hidden"
+        [name]="groupName"
+        [value]="path(icon)"
+        [checked]="value() === path(icon)"
+        [disabled]="disabled()"
+        [attr.aria-label]="t('icons.' + icon)"
+        (change)="value.set(path(icon))"
+      />
+      <span class="icon-swatch"><img [src]="path(icon)" alt="" width="24" height="24" /></span>
+    </label>
+  }
+</div>

@@ -47,37 +47,6 @@ button:disabled {
   background-color: #ccc;
 }
 
-.icon-picker {
-  display: flex;
-  gap: 12px;
-}
-
-.icon-option {
-  cursor: pointer;
-}
-
-.icon-option input[type="radio"] {
-  display: none;
-}
-
-.icon-swatch {
-  display: flex;
-  padding: 8px;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  transition: border-color 0.2s;
-}
-
-.icon-swatch img {
-  width: 32px;
-  height: 32px;
-}
-
-.icon-option input[type="radio"]:checked + .icon-swatch {
-  border-color: #007bff;
-  background-color: #e7f1ff;
-}
-
 .visibility-picker {
   display: flex;
   gap: 10px;

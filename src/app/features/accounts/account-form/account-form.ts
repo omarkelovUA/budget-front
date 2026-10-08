@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, ou
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
+import { ACCOUNT_ICONS } from '../../../shared/ui/icon-picker/icons';
 import { AuthState } from '../../../core/auth/auth-state';
 import { GrantLevel, IAccount } from '../../../model/types';
 import { FamilyRepository } from '../../family/data/family-repository';
@@ -27,7 +29,7 @@ export type MemberAccess = GrantLevel | 'hidden';
 // Only the owner opens this form: other members see the account read-only.
 @Component({
   selector: 'app-account-form',
-  imports: [FormField, TranslocoDirective],
+  imports: [FormField, TranslocoDirective, IconPicker],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './account-form.html',
   styleUrl: './account-form.css',
@@ -39,7 +41,7 @@ export class AccountForm {
   private readonly currentUser = inject(AuthState).currentUser;
 
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
-  protected readonly icons = ['card', 'wallet'];
+  protected readonly icons = ACCOUNT_ICONS;
   protected readonly accessLevels: MemberAccess[] = ['hidden', 'visible', 'shared'];
   // Offered in the currency field; any other code can still be typed in.
   protected readonly usedCurrencies = computed(() => this.settings()?.usedCurrencies ?? []);

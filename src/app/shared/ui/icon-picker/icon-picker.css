@@ -1,0 +1,49 @@
+.icon-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+  gap: 8px;
+  max-width: 480px;
+}
+
+.icon-option {
+  cursor: pointer;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.icon-swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  color: #343a40;
+  transition: border-color 0.2s;
+}
+
+.icon-option:hover .icon-swatch {
+  border-color: #adb5bd;
+}
+
+.icon-option input:checked + .icon-swatch {
+  border-color: #007bff;
+  background-color: #e7f1ff;
+}
+
+.icon-option input:focus-visible + .icon-swatch {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
+}
+
+.icon-option input:disabled + .icon-swatch {
+  cursor: default;
+  opacity: 0.6;
+}

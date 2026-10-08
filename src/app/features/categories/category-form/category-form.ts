@@ -3,6 +3,8 @@ import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
+import { CATEGORY_ICONS } from '../../../shared/ui/icon-picker/icons';
 
 type CategoryFormModel = Omit<ICategory, 'id'>;
 
@@ -16,7 +18,7 @@ const DEFAULT_MODEL: CategoryFormModel = {
 
 @Component({
   selector: 'app-category-form',
-  imports: [FormField, TranslocoDirective],
+  imports: [FormField, TranslocoDirective, IconPicker],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './category-form.html',
   styleUrl: './category-form.css',
@@ -25,7 +27,7 @@ export class CategoryForm {
   private readonly categoryRepository = inject(CategoryRepository);
 
   protected readonly types: ICategory['type'][] = ['income', 'expense'];
-  protected readonly icons = ['wallet', 'food', 'card'];
+  protected readonly icons = CATEGORY_ICONS;
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
   protected readonly visibilities: ICategory['visibility'][] = ['private', 'shared'];
 

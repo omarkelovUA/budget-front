@@ -21,9 +21,13 @@ description: Essential facts about budget-app-front (Angular SPA). Load before r
   bound in `app.config.ts`. Components are `x-list`/`x-form`. `settings/settings-state.ts`
   caches the user's settings.
 - Static files go in `public/`, the only folder the build copies. Icons are
-  `public/assets/*.svg`, stored as `assets/<name>.svg`; the backend also uses
-  `family` and `transit`.
-- `shared/ui/` holds the badges. `model/types.ts` holds every wire type and helper
+  `public/assets/*.svg` (mostly Lucide, ISC), stored as `assets/<name>.svg`.
+  - The offered lists and `iconPath()` are in `shared/ui/icon-picker/icons.ts`.
+  - The backend also uses `family` and `transit`.
+  - Never rename or remove a stored icon.
+  - A new icon needs an `icons.<name>` label in both translation files.
+- `shared/ui/` holds the badges and `IconPicker` (a Signal Forms control,
+  `[formField]`). `model/types.ts` holds every wire type and helper
   (`canRecordOn`, `transactionCurrency`).
 
 ## Conventions
