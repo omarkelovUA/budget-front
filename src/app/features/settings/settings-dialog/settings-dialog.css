@@ -40,6 +40,10 @@
   text-transform: uppercase;
 }
 
+.form-group input::placeholder {
+  text-transform: none;
+}
+
 .currency-chips {
   display: flex;
   flex-wrap: wrap;

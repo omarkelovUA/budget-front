@@ -31,13 +31,12 @@
         </ul>
         <div class="add-currency">
           <input
+            #newCurrencyInput
             id="settings-new-currency"
             list="settings-currencies"
-            maxlength="3"
             [attr.aria-label]="t('settings.addCurrency')"
             [placeholder]="t('settings.addCurrencyPlaceholder')"
-            [value]="newCurrency()"
-            (input)="newCurrency.set($any($event.target).value)"
+            [formField]="addForm.code"
             (keydown.enter)="$event.preventDefault(); addCurrency()"
           />
           <datalist id="settings-currencies">
@@ -45,8 +44,8 @@
               <option [value]="currency"></option>
             }
           </datalist>
-          <button type="button" class="secondary" [disabled]="!newCurrency().trim() || newCurrencyError()"
-                  (click)="addCurrency()">{{ t('settings.add') }}</button>
+          <button type="button" class="secondary" [disabled]="!newCurrency() || newCurrencyError()"
+                  (click)="addCurrency(); newCurrencyInput.focus()">{{ t('settings.add') }}</button>
         </div>
         @if (newCurrencyError(); as key) {
           <p class="form-error" role="alert">{{ t(key, { max: maxUsedCurrencies }) }}</p>

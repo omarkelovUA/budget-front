@@ -70,6 +70,7 @@ describe('SettingsDialog', () => {
     await fixture.whenStable();
 
     expect(chips()).toEqual(['UAH ×', 'EUR · default', 'USD ×']);
+    expect((el.querySelector('#settings-new-currency') as HTMLInputElement).value).toBe('');
     expect(saved).toEqual([{ language: 'en', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR', 'USD'] }]);
     expect(TestBed.inject(LanguageService).current()).toBe('en');
     expect((el.querySelector('dialog') as HTMLDialogElement).open).toBe(false);

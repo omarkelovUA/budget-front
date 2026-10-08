@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
-import { form, FormField, required } from '@angular/forms/signals';
+import { form, FormField, maxLength, required } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Language, LANGUAGES } from '../../../core/i18n/languages';
 import { SettingsState } from '../settings-state';
@@ -35,12 +35,15 @@ export class SettingsDialog {
   });
   // The default currency is picked from these, so it's always one of them.
   protected readonly usedCurrencies = signal<string[]>([]);
-  protected readonly newCurrency = signal('');
+  // Its own small form, so the field's DOM value always follows the model (cleared after adding).
+  private readonly addModel = signal({ code: '' });
+  protected readonly addForm = form(this.addModel, (f) => maxLength(f.code, 3));
+  protected readonly newCurrency = computed(() => this.addModel().code.trim().toUpperCase());
   protected readonly suggestions = computed(() =>
     COMMON_CURRENCIES.filter((c) => !this.usedCurrencies().includes(c)),
   );
   protected readonly newCurrencyError = computed(() => {
-    const code = this.newCurrency().trim().toUpperCase();
+    const code = this.newCurrency();
     if (code === '' || this.usedCurrencies().includes(code)) return null;
     if (!CURRENCY_CODE.test(code)) return 'settings.invalidCode';
     if (this.usedCurrencies().length >= MAX_USED_CURRENCIES) return 'settings.tooMany';
@@ -54,7 +57,7 @@ export class SettingsDialog {
   // app) shows up.
   open() {
     this.errorMessage.set(null);
-    this.newCurrency.set('');
+    this.addModel.set({ code: '' });
     this.loading.set(true);
     this.dialog().nativeElement.showModal();
     this.settingsState.load().subscribe({
@@ -75,10 +78,10 @@ export class SettingsDialog {
   }
 
   addCurrency() {
-    const code = this.newCurrency().trim().toUpperCase();
+    const code = this.newCurrency();
     if (this.newCurrencyError() || code === '') return;
     this.usedCurrencies.update((codes) => (codes.includes(code) ? codes : [...codes, code]));
-    this.newCurrency.set('');
+    this.addModel.set({ code: '' });
   }
 
   removeCurrency(code: string) {
