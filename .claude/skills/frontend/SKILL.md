@@ -16,7 +16,7 @@ description: Essential facts about budget-app-front (Angular SPA). Load before r
 ## Layout (`src/app/`)
 - `core/`: `auth/` (`AuthState` signals: token in memory only, refresh cookie;
   `start()` loads family and settings), `http/` (`authInterceptor`, `problem.ts`
-  `withUserErrors()`), `i18n/` (`languages.ts`, `LanguageService`, loader).
+  `withUserErrors()`), `i18n/` (`languages.ts`, `LanguageService`, loader), `theme/` (`ThemeService`).
 - `features/<domain>/`: `data/` holds an abstract `XRepository` plus `HttpXRepository`,
   bound in `app.config.ts`. Components are `x-list`/`x-form`. `settings/settings-state.ts`
   caches the user's settings.
@@ -41,6 +41,13 @@ description: Essential facts about budget-app-front (Angular SPA). Load before r
   - Money, numbers and dates go through `translocoCurrency`/`translocoDecimal`/
     `translocoDate`. Never use Angular's `date`/`number` pipes or a fixed `Intl` locale.
   - Error text is `errors.<slug>`; a new slug goes into `KNOWN_PROBLEMS`.
+- **Colours:**
+  - Only use `var(--color-*)` tokens from `src/styles/theme.css` (OKLCH, `light-dark()`,
+    derived from `--primary-h`/`--primary-c`). No hex, rgb or named colours; a spec
+    enforces this.
+  - The theme switches through `ThemeService` (`color-scheme`).
+  - Draw icons with `<app-icon [src]>`, not `<img>`.
+  - Keep text at WCAG AA in both themes.
 - **Specs:**
   - Every spec gets the Ukrainian translations and a settings stub from
     `src/test-providers.ts`.
@@ -48,4 +55,4 @@ description: Essential facts about budget-app-front (Angular SPA). Load before r
   - Await `fixture.whenStable()`.
 - **Performance:** keep `track` on every `@for`, routes lazy-loaded, no subscriptions
   without teardown (prefer `rxResource`/`toSignal`), and impure work out of templates.
-- **Docs:** `docs/ARCHITECTURE.md` (§4.6 i18n).
+- **Docs:** `docs/ARCHITECTURE.md` (§4.6 i18n, §4.7 theme).

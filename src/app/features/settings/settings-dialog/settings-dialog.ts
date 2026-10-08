@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signa
 import { form, FormField, maxLength, required } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Language, LANGUAGES } from '../../../core/i18n/languages';
+import { Theme, THEMES } from '../../../core/theme/theme';
 import { SettingsState } from '../settings-state';
 
 // Offered when adding a used currency; any other ISO 4217 code can still be typed in.
@@ -24,9 +25,11 @@ export class SettingsDialog {
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
   protected readonly languages = LANGUAGES;
+  protected readonly themes = THEMES;
   protected readonly maxUsedCurrencies = MAX_USED_CURRENCIES;
-  private readonly model = signal<{ language: Language; defaultCurrency: string }>({
+  private readonly model = signal<{ language: Language; theme: Theme; defaultCurrency: string }>({
     language: 'en',
+    theme: 'system',
     defaultCurrency: '',
   });
   protected readonly form = form(this.model, (f) => {
@@ -63,7 +66,11 @@ export class SettingsDialog {
     this.settingsState.load().subscribe({
       next: (settings) => {
         this.loading.set(false);
-        this.model.set({ language: settings.language, defaultCurrency: settings.defaultCurrency });
+        this.model.set({
+          language: settings.language,
+          theme: settings.theme,
+          defaultCurrency: settings.defaultCurrency,
+        });
         this.usedCurrencies.set(settings.usedCurrencies);
       },
       error: (err: Error) => {

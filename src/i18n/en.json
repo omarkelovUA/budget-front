@@ -291,6 +291,12 @@
   "settings": {
     "title": "Settings",
     "language": "Language",
+    "theme": "Theme",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "Device settings"
+    },
     "defaultCurrency": "Default currency",
     "defaultCurrencyHint": "New accounts and transfers to family members start in it.",
     "usedCurrencies": "Currencies I use",
@@ -337,6 +343,7 @@
     "budget-exists": "This category already has a budget for this month",
     "unsupported-language": "This language isn't supported",
     "invalid-used-currencies": "Choose between 1 and 20 currencies",
-    "default-currency-not-used": "The default currency must be one of the currencies you use"
+    "default-currency-not-used": "The default currency must be one of the currencies you use",
+    "unsupported-theme": "This theme isn't supported"
   }
 }

@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 20px;
   padding: 24px;
-  background: #f8f9fa;
+  background: var(--color-surface);
   border-radius: 12px;
   height: 100%;
 }
@@ -17,7 +17,7 @@
 .list-header h2 {
   margin: 0;
   font-size: 1.5rem;
-  color: #212529;
+  color: var(--color-text);
 }
 
 .add-button {
@@ -25,8 +25,8 @@
   align-items: center;
   gap: 8px;
   padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -35,7 +35,7 @@
 }
 
 .add-button:hover {
-  background-color: #0056b3;
+  background-color: var(--color-primary-hover);
 }
 
 .categories-grid {
@@ -49,8 +49,8 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: white;
-  border: 1px solid #e9ecef;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -59,13 +59,13 @@
 
 .category-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border-color: #dee2e6;
+  box-shadow: 0 4px 12px var(--color-shadow-soft);
+  border-color: var(--color-border);
 }
 
 .category-card.active {
-  border-color: #007bff;
-  background-color: #f0f7ff;
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
 }
 
 .icon-box {
@@ -77,10 +77,10 @@
   border-radius: 10px;
 }
 
-.icon-box img {
-  width: 28px;
-  height: 28px;
-  filter: brightness(0) invert(1);
+.icon-box app-icon {
+  --icon-size: 28px;
+  /* On the account or category colour, which is user data (.docs/theme.md phase 3). */
+  color: var(--color-on-primary);
 }
 
 .category-info {
@@ -91,16 +91,16 @@
 
 .category-name {
   font-weight: 600;
-  color: #343a40;
+  color: var(--color-text);
 }
 
 .category-type {
   font-size: 0.85rem;
-  color: #c0392b;
+  color: var(--color-danger);
 }
 
 .category-type.income {
-  color: #1a7f37;
+  color: var(--color-success);
 }
 
 .delete-button {
@@ -108,33 +108,33 @@
   background: none;
   border: none;
   font-size: 1.25rem;
-  color: #adb5bd;
+  color: var(--color-text-muted);
   cursor: pointer;
   line-height: 1;
 }
 
 .delete-button:hover {
-  color: #c0392b;
+  color: var(--color-danger);
 }
 
 .form-panel {
   padding: 20px;
-  background: white;
-  border: 1px solid #e9ecef;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
   border-radius: 12px;
 }
 
 .status-message {
   text-align: center;
   padding: 40px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .spinner {
   width: 30px;
   height: 30px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #007bff;
+  border: 3px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 10px;

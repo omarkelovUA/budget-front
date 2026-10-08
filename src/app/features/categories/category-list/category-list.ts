@@ -5,11 +5,12 @@ import { CategoryRepository } from '../data/category-repository';
 import { CategoryForm } from '../category-form/category-form';
 import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-badge';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { Icon } from '../../../shared/ui/icon/icon';
 
 @Component({
   selector: 'app-category-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CategoryForm, VisibilityBadge, TranslocoDirective],
+  imports: [Icon, CategoryForm, VisibilityBadge, TranslocoDirective],
   templateUrl: './category-list.html',
   styleUrl: './category-list.css',
 })

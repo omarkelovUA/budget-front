@@ -1,6 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { LanguageService } from '../../../core/i18n/language';
+import { ThemeService } from '../../../core/theme/theme';
 import { IUserSettings } from '../../../model/types';
 import { SettingsRepository } from '../data/settings-repository';
 import { SettingsDialog } from './settings-dialog';
@@ -23,7 +24,8 @@ describe('SettingsDialog', () => {
         {
           provide: SettingsRepository,
           useValue: {
-            getSettings: () => of({ language: 'uk', defaultCurrency: 'UAH', usedCurrencies: ['UAH', 'EUR'] }),
+            getSettings: () =>
+              of({ language: 'uk', defaultCurrency: 'UAH', usedCurrencies: ['UAH', 'EUR'], theme: 'system' }),
             updateSettings: (settings: IUserSettings) => {
               saved.push(settings);
               return of(settings);
@@ -66,13 +68,18 @@ describe('SettingsDialog', () => {
     await fixture.whenStable();
     await type('#settings-currency', 'EUR');
     await type('#settings-language', 'en');
+    await type('#settings-theme', 'dark');
     fixture.componentInstance.save();
     await fixture.whenStable();
 
     expect(chips()).toEqual(['UAH ×', 'EUR · default', 'USD ×']);
     expect((el.querySelector('#settings-new-currency') as HTMLInputElement).value).toBe('');
-    expect(saved).toEqual([{ language: 'en', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR', 'USD'] }]);
+    expect(saved).toEqual([
+      { language: 'en', theme: 'dark', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR', 'USD'] },
+    ]);
     expect(TestBed.inject(LanguageService).current()).toBe('en');
+    expect(TestBed.inject(ThemeService).current()).toBe('dark');
+    expect(document.documentElement.style.colorScheme).toBe('dark');
     expect((el.querySelector('dialog') as HTMLDialogElement).open).toBe(false);
   });
 
@@ -87,5 +94,23 @@ describe('SettingsDialog', () => {
 
     expect(chips()).toEqual(['UAH · основна', 'EUR ×']);
     expect(el.querySelector('[role="alert"]')?.textContent).toContain('Введіть трилітерний код ISO 4217');
+  });
+
+  it('saves unchanged settings unchanged when the default is not the first currency', async () => {
+    TestBed.overrideProvider(SettingsRepository, {
+      useValue: {
+        getSettings: () => of({ language: 'uk', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR'], theme: 'dark' }),
+        updateSettings: (settings: IUserSettings) => {
+          saved.push(settings);
+          return of(settings);
+        },
+      },
+    });
+    const { fixture, el } = await open();
+
+    expect((el.querySelector('#settings-currency') as HTMLSelectElement).value).toBe('EUR');
+    fixture.componentInstance.save();
+
+    expect(saved).toEqual([{ language: 'uk', theme: 'dark', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR'] }]);
   });
 });

@@ -1,0 +1,64 @@
+/*
+ * Colour tokens (.docs/theme.md). Components use only the semantic --color-* tokens below,
+ * never raw colours, so a redesign or a user-chosen primary colour only changes this file.
+ *
+ * Everything is OKLCH: lightness is perceptually even, so a palette keeps its contrast for
+ * any hue. The primary colour is two inputs, --primary-h (hue) and --primary-c (chroma);
+ * primary shades and the slightly tinted neutrals are derived from them. Status colours
+ * keep fixed hues so their meaning doesn't change with the brand colour.
+ *
+ * Light and dark values sit together in light-dark(); ThemeService only switches
+ * color-scheme on <html> (light, dark, or "light dark" to follow the device).
+ */
+:root {
+  color-scheme: light dark;
+
+  /* Palette inputs. Phase 2 sets these from the user's chosen primary colour. */
+  --primary-h: 257;
+  --primary-c: 0.217;
+  --neutral-c: calc(var(--primary-c) * 0.06);
+
+  /* Text */
+  --color-text: light-dark(oklch(26% var(--neutral-c) var(--primary-h)), oklch(93% var(--neutral-c) var(--primary-h)));
+  --color-text-secondary: light-dark(oklch(43% var(--neutral-c) var(--primary-h)), oklch(82% var(--neutral-c) var(--primary-h)));
+  --color-text-muted: light-dark(oklch(53% var(--neutral-c) var(--primary-h)), oklch(70% var(--neutral-c) var(--primary-h)));
+
+  /* Surfaces, from the page background up */
+  --color-bg: light-dark(oklch(100% 0 0), oklch(17% var(--neutral-c) var(--primary-h)));
+  --color-surface: light-dark(oklch(98.2% var(--neutral-c) var(--primary-h)), oklch(21% var(--neutral-c) var(--primary-h)));
+  --color-surface-raised: light-dark(oklch(100% 0 0), oklch(25% var(--neutral-c) var(--primary-h)));
+  --color-surface-muted: light-dark(oklch(94.2% var(--neutral-c) var(--primary-h)), oklch(30% var(--neutral-c) var(--primary-h)));
+
+  /* Lines */
+  --color-border: light-dark(oklch(90% var(--neutral-c) var(--primary-h)), oklch(35% var(--neutral-c) var(--primary-h)));
+  --color-border-strong: light-dark(oklch(80% var(--neutral-c) var(--primary-h)), oklch(46% var(--neutral-c) var(--primary-h)));
+
+  /* Disabled controls */
+  --color-disabled: light-dark(oklch(84.5% var(--neutral-c) var(--primary-h)), oklch(38% var(--neutral-c) var(--primary-h)));
+  --color-on-disabled: light-dark(oklch(100% 0 0), oklch(65% var(--neutral-c) var(--primary-h)));
+
+  /* Primary */
+  /* Dark enough for white text (--color-on-primary) to pass WCAG AA. */
+  --color-primary: light-dark(oklch(54% var(--primary-c) var(--primary-h)), oklch(55% var(--primary-c) var(--primary-h)));
+  --color-primary-hover: light-dark(oklch(46% calc(var(--primary-c) * 0.8) var(--primary-h)), oklch(48% calc(var(--primary-c) * 0.85) var(--primary-h)));
+  --color-primary-text: light-dark(oklch(52% var(--primary-c) var(--primary-h)), oklch(75% calc(var(--primary-c) * 0.7) var(--primary-h)));
+  --color-primary-soft: light-dark(oklch(95.5% calc(var(--primary-c) * 0.1) var(--primary-h)), oklch(30% calc(var(--primary-c) * 0.3) var(--primary-h)));
+  --color-primary-border: light-dark(oklch(86% calc(var(--primary-c) * 0.3) var(--primary-h)), oklch(45% calc(var(--primary-c) * 0.5) var(--primary-h)));
+  --color-on-primary: oklch(100% 0 0);
+
+  /* Status */
+  --color-danger: light-dark(oklch(57% 0.19 25), oklch(70% 0.16 22));
+  --color-danger-soft: light-dark(oklch(97.8% 0.011 17), oklch(28% 0.06 22));
+  --color-danger-border: light-dark(oklch(81.5% 0.079 12), oklch(45% 0.1 18));
+  --color-on-danger: oklch(100% 0 0);
+  --color-success: light-dark(oklch(52.4% 0.14 150), oklch(75% 0.15 150));
+  --color-success-soft: light-dark(oklch(96.4% 0.018 156), oklch(28% 0.05 150));
+  --color-warning: light-dark(oklch(55.7% 0.115 83), oklch(80% 0.13 85));
+  --color-warning-soft: light-dark(oklch(96.4% 0.051 93), oklch(30% 0.06 85));
+
+  /* Effects */
+  --color-focus: var(--color-primary);
+  --color-shadow: light-dark(oklch(0% 0 0 / 0.15), oklch(0% 0 0 / 0.5));
+  --color-shadow-soft: light-dark(oklch(0% 0 0 / 0.05), oklch(0% 0 0 / 0.3));
+  --color-backdrop: light-dark(oklch(0% 0 0 / 0.3), oklch(0% 0 0 / 0.6));
+}

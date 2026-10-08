@@ -3,11 +3,11 @@
   padding: 24px;
   border: none;
   border-radius: 12px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 32px var(--color-shadow);
 }
 
 .settings-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--color-backdrop);
 }
 
 .settings-dialog h2 {
@@ -32,7 +32,7 @@
 .form-group input,
 .form-group select {
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
 }
 
@@ -59,7 +59,7 @@
   gap: 4px;
   padding: 4px 10px;
   border-radius: 999px;
-  background-color: #e9ecef;
+  background-color: var(--color-surface-muted);
   font-size: 0.9rem;
 }
 
@@ -70,7 +70,7 @@
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
-  color: #495057;
+  color: var(--color-text-secondary);
 }
 
 .add-currency {
@@ -88,8 +88,8 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background-color: #e9ecef;
-  color: #343a40;
+  background-color: var(--color-surface-muted);
+  color: var(--color-text);
 }
 
 .add-currency button:disabled {
@@ -101,7 +101,7 @@
 .muted {
   margin: 0;
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .actions {
@@ -116,15 +116,20 @@
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
 }
 
 .actions button:disabled {
-  background-color: #ccc;
+  background-color: var(--color-disabled);
 }
 
 .actions .secondary {
-  background-color: #e9ecef;
-  color: #343a40;
+  background-color: var(--color-surface-muted);
+  color: var(--color-text);
+}
+
+/* On the chip's muted background, the usual muted grey is too faint. */
+.currency-chip .muted {
+  color: var(--color-text-secondary);
 }

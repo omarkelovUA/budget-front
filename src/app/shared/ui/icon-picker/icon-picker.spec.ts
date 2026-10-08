@@ -28,7 +28,7 @@ describe('IconPicker', () => {
     expect(el.querySelector('[role="radiogroup"]')?.getAttribute('aria-label')).toBe('Icon');
     expect(radios.map((r) => r.getAttribute('aria-label'))).toEqual(['Картка', 'Готівка', 'Банк']);
     expect(radios.map((r) => r.checked)).toEqual([false, true, false]);
-    expect((el.querySelector('img') as HTMLImageElement).getAttribute('src')).toBe('assets/card.svg');
+    expect((el.querySelector('app-icon') as HTMLElement).style.maskImage).toBe('url("assets/card.svg")');
   });
 
   it('writes the picked icon back to the form field', async () => {

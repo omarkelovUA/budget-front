@@ -21,7 +21,7 @@
 
 .form-group select {
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
 }
 
@@ -39,15 +39,15 @@
 }
 
 .actions .danger {
-  background-color: #c0392b;
-  color: white;
+  background-color: var(--color-danger);
+  color: var(--color-on-danger);
 }
 
 .actions .danger:disabled {
-  background-color: #ccc;
+  background-color: var(--color-disabled);
 }
 
 .actions .secondary {
-  background-color: #e9ecef;
-  color: #343a40;
+  background-color: var(--color-surface-muted);
+  color: var(--color-text);
 }

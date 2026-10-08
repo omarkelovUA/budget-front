@@ -11,16 +11,16 @@
 }
 
 .access-badge.owner {
-  background: #e7f1ff;
-  color: #0056b3;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-text);
 }
 
 .access-badge.shared {
-  background: #eaf7ee;
-  color: #1a7f37;
+  background: var(--color-success-soft);
+  color: var(--color-success);
 }
 
 .access-badge.visible {
-  background: #fff3cd;
-  color: #946c00;
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
 }

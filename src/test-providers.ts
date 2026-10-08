@@ -8,7 +8,12 @@ import { IUserSettings } from './app/model/types';
 import en from './i18n/en.json';
 import uk from './i18n/uk.json';
 
-export const TEST_SETTINGS: IUserSettings = { language: 'uk', defaultCurrency: 'UAH', usedCurrencies: ['UAH'] };
+export const TEST_SETTINGS: IUserSettings = {
+  language: 'uk',
+  defaultCurrency: 'UAH',
+  usedCurrencies: ['UAH'],
+  theme: 'system',
+};
 
 // Every spec gets real translations, synchronously. Ukrainian by default, so specs
 // read like the UI most users see; switch with TranslocoService.setActiveLang.

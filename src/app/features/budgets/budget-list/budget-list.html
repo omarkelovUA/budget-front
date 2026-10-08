@@ -30,7 +30,7 @@
           <div class="budget-card" [class.over]="isOverBudget(budget)">
             <div class="budget-header">
               <div class="icon-box" [style.background-color]="budget.category.color">
-                <img [src]="budget.category.icon" alt="" />
+                <app-icon [src]="budget.category.icon" />
               </div>
               <div class="budget-info">
                 <span class="budget-name">{{ budget.category.name }}</span>

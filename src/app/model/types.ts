@@ -1,12 +1,15 @@
 import { Language } from '../core/i18n/languages';
+import { Theme } from '../core/theme/theme';
 
 // The current user's own settings (more to come). language is ISO 639-1 and
 // defaultCurrency ISO 4217, both picked from the region at sign-up; usedCurrencies
-// are what currency pickers offer and always include defaultCurrency.
+// are what currency pickers offer and always include defaultCurrency; theme 'system'
+// follows the device.
 export interface IUserSettings {
   language: Language;
   defaultCurrency: string;
   usedCurrencies: string[];
+  theme: Theme;
 }
 
 export type Visibility = 'private' | 'shared';

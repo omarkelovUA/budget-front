@@ -10,11 +10,13 @@ import { AccountClose } from '../account-close/account-close';
 import { AccountForm } from '../account-form/account-form';
 import { FamilyTransfers } from '../../family-transfers/family-transfers/family-transfers';
 import { AuthState } from '../../../core/auth/auth-state';
+import { Icon } from '../../../shared/ui/icon/icon';
 
 @Component({
   selector: 'app-account-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    Icon,
     AccountForm,
     AccountClose,
     AccessBadge,

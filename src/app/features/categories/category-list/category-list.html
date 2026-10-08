@@ -31,7 +31,7 @@
             <button type="button" class="card-select" (click)="selectCategory(cat)"
                     [attr.aria-label]="t('categories.editAria', { name: cat.name })">
               <span class="icon-box" [style.background-color]="cat.color">
-                <img [src]="cat.icon" alt="" />
+                <app-icon [src]="cat.icon" />
               </span>
 
               <span class="category-info">

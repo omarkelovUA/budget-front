@@ -2,16 +2,18 @@ import { inject, Injectable, signal } from '@angular/core';
 import { from, map, Observable, switchMap } from 'rxjs';
 import { LanguageService } from '../../core/i18n/language';
 import { isLanguage } from '../../core/i18n/languages';
+import { isTheme, ThemeService } from '../../core/theme/theme';
 import { IUserSettings } from '../../model/types';
 import { SettingsRepository } from './data/settings-repository';
 
 // The signed-in user's settings, loaded when the session starts (AuthState) and
 // kept here so forms can read them without fetching. Applying them switches the UI
-// to the account's language.
+// to the account's language and theme.
 @Injectable({ providedIn: 'root' })
 export class SettingsState {
   private readonly settingsRepository = inject(SettingsRepository);
   private readonly languageService = inject(LanguageService);
+  private readonly themeService = inject(ThemeService);
 
   private readonly value = signal<IUserSettings | null>(null);
   readonly settings = this.value.asReadonly();
@@ -30,6 +32,7 @@ export class SettingsState {
 
   private apply(settings: IUserSettings): Observable<IUserSettings> {
     this.value.set(settings);
+    if (isTheme(settings.theme)) this.themeService.use(settings.theme);
     const language = isLanguage(settings.language) ? this.languageService.use(settings.language) : Promise.resolve();
     return from(language).pipe(map(() => settings));
   }

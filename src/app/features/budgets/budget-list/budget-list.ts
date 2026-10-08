@@ -6,11 +6,12 @@ import { BudgetForm } from '../budget-form/budget-form';
 import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-badge';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoDecimalPipe } from '@jsverse/transloco-locale';
+import { Icon } from '../../../shared/ui/icon/icon';
 
 @Component({
   selector: 'app-budget-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BudgetForm, VisibilityBadge, TranslocoDirective, TranslocoDecimalPipe],
+  imports: [Icon, BudgetForm, VisibilityBadge, TranslocoDirective, TranslocoDecimalPipe],
   templateUrl: './budget-list.html',
   styleUrl: './budget-list.css',
 })

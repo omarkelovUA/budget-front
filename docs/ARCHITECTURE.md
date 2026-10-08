@@ -65,7 +65,8 @@ The backend enforces these; the UI only has to present them correctly:
 - Closing an account moves its balance to another open, same-currency account the user
   can record on, then archives it. The close dialog only offers such targets.
 - **Settings** (header → *Settings*, `SettingsDialog`; cached in `SettingsState`, loaded
-  when the session starts): the UI **language**, the **used currencies** and the
+  when the session starts): the UI **language**, the **theme** (light, dark or device),
+  the **used currencies** and the
   **default currency**, which must be one of them. The backend picks the language and
   default currency from the browser's region at sign-up. New accounts start in the
   default currency, and the account form offers the used currencies; any other code can
@@ -213,7 +214,23 @@ happens; the backend's English `detail` is never shown.
 - **Specs** get both languages synchronously through `src/test-providers.ts` (the unit-test
   builder's `providersFile`), in Ukrainian unless a spec switches.
 
-### 4.7 Local dev
+### 4.7 Theme and colours
+
+- **Tokens:** every colour comes from `src/styles/theme.css` (`--color-*`; plan and later
+  phases in the workspace's `.docs/theme.md`). Values are OKLCH, derived from two inputs,
+  `--primary-h` and `--primary-c`, so a user-chosen primary colour (phase 2) only sets
+  those two. Component CSS never uses raw colours; `colors.spec.ts` fails on any hex,
+  rgb or named colour outside `theme.css`.
+- **Light and dark:** each token is `light-dark(light, dark)`. `ThemeService`
+  (`core/theme`) sets `color-scheme` on `<html>` to `light`, `dark` or `light dark`
+  (device). Precedence is the same as for the language: the account's `theme` setting,
+  then the device's last choice (`localStorage`), then `system`.
+- **Icons** are drawn by `app-icon` as a CSS mask filled with `currentColor`, so they
+  follow the theme. Don't use `<img>` for them.
+- **Contrast:** text tokens pass WCAG AA on the surfaces they're used on, in both themes;
+  keep it that way when adding tokens.
+
+### 4.8 Local dev
 
 `ng serve` proxies `/api`, `/oauth2` and `/login/oauth2` to the backend
 (`src/proxy.conf.json`), so the browser sees one origin — no CORS, and the refresh

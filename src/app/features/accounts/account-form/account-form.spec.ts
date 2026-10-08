@@ -46,7 +46,10 @@ describe('AccountForm', () => {
         { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(FAMILY) } },
         {
           provide: SettingsRepository,
-          useValue: { getSettings: () => of({ language: 'uk', defaultCurrency: 'PLN', usedCurrencies: ['PLN', 'EUR'] }) },
+          useValue: {
+            getSettings: () =>
+              of({ language: 'uk', defaultCurrency: 'PLN', usedCurrencies: ['PLN', 'EUR'], theme: 'system' }),
+          },
         },
       ],
     }).compileComponents();

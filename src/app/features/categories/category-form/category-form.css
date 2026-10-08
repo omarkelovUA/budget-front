@@ -31,15 +31,15 @@ input[type="radio"] {
 .visibility-label {
   display: inline-block;
   padding: 6px 14px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--color-border);
   border-radius: 999px;
   transition: border-color 0.2s, background-color 0.2s;
 }
 
 .type-option input[type="radio"]:checked + .type-label,
 .visibility-option input[type="radio"]:checked + .visibility-label {
-  border-color: #007bff;
-  background-color: #e7f1ff;
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
 }
 
 .color-picker {
@@ -57,18 +57,18 @@ input[type="radio"] {
 }
 
 input[type="radio"]:checked + .color-swatch {
-  border-color: #000;
+  border-color: var(--color-text);
 }
 
 button {
   padding: 10px;
   cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   border: none;
   border-radius: 4px;
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: var(--color-disabled);
 }

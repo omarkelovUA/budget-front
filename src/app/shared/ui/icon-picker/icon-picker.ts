@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { Icon } from '../icon/icon';
 import { iconPath } from './icons';
 
 let nextId = 0;
@@ -9,7 +10,7 @@ let nextId = 0;
 // path ('assets/<name>.svg'). Native radios keep it keyboard-accessible.
 @Component({
   selector: 'app-icon-picker',
-  imports: [TranslocoDirective],
+  imports: [TranslocoDirective, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './icon-picker.html',
   styleUrl: './icon-picker.css',

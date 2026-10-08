@@ -65,7 +65,7 @@
 
   <ng-template #cardBody let-acc>
     <span class="icon-box" [style.background-color]="acc.color">
-      <img [src]="acc.icon" alt="" />
+      <app-icon [src]="acc.icon" />
     </span>
     <span class="account-info">
       <span class="account-name">{{ acc.name }}</span>

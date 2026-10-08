@@ -27,7 +27,7 @@
 }
 
 input[type="radio"]:checked + .color-swatch {
-  border-color: #000;
+  border-color: var(--color-text);
 }
 
 input[type="radio"] {
@@ -37,14 +37,14 @@ input[type="radio"] {
 button {
   padding: 10px;
   cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   border: none;
   border-radius: 4px;
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: var(--color-disabled);
 }
 
 .visibility-picker {
@@ -59,14 +59,14 @@ button:disabled {
 .visibility-label {
   display: inline-block;
   padding: 6px 14px;
-  border: 2px solid #ddd;
+  border: 2px solid var(--color-border);
   border-radius: 999px;
   transition: border-color 0.2s, background-color 0.2s;
 }
 
 .visibility-option input[type="radio"]:checked + .visibility-label {
-  border-color: #007bff;
-  background-color: #e7f1ff;
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
 }
 
 .access-editor {
@@ -94,5 +94,5 @@ button:disabled {
 .hint {
   margin: 0;
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }

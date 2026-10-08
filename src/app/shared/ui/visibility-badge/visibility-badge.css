@@ -11,11 +11,11 @@
 }
 
 .visibility-badge.private {
-  background: #e7f1ff;
-  color: #0056b3;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-text);
 }
 
 .visibility-badge.shared {
-  background: #eaf7ee;
-  color: #1a7f37;
+  background: var(--color-success-soft);
+  color: var(--color-success);
 }

@@ -23,23 +23,23 @@
   align-items: center;
   justify-content: center;
   aspect-ratio: 1;
-  border: 2px solid #ddd;
+  border: 2px solid var(--color-border);
   border-radius: 8px;
-  color: #343a40;
+  color: var(--color-text);
   transition: border-color 0.2s;
 }
 
 .icon-option:hover .icon-swatch {
-  border-color: #adb5bd;
+  border-color: var(--color-border-strong);
 }
 
 .icon-option input:checked + .icon-swatch {
-  border-color: #007bff;
-  background-color: #e7f1ff;
+  border-color: var(--color-primary);
+  background-color: var(--color-primary-soft);
 }
 
 .icon-option input:focus-visible + .icon-swatch {
-  outline: 2px solid #007bff;
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 

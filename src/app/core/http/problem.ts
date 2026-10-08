@@ -40,6 +40,7 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'unsupported-language',
   'invalid-used-currencies',
   'default-currency-not-used',
+  'unsupported-theme',
 ]);
 
 export function problemType(err: unknown): string | null {

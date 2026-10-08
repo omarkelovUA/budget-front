@@ -33,6 +33,7 @@ import { authInterceptor } from './core/http/auth.interceptor';
 import { LanguageService } from './core/i18n/language';
 import { FALLBACK_LANGUAGE, LANGUAGE_CODES, LANGUAGE_LOCALES } from './core/i18n/languages';
 import { TranslationLoader } from './core/i18n/translation-loader';
+import { ThemeService } from './core/theme/theme';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -50,11 +51,12 @@ export const appConfig: ApplicationConfig = {
       loader: TranslationLoader,
     }),
     provideTranslocoLocale({ langToLocaleMapping: LANGUAGE_LOCALES }),
-    // Load the device's language, then restore the session from the refresh cookie
-    // (which switches to the account's language) before the first route guard runs.
+    // Apply the device's theme and language, then restore the session from the refresh
+    // cookie (which switches to the account's) before the first route guard runs.
     provideAppInitializer(() => {
       const languageService = inject(LanguageService);
       const authState = inject(AuthState);
+      inject(ThemeService).init();
       return languageService.init().then(() => authState.restoreSession());
     }),
     { provide: AccountRepository, useClass: HttpAccountRepository },

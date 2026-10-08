@@ -11,7 +11,7 @@
         [attr.aria-label]="t('icons.' + icon)"
         (change)="value.set(path(icon))"
       />
-      <span class="icon-swatch"><img [src]="path(icon)" alt="" width="24" height="24" /></span>
+      <span class="icon-swatch"><app-icon [src]="path(icon)" /></span>
     </label>
   }
 </div>

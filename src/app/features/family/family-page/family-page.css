@@ -3,18 +3,18 @@
   flex-direction: column;
   gap: 20px;
   padding: 24px;
-  background: #f8f9fa;
+  background: var(--color-surface);
   border-radius: 12px;
 }
 
 .create-family h2,
 .family-details h2 {
   margin: 0 0 4px;
-  color: #212529;
+  color: var(--color-text);
 }
 
 .create-family p {
-  color: #6c757d;
+  color: var(--color-text-muted);
   margin: 0 0 16px;
 }
 
@@ -35,7 +35,7 @@
 .invite-form input {
   flex: 1;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
 }
 
@@ -47,22 +47,22 @@
 
 .form-group input {
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-border);
   border-radius: 6px;
 }
 
 button {
   padding: 10px 16px;
   cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
   border: none;
   border-radius: 4px;
   font-weight: 500;
 }
 
 button:disabled {
-  background-color: #ccc;
+  background-color: var(--color-disabled);
 }
 
 .members-list {
@@ -77,8 +77,8 @@ button:disabled {
   justify-content: space-between;
   gap: 16px;
   padding: 12px 16px;
-  background: white;
-  border: 1px solid #e9ecef;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
 }
 
@@ -89,12 +89,12 @@ button:disabled {
 
 .member-name {
   font-weight: 600;
-  color: #343a40;
+  color: var(--color-text);
 }
 
 .member-email {
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .role-badge {
@@ -103,26 +103,26 @@ button:disabled {
   font-size: 0.72rem;
   font-weight: 600;
   text-transform: uppercase;
-  background: #e7f1ff;
-  color: #0056b3;
+  background: var(--color-primary-soft);
+  color: var(--color-primary-text);
 }
 
 .role-badge.admin {
-  background: #fff3cd;
-  color: #946c00;
+  background: var(--color-warning-soft);
+  color: var(--color-warning);
 }
 
 .status-message {
   text-align: center;
   padding: 40px;
-  color: #6c757d;
+  color: var(--color-text-muted);
 }
 
 .spinner {
   width: 30px;
   height: 30px;
-  border: 3px solid #f3f3f3;
-  border-top: 3px solid #007bff;
+  border: 3px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 10px;
@@ -136,11 +136,11 @@ button:disabled {
 .family-details h3 {
   margin: 16px 0 8px;
   font-size: 1rem;
-  color: #343a40;
+  color: var(--color-text);
 }
 
 .hint {
-  color: #6c757d;
+  color: var(--color-text-muted);
   margin: 0 0 12px;
 }
 
@@ -152,7 +152,7 @@ button:disabled {
 
 .received-invitations h2 {
   margin: 0 0 4px;
-  color: #212529;
+  color: var(--color-text);
 }
 
 .invitation-row {
@@ -162,8 +162,8 @@ button:disabled {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 16px;
-  background: white;
-  border: 1px solid #b6d4fe;
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-primary-border);
   border-radius: 10px;
 }
 
@@ -175,11 +175,11 @@ button:disabled {
 }
 
 .warning {
-  color: #946c00;
+  color: var(--color-warning);
   font-size: 0.85rem;
 }
 
 button.secondary {
-  background-color: #e9ecef;
-  color: #343a40;
+  background-color: var(--color-surface-muted);
+  color: var(--color-text);
 }
