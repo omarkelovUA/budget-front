@@ -4,11 +4,12 @@ import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
 import { CategoryForm } from '../category-form/category-form';
 import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-badge';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-category-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CategoryForm, VisibilityBadge],
+  imports: [CategoryForm, VisibilityBadge, TranslocoDirective],
   templateUrl: './category-list.html',
   styleUrl: './category-list.css',
 })

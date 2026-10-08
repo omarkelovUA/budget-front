@@ -1,43 +1,46 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { translate } from '@jsverse/transloco';
 import { catchError, MonoTypeOperatorFunction, throwError } from 'rxjs';
 
 // Backend errors are RFC 9457 ProblemDetails whose `type` ends in a stable slug
 // (docs/ARCHITECTURE.md §4.5); the UI shows its own text for each one.
 const PROBLEM_TYPE_BASE = 'https://familybudget.app/problems/';
 
-const MESSAGES: Record<string, string> = {
-  'invalid-credentials': 'Невірний email або пароль',
-  'email-taken': 'Користувач з таким email вже існує',
-  'not-found': 'Не знайдено',
-  'already-in-family': "Ви вже належите до сім'ї",
-  'invalid-invite': 'Запрошення недійсне, прострочене або вже використане',
-  'already-invited': 'Цю адресу вже запрошено',
-  'already-member': "Ця людина вже у вашій сім'ї",
-  'family-full': "У сім'ї може бути не більше 10 людей, враховуючи запрошених",
-  'email-not-verified': 'Щоб користуватися запрошеннями, увійдіть через Google',
-  'admin-required': "Це може зробити лише адміністратор сім'ї",
-  'last-admin': "У сім'ї має залишитися хоча б один адміністратор",
-  'no-family': "Щоб ділитися даними, створіть сім'ю або приєднайтеся до неї",
-  'visibility-immutable': 'Доступ (особистий/сімейний) не можна змінити після створення',
-  'category-type-immutable': 'Тип категорії не можна змінити після створення',
-  'account-in-use': 'У рахунку є транзакції — закрийте його замість видалення',
-  'not-account-owner': 'Це може зробити лише власник рахунку',
-  'account-read-only': 'Цей рахунок доступний вам лише для перегляду',
-  'account-closed': 'Рахунок закрито',
-  'grantee-not-in-family': "Доступ можна надати лише іншим учасникам вашої сім'ї",
-  'close-target-required': 'Оберіть рахунок, на який перенести залишок',
-  'transient-account': "Гроші в дорозі між членами сім'ї рухаються лише через перекази в сім'ї",
-  'recipient-not-in-family': "Надсилати гроші можна лише іншому учаснику вашої сім'ї",
-  'insufficient-in-transit': 'Стільки грошей у цьому переказі немає',
-  'invalid-currency': 'Невідомий код валюти',
-  'category-in-use': 'Спершу видаліть транзакції та бюджети цієї категорії',
-  'currency-mismatch': 'Переказ між рахунками в різних валютах не підтримується',
-  'transaction-not-editable': 'Ця транзакція стосується рахунку, до якого у вас немає доступу',
-  'category-not-shared': 'Для сімейного бюджету потрібна сімейна категорія',
-  'budget-exists': 'Бюджет для цієї категорії на цей місяць уже існує',
-};
-
-const FALLBACK = 'Щось пішло не так. Спробуйте пізніше.';
+// Each has its text under errors.<slug> in the translation files.
+export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
+  'invalid-credentials',
+  'email-taken',
+  'not-found',
+  'already-in-family',
+  'invalid-invite',
+  'already-invited',
+  'already-member',
+  'family-full',
+  'email-not-verified',
+  'admin-required',
+  'last-admin',
+  'no-family',
+  'visibility-immutable',
+  'category-type-immutable',
+  'account-in-use',
+  'not-account-owner',
+  'account-read-only',
+  'account-closed',
+  'grantee-not-in-family',
+  'close-target-required',
+  'transient-account',
+  'recipient-not-in-family',
+  'insufficient-in-transit',
+  'invalid-currency',
+  'category-in-use',
+  'currency-mismatch',
+  'transaction-not-editable',
+  'category-not-shared',
+  'budget-exists',
+  'unsupported-language',
+  'invalid-used-currencies',
+  'default-currency-not-used',
+]);
 
 export function problemType(err: unknown): string | null {
   if (!(err instanceof HttpErrorResponse)) return null;
@@ -47,13 +50,14 @@ export function problemType(err: unknown): string | null {
     : null;
 }
 
+// Translated into the language active when the error happens.
 export function toUserError(err: unknown): Error {
   const type = problemType(err);
-  if (type && MESSAGES[type]) return new Error(MESSAGES[type]);
+  if (type && KNOWN_PROBLEMS.has(type)) return new Error(translate(`errors.${type}`));
   if (err instanceof HttpErrorResponse && err.status === 400) {
-    return new Error('Перевірте правильність введених даних');
+    return new Error(translate('errors.badRequest'));
   }
-  return new Error(FALLBACK);
+  return new Error(translate('errors.fallback'));
 }
 
 /** Replaces an HTTP error with an `Error` whose message can be shown to the user. */

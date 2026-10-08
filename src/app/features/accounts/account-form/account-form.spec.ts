@@ -44,7 +44,10 @@ describe('AccountForm', () => {
           useValue: { login: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
         },
         { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(FAMILY) } },
-        { provide: SettingsRepository, useValue: { getSettings: () => of({ defaultCurrency: 'PLN' }) } },
+        {
+          provide: SettingsRepository,
+          useValue: { getSettings: () => of({ language: 'uk', defaultCurrency: 'PLN', usedCurrencies: ['PLN', 'EUR'] }) },
+        },
       ],
     }).compileComponents();
 
@@ -59,6 +62,12 @@ describe('AccountForm', () => {
 
     expect(form().value()).toEqual({ name: '', currency: 'PLN', icon: 'assets/card.svg', color: 'green' });
     expect(form().valid()).toBe(false);
+  });
+
+  it('offers the used currencies in the currency field', () => {
+    const options = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('#account-currencies option'));
+
+    expect(options.map((o) => (o as HTMLOptionElement).value)).toEqual(['PLN', 'EUR']);
   });
 
   it('lists the other family members, hidden by default', () => {

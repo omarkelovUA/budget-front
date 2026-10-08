@@ -1,115 +1,120 @@
-<div class="dashboard">
+<div class="dashboard" *transloco="let t">
   <header class="dashboard-header">
-    <h2>Огляд</h2>
-    <div class="month-switcher" role="group" aria-label="Обраний місяць">
-      <button type="button" (click)="previousMonth()" aria-label="Попередній місяць">‹</button>
-      <span class="month-label" aria-live="polite">{{ periodLabel() }}</span>
-      <button type="button" (click)="nextMonth()" [disabled]="isCurrentMonth()" aria-label="Наступний місяць">›</button>
+    <h2>{{ t('dashboard.title') }}</h2>
+    <div class="month-switcher" role="group" [attr.aria-label]="t('dashboard.monthGroup')">
+      <button type="button" (click)="previousMonth()" [attr.aria-label]="t('dashboard.previousMonth')">‹</button>
+      <span class="month-label" aria-live="polite">{{ periodStart() | translocoDate: { month: 'long', year: 'numeric' } }}</span>
+      <button type="button" (click)="nextMonth()" [disabled]="isCurrentMonth()" [attr.aria-label]="t('dashboard.nextMonth')">›</button>
     </div>
   </header>
 
   @if (!currentUser()?.familyId) {
     <p class="hint">
-      Ви бачите лише особисті дані. <a routerLink="/family">Створіть сім'ю або приєднайтеся до неї</a>,
-      щоб вести спільний бюджет.
+      {{ t('dashboard.personalOnly') }} <a routerLink="/family">{{ t('dashboard.createFamilyLink') }}</a>{{ t('dashboard.personalOnlyEnd') }}
     </p>
   }
 
   <div class="dashboard-grid">
     <section class="panel" aria-labelledby="balances-title">
-      <h3 id="balances-title">Баланс</h3>
+      <h3 id="balances-title">{{ t('dashboard.balance') }}</h3>
       @if (accountsResource.isLoading()) {
-        <p class="muted" role="status">Завантаження...</p>
+        <p class="muted" role="status">{{ t('common.loading') }}</p>
       } @else if (accountsResource.error()) {
-        <p class="form-error" role="alert">Не вдалося завантажити рахунки.</p>
+        <p class="form-error" role="alert">{{ t('dashboard.accountsFailed') }}</p>
       } @else {
         @for (balance of balances(); track balance.currency) {
           <div class="balance-row">
-            <span class="big-number">{{ money(balance.total, balance.currency) }}</span>
+            <span class="big-number">{{ balance.total | translocoCurrency: 'symbol' : {} : balance.currency }}</span>
             <span class="muted">
-              мої {{ money(balance.owner, balance.currency) }}
+              {{ t('dashboard.mine', { amount: (balance.owner | translocoCurrency: 'symbol' : {} : balance.currency) }) }}
               @if (balance.shared) {
-                · спільні зі мною {{ money(balance.shared, balance.currency) }}
+                · {{ t('dashboard.sharedWithMe', { amount: (balance.shared | translocoCurrency: 'symbol' : {} : balance.currency) }) }}
               }
               @if (balance.visible) {
-                · перегляд {{ money(balance.visible, balance.currency) }}
+                · {{ t('dashboard.viewOnly', { amount: (balance.visible | translocoCurrency: 'symbol' : {} : balance.currency) }) }}
               }
               @if (balance.inTransit) {
-                · у дорозі {{ money(balance.inTransit, balance.currency) }}
+                · {{ t('dashboard.inTransit', { amount: (balance.inTransit | translocoCurrency: 'symbol' : {} : balance.currency) }) }}
               }
             </span>
           </div>
         } @empty {
-          <p class="muted">Рахунків ще немає. <a routerLink="/accounts">Створіть перший рахунок</a>.</p>
+          <p class="muted">{{ t('dashboard.noAccounts') }} <a routerLink="/accounts">{{ t('dashboard.createFirstAccount') }}</a>.</p>
         }
       }
     </section>
 
     <section class="panel" aria-labelledby="month-title">
-      <h3 id="month-title">За місяць</h3>
+      <h3 id="month-title">{{ t('dashboard.month') }}</h3>
       @if (summaryResource.isLoading()) {
-        <p class="muted" role="status">Завантаження...</p>
+        <p class="muted" role="status">{{ t('common.loading') }}</p>
       } @else if (summaryResource.error()) {
-        <p class="form-error" role="alert">Не вдалося завантажити підсумки.</p>
+        <p class="form-error" role="alert">{{ t('dashboard.summaryFailed') }}</p>
       } @else {
         @for (summary of summaryResource.value(); track summary.currency) {
           <dl class="summary">
-            <div><dt>Доходи</dt><dd class="income">{{ money(summary.income, summary.currency) }}</dd></div>
-            <div><dt>Витрати</dt><dd class="expense">{{ money(summary.expense, summary.currency) }}</dd></div>
             <div>
-              <dt>Різниця</dt>
+              <dt>{{ t('dashboard.income') }}</dt>
+              <dd class="income">{{ summary.income | translocoCurrency: 'symbol' : {} : summary.currency }}</dd>
+            </div>
+            <div>
+              <dt>{{ t('dashboard.expense') }}</dt>
+              <dd class="expense">{{ summary.expense | translocoCurrency: 'symbol' : {} : summary.currency }}</dd>
+            </div>
+            <div>
+              <dt>{{ t('dashboard.net') }}</dt>
               <dd [class.income]="summary.income >= summary.expense" [class.expense]="summary.income < summary.expense">
-                {{ money(summary.income - summary.expense, summary.currency) }}
+                {{ summary.income - summary.expense | translocoCurrency: 'symbol' : {} : summary.currency }}
               </dd>
             </div>
           </dl>
         } @empty {
-          <p class="muted">У цьому місяці ще немає платежів.</p>
+          <p class="muted">{{ t('dashboard.noPayments') }}</p>
         }
       }
     </section>
 
     <section class="panel" aria-labelledby="budgets-title">
-      <h3 id="budgets-title">Бюджети</h3>
+      <h3 id="budgets-title">{{ t('dashboard.budgets') }}</h3>
       @if (budgetsResource.isLoading()) {
-        <p class="muted" role="status">Завантаження...</p>
+        <p class="muted" role="status">{{ t('common.loading') }}</p>
       } @else if (budgetsResource.error()) {
-        <p class="form-error" role="alert">Не вдалося завантажити бюджети.</p>
+        <p class="form-error" role="alert">{{ t('dashboard.budgetsFailed') }}</p>
       } @else {
         @for (budget of budgetsResource.value(); track budget.id) {
           <div class="budget-row" [class.over]="isOverBudget(budget)">
             <div class="budget-line">
               <span>{{ budget.category.name }}</span>
               <span class="muted">
-                {{ budget.factAmount }} / {{ budget.plannedAmount }}
+                {{ budget.factAmount | translocoDecimal }} / {{ budget.plannedAmount | translocoDecimal }}
                 @if (isOverBudget(budget)) {
-                  <span class="over-label">перевищено</span>
+                  <span class="over-label">{{ t('dashboard.over') }}</span>
                 }
               </span>
             </div>
             <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
                  [attr.aria-valuenow]="progressPercent(budget)"
-                 [attr.aria-label]="budget.category.name + ': витрачено ' + progressPercent(budget) + '%'">
+                 [attr.aria-label]="t('dashboard.spentAria', { name: budget.category.name, percent: progressPercent(budget) })">
               <div class="progress-fill" [style.width.%]="progressPercent(budget)"></div>
             </div>
           </div>
         } @empty {
-          <p class="muted">Бюджетів на цей місяць немає. <a routerLink="/budgets">Створити бюджет</a></p>
+          <p class="muted">{{ t('dashboard.noBudgets') }} <a routerLink="/budgets">{{ t('dashboard.createBudget') }}</a></p>
         }
       }
     </section>
 
     <section class="panel" aria-labelledby="recent-title">
-      <h3 id="recent-title">Останні транзакції</h3>
+      <h3 id="recent-title">{{ t('dashboard.recent') }}</h3>
       @if (recentResource.isLoading()) {
-        <p class="muted" role="status">Завантаження...</p>
+        <p class="muted" role="status">{{ t('common.loading') }}</p>
       } @else if (recentResource.error()) {
-        <p class="form-error" role="alert">Не вдалося завантажити транзакції.</p>
+        <p class="form-error" role="alert">{{ t('dashboard.recentFailed') }}</p>
       } @else {
         <ul class="recent">
           @for (tx of recentResource.value(); track tx.id) {
             <li>
-              <span class="muted">{{ tx.date | date: 'dd.MM' }}</span>
+              <span class="muted">{{ tx.date | translocoDate: { day: '2-digit', month: '2-digit' } }}</span>
               <span class="recent-description">
                 @if (isTransfer(tx)) {
                   {{ tx.fromAccount.name }} → {{ tx.toAccount.name }}
@@ -119,14 +124,14 @@
               </span>
               <span [class.income]="!isTransfer(tx) && tx.category.type === 'income'"
                     [class.expense]="!isTransfer(tx) && tx.category.type === 'expense'">
-                {{ signedAmount(tx) }}
+                {{ sign(tx) }}{{ tx.amount | translocoCurrency: 'symbol' : {} : currencyOf(tx) }}
               </span>
             </li>
           } @empty {
-            <li class="muted">Транзакцій ще немає.</li>
+            <li class="muted">{{ t('dashboard.noTransactions') }}</li>
           }
         </ul>
-        <a routerLink="/transactions" class="more-link">Усі транзакції →</a>
+        <a routerLink="/transactions" class="more-link">{{ t('dashboard.allTransactions') }}</a>
       }
     </section>
   </div>

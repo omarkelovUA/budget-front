@@ -1,21 +1,67 @@
 <dialog #dialog class="settings-dialog" aria-labelledby="settings-title">
-  <form novalidate (submit)="$event.preventDefault(); save()">
-    <h2 id="settings-title">Налаштування</h2>
+  <form *transloco="let t" novalidate (submit)="$event.preventDefault(); save()">
+    <h2 id="settings-title">{{ t('settings.title') }}</h2>
 
     @if (loading()) {
-      <p class="muted" role="status">Завантаження...</p>
+      <p class="muted" role="status">{{ t('common.loading') }}</p>
     } @else {
       <div class="form-group">
-        <label for="settings-currency">Основна валюта</label>
-        <input id="settings-currency" list="settings-currencies" [formField]="form.defaultCurrency" />
-        <datalist id="settings-currencies">
-          @for (currency of currencies; track currency) {
-            <option [value]="currency"></option>
+        <label for="settings-language">{{ t('settings.language') }}</label>
+        <select id="settings-language" [formField]="form.language">
+          @for (language of languages; track language.code) {
+            <option [value]="language.code" [attr.lang]="language.code">{{ language.name }}</option>
           }
-        </datalist>
-        <p class="hint">
-          З неї починаються нові рахунки та перекази членам сім'ї. Код ISO 4217, наприклад UAH або EUR.
-        </p>
+        </select>
+      </div>
+
+      <fieldset class="form-group">
+        <legend>{{ t('settings.usedCurrencies') }}</legend>
+        <ul class="currency-chips">
+          @for (currency of usedCurrencies(); track currency) {
+            <li class="currency-chip">
+              {{ currency }}
+              @if (currency === form.defaultCurrency().value()) {
+                <span class="muted">· {{ t('settings.defaultCurrencyBadge') }}</span>
+              } @else {
+                <button type="button" class="chip-remove" (click)="removeCurrency(currency)"
+                        [attr.aria-label]="t('settings.removeCurrencyAria', { currency })">×</button>
+              }
+            </li>
+          }
+        </ul>
+        <div class="add-currency">
+          <input
+            id="settings-new-currency"
+            list="settings-currencies"
+            maxlength="3"
+            [attr.aria-label]="t('settings.addCurrency')"
+            [placeholder]="t('settings.addCurrencyPlaceholder')"
+            [value]="newCurrency()"
+            (input)="newCurrency.set($any($event.target).value)"
+            (keydown.enter)="$event.preventDefault(); addCurrency()"
+          />
+          <datalist id="settings-currencies">
+            @for (currency of suggestions(); track currency) {
+              <option [value]="currency"></option>
+            }
+          </datalist>
+          <button type="button" class="secondary" [disabled]="!newCurrency().trim() || newCurrencyError()"
+                  (click)="addCurrency()">{{ t('settings.add') }}</button>
+        </div>
+        @if (newCurrencyError(); as key) {
+          <p class="form-error" role="alert">{{ t(key, { max: maxUsedCurrencies }) }}</p>
+        }
+        <p class="hint">{{ t('settings.usedCurrenciesHint') }}</p>
+      </fieldset>
+
+      <div class="form-group">
+        <label for="settings-currency">{{ t('settings.defaultCurrency') }}</label>
+        <select id="settings-currency" [formField]="form.defaultCurrency">
+          @for (currency of usedCurrencies(); track currency) {
+            <option [value]="currency">{{ currency }}</option>
+          }
+        </select>
+        <p class="hint">{{ t('settings.defaultCurrencyHint') }}</p>
       </div>
     }
 
@@ -24,8 +70,8 @@
     }
 
     <div class="actions">
-      <button type="submit" [disabled]="loading() || pending() || !form().valid()">Зберегти</button>
-      <button type="button" class="secondary" (click)="close()">Скасувати</button>
+      <button type="submit" [disabled]="loading() || pending() || !form().valid()">{{ t('common.save') }}</button>
+      <button type="button" class="secondary" (click)="close()">{{ t('common.cancel') }}</button>
     </div>
   </form>
 </dialog>

@@ -4,11 +4,13 @@ import { IBudget } from '../../../model/types';
 import { BudgetRepository } from '../data/budget-repository';
 import { BudgetForm } from '../budget-form/budget-form';
 import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-badge';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDecimalPipe } from '@jsverse/transloco-locale';
 
 @Component({
   selector: 'app-budget-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [BudgetForm, VisibilityBadge],
+  imports: [BudgetForm, VisibilityBadge, TranslocoDirective, TranslocoDecimalPipe],
   templateUrl: './budget-list.html',
   styleUrl: './budget-list.css',
 })

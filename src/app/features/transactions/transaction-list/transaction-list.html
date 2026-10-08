@@ -1,8 +1,8 @@
-<div class="transaction-list-container">
+<div class="transaction-list-container" *transloco="let t">
   <header class="list-header">
-    <h2>Транзакції</h2>
+    <h2>{{ t('transactions.title') }}</h2>
     <button type="button" class="add-button" (click)="openCreateForm()">
-      <span aria-hidden="true">+</span> Нова транзакція
+      <span aria-hidden="true">+</span> {{ t('transactions.add') }}
     </button>
   </header>
 
@@ -14,13 +14,13 @@
     @if (isLoading() && transactions().length === 0) {
       <div class="status-message" role="status">
         <div class="spinner" aria-hidden="true"></div>
-        <p>Завантаження транзакцій...</p>
+        <p>{{ t('transactions.loading') }}</p>
       </div>
     }
 
     @else if (loadError() && transactions().length === 0) {
       <div class="status-message error" role="alert">
-        <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
+        <p>{{ t('common.loadFailed') }}</p>
       </div>
     }
 
@@ -28,11 +28,13 @@
       <div class="transactions-table">
         @for (tx of transactions(); track tx.id) {
           <div class="transaction-row">
-            <div class="tx-date">{{ tx.date | date: 'dd.MM.yyyy' }}</div>
+            @let date = tx.date | translocoDate: { dateStyle: 'short' };
+          @let amount = tx.amount | translocoCurrency: 'symbol' : {} : currencyOf(tx);
+          <div class="tx-date">{{ date }}</div>
 
             <div class="tx-description">
               @if (isTransfer(tx)) {
-                <span>Переказ: {{ tx.fromAccount.name }} → {{ tx.toAccount.name }}</span>
+                <span>{{ t('transactions.transfer', { from: tx.fromAccount.name, to: tx.toAccount.name }) }}</span>
               } @else {
                 <span>{{ tx.category.name }} · {{ tx.account.name }}</span>
               }
@@ -47,29 +49,29 @@
             <div class="tx-amount"
                  [class.income]="!isTransfer(tx) && tx.category.type === 'income'"
                  [class.expense]="!isTransfer(tx) && tx.category.type === 'expense'">
-              {{ isTransfer(tx) ? '' : (tx.category.type === 'income' ? '+' : '-') }}{{ tx.amount }}
+              {{ isTransfer(tx) ? '' : (tx.category.type === 'income' ? '+' : '−') }}{{ amount }}
             </div>
 
             @if (tx.editable) {
               <button type="button" class="delete-button" (click)="deleteTransaction(tx)"
-                      [attr.aria-label]="'Видалити транзакцію від ' + (tx.date | date: 'dd.MM.yyyy') + ' на ' + tx.amount">×</button>
+                      [attr.aria-label]="t('transactions.deleteAria', { date, amount })">×</button>
             } @else {
               <span></span>
             }
           </div>
         } @empty {
           <div class="status-message">
-            <p>У вас поки немає транзакцій.</p>
+            <p>{{ t('transactions.empty') }}</p>
           </div>
         }
 
         @if (loadError() && transactions().length > 0) {
-          <p class="form-error" role="alert">Не вдалося завантажити наступні транзакції.</p>
+          <p class="form-error" role="alert">{{ t('transactions.loadMoreFailed') }}</p>
         }
 
         @if (hasMore()) {
           <button type="button" class="load-more" [disabled]="isLoading()" (click)="loadMore()">
-            {{ isLoading() ? 'Завантаження...' : 'Показати ще' }}
+            {{ isLoading() ? t('common.loading') : t('transactions.loadMore') }}
           </button>
         }
       </div>

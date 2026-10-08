@@ -1,31 +1,31 @@
-<form novalidate (submit)="$event.preventDefault(); submit()" class="transaction-form">
+<form novalidate (submit)="$event.preventDefault(); submit()" class="transaction-form" *transloco="let t">
   <div class="form-group">
-    <label>Тип операції</label>
-    <div class="kind-picker" role="radiogroup" aria-label="Тип операції">
+    <label>{{ t('transactions.form.kind') }}</label>
+    <div class="kind-picker" role="radiogroup" [attr.aria-label]="t('transactions.form.kind')">
       @for (kind of kinds; track kind) {
         <label class="kind-option">
           <input type="radio" [formField]="form.kind" [value]="kind" />
-          <span class="kind-label">{{ kind === 'payment' ? 'Платіж' : 'Переказ' }}</span>
+          <span class="kind-label">{{ t('transactions.form.kinds.' + kind) }}</span>
         </label>
       }
     </div>
   </div>
 
   <div class="form-group">
-    <label for="transaction-amount">Сума</label>
+    <label for="transaction-amount">{{ t('common.amount') }}</label>
     <input id="transaction-amount" type="number" [formField]="form.amount" step="0.01" />
   </div>
 
   <div class="form-group">
-    <label for="transaction-date">Дата</label>
+    <label for="transaction-date">{{ t('common.date') }}</label>
     <input id="transaction-date" type="date" [formField]="form.date" />
   </div>
 
   @if (form.kind().value() === 'payment') {
     <div class="form-group">
-      <label for="transaction-accountId">Рахунок</label>
+      <label for="transaction-accountId">{{ t('common.account') }}</label>
       <select id="transaction-accountId" [formField]="form.accountId">
-        <option value="" disabled>Оберіть рахунок</option>
+        <option value="" disabled>{{ t('common.chooseAccount') }}</option>
         @for (acc of usableAccounts(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
         }
@@ -33,19 +33,19 @@
     </div>
 
     <div class="form-group">
-      <label for="transaction-categoryId">Категорія</label>
+      <label for="transaction-categoryId">{{ t('common.category') }}</label>
       <select id="transaction-categoryId" [formField]="form.categoryId">
-        <option value="" disabled>Оберіть категорію</option>
+        <option value="" disabled>{{ t('common.chooseCategory') }}</option>
         @for (cat of categoriesResource.value(); track cat.id) {
-          <option [value]="cat.id">{{ cat.name }} ({{ cat.type === 'income' ? 'дохід' : 'витрата' }})</option>
+          <option [value]="cat.id">{{ cat.name }} ({{ t('common.categoryType.' + cat.type) }})</option>
         }
       </select>
     </div>
   } @else {
     <div class="form-group">
-      <label for="transaction-fromAccountId">З рахунку</label>
+      <label for="transaction-fromAccountId">{{ t('transactions.form.fromAccount') }}</label>
       <select id="transaction-fromAccountId" [formField]="form.fromAccountId">
-        <option value="" disabled>Оберіть рахунок</option>
+        <option value="" disabled>{{ t('common.chooseAccount') }}</option>
         @for (acc of usableAccounts(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
         }
@@ -53,9 +53,9 @@
     </div>
 
     <div class="form-group">
-      <label for="transaction-toAccountId">На рахунок</label>
+      <label for="transaction-toAccountId">{{ t('transactions.form.toAccount') }}</label>
       <select id="transaction-toAccountId" [formField]="form.toAccountId">
-        <option value="" disabled>Оберіть рахунок</option>
+        <option value="" disabled>{{ t('common.chooseAccount') }}</option>
         @for (acc of usableAccounts(); track acc.id) {
           <option [value]="acc.id">{{ acc.name }}</option>
         }
@@ -67,5 +67,5 @@
     <p class="form-error" role="alert">{{ message }}</p>
   }
 
-  <button type="submit" [disabled]="!form().valid()">Зберегти</button>
+  <button type="submit" [disabled]="!form().valid()">{{ t('common.save') }}</button>
 </form>

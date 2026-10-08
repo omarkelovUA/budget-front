@@ -1,26 +1,50 @@
-import { ChangeDetectionStrategy, Component, ElementRef, inject, signal, viewChild } from '@angular/core';
-import { form, FormField, pattern, required } from '@angular/forms/signals';
-import { SettingsRepository } from '../data/settings-repository';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { form, FormField, required } from '@angular/forms/signals';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { Language, LANGUAGES } from '../../../core/i18n/languages';
+import { SettingsState } from '../settings-state';
 
-// Offered in the picker; any other ISO 4217 code can still be typed in.
+// Offered when adding a used currency; any other ISO 4217 code can still be typed in.
 export const COMMON_CURRENCIES = ['UAH', 'EUR', 'USD', 'PLN', 'GBP', 'CZK', 'CHF', 'HUF', 'RON', 'GEL'];
+
+// Same limit as the backend.
+export const MAX_USED_CURRENCIES = 20;
+
+const CURRENCY_CODE = /^[A-Z]{3}$/;
 
 @Component({
   selector: 'app-settings-dialog',
-  imports: [FormField],
+  imports: [FormField, TranslocoDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './settings-dialog.html',
   styleUrl: './settings-dialog.css',
 })
 export class SettingsDialog {
-  private readonly settingsRepository = inject(SettingsRepository);
+  private readonly settingsState = inject(SettingsState);
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
-  protected readonly currencies = COMMON_CURRENCIES;
-  private readonly model = signal({ defaultCurrency: '' });
+  protected readonly languages = LANGUAGES;
+  protected readonly maxUsedCurrencies = MAX_USED_CURRENCIES;
+  private readonly model = signal<{ language: Language; defaultCurrency: string }>({
+    language: 'en',
+    defaultCurrency: '',
+  });
   protected readonly form = form(this.model, (f) => {
+    required(f.language);
     required(f.defaultCurrency);
-    pattern(f.defaultCurrency, /^[A-Z]{3}$/);
+  });
+  // The default currency is picked from these, so it's always one of them.
+  protected readonly usedCurrencies = signal<string[]>([]);
+  protected readonly newCurrency = signal('');
+  protected readonly suggestions = computed(() =>
+    COMMON_CURRENCIES.filter((c) => !this.usedCurrencies().includes(c)),
+  );
+  protected readonly newCurrencyError = computed(() => {
+    const code = this.newCurrency().trim().toUpperCase();
+    if (code === '' || this.usedCurrencies().includes(code)) return null;
+    if (!CURRENCY_CODE.test(code)) return 'settings.invalidCode';
+    if (this.usedCurrencies().length >= MAX_USED_CURRENCIES) return 'settings.tooMany';
+    return null;
   });
   protected readonly loading = signal(false);
   protected readonly pending = signal(false);
@@ -30,12 +54,14 @@ export class SettingsDialog {
   // app) shows up.
   open() {
     this.errorMessage.set(null);
+    this.newCurrency.set('');
     this.loading.set(true);
     this.dialog().nativeElement.showModal();
-    this.settingsRepository.getSettings().subscribe({
+    this.settingsState.load().subscribe({
       next: (settings) => {
         this.loading.set(false);
-        this.model.set({ defaultCurrency: settings.defaultCurrency });
+        this.model.set({ language: settings.language, defaultCurrency: settings.defaultCurrency });
+        this.usedCurrencies.set(settings.usedCurrencies);
       },
       error: (err: Error) => {
         this.loading.set(false);
@@ -48,11 +74,24 @@ export class SettingsDialog {
     this.dialog().nativeElement.close();
   }
 
+  addCurrency() {
+    const code = this.newCurrency().trim().toUpperCase();
+    if (this.newCurrencyError() || code === '') return;
+    this.usedCurrencies.update((codes) => (codes.includes(code) ? codes : [...codes, code]));
+    this.newCurrency.set('');
+  }
+
+  removeCurrency(code: string) {
+    if (code === this.model().defaultCurrency) return;
+    this.usedCurrencies.update((codes) => codes.filter((c) => c !== code));
+  }
+
   save() {
     if (!this.form().valid()) return;
     this.pending.set(true);
     this.errorMessage.set(null);
-    this.settingsRepository.updateSettings(this.form().value()).subscribe({
+    // The new language applies as soon as the server has accepted it.
+    this.settingsState.update({ ...this.form().value(), usedCurrencies: this.usedCurrencies() }).subscribe({
       next: () => {
         this.pending.set(false);
         this.close();

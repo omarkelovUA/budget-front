@@ -1,43 +1,44 @@
-<div class="family-page">
+<div class="family-page" *transloco="let t">
   @if (receivedResource.hasValue()) {
     @let received = receivedResource.value();
     @if (received === null) {
       <section class="received-invitations">
-        <p class="hint">
-          Запрошення до сім'ї прив'язані до email. Щоб їх побачити й прийняти, підтвердьте свій email входом через Google.
-        </p>
-        <button type="button" (click)="loginWithGoogle()">Увійти через Google</button>
+        <p class="hint">{{ t('family.verifyHint') }}</p>
+        <button type="button" (click)="loginWithGoogle()">{{ t('auth.login.google') }}</button>
       </section>
     } @else if (received.length > 0) {
       <section class="received-invitations">
-        <h2>Запрошення для вас</h2>
+        <h2>{{ t('family.received.title') }}</h2>
         @for (invitation of received; track invitation.id) {
           <div class="invitation-row">
             <div class="member-info">
               <span class="member-name">{{ invitation.familyName }}</span>
               <span class="member-email">
-                Запрошує {{ invitation.invitedBy }} · учасників: {{ invitation.memberCount }} · дійсне до
-                {{ invitation.expiresAt | date: 'dd.MM.yyyy' }}
+                {{
+                  t('family.received.details', {
+                    name: invitation.invitedBy,
+                    count: invitation.memberCount,
+                    date: (invitation.expiresAt | translocoDate: { dateStyle: 'short' }),
+                  })
+                }}
               </span>
             </div>
             <div class="row-actions">
               @if (confirmingAccept() === invitation.id) {
-                <span class="warning">
-                  Ви покинете поточну сім'ю. Якщо ви її останній учасник, її буде видалено.
-                </span>
+                <span class="warning">{{ t('family.received.switchWarning') }}</span>
                 <button type="button" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">
-                  Так, перейти
+                  {{ t('family.received.confirmSwitch') }}
                 </button>
-                <button type="button" class="secondary" (click)="confirmingAccept.set(null)">Скасувати</button>
+                <button type="button" class="secondary" (click)="confirmingAccept.set(null)">{{ t('common.cancel') }}</button>
               } @else {
-                <button type="button" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">Прийняти</button>
+                <button type="button" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">{{ t('family.received.accept') }}</button>
                 <button
                   type="button"
                   class="secondary"
                   [disabled]="pending()"
                   (click)="declineInvitation(invitation.id)"
                 >
-                  Відхилити
+                  {{ t('family.received.decline') }}
                 </button>
               }
             </div>
@@ -49,32 +50,32 @@
 
   @if (!currentUser()?.familyId) {
     <section class="create-family">
-      <h2>У вас ще немає сім'ї</h2>
-      <p>Створіть сім'ю, щоб ділитися бюджетом з близькими, або прийміть запрошення від когось із них.</p>
+      <h2>{{ t('family.create.title') }}</h2>
+      <p>{{ t('family.create.intro') }}</p>
 
       <form novalidate (submit)="$event.preventDefault(); createFamily()" class="family-form">
         <div class="form-group">
-          <label for="family-name">Назва сім'ї</label>
-          <input id="family-name" [formField]="createForm.name" placeholder="Наприклад: Родина Шевченків" />
+          <label for="family-name">{{ t('family.create.name') }}</label>
+          <input id="family-name" [formField]="createForm.name" [placeholder]="t('family.create.namePlaceholder')" />
         </div>
-        <button type="submit" [disabled]="!createForm().valid() || pending()">Створити сім'ю</button>
+        <button type="submit" [disabled]="!createForm().valid() || pending()">{{ t('family.create.submit') }}</button>
       </form>
     </section>
   } @else {
     @if (familyResource.isLoading()) {
       <div class="status-message" role="status">
         <div class="spinner" aria-hidden="true"></div>
-        <p>Завантаження сім'ї...</p>
+        <p>{{ t('family.loading') }}</p>
       </div>
     } @else if (familyResource.error()) {
       <div class="status-message error" role="alert">
-        <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
+        <p>{{ t('common.loadFailed') }}</p>
       </div>
     } @else {
       @if (familyResource.value(); as family) {
         <section class="family-details">
           <h2>{{ family.name }}</h2>
-          <p class="hint">Людей у сім'ї разом із запрошеними: {{ seatsTaken() }} / {{ maxFamilySize }}</p>
+          <p class="hint">{{ t('family.seats', { taken: seatsTaken(), max: maxFamilySize }) }}</p>
 
           <div class="members-list">
             @for (member of family.members; track member.user.id) {
@@ -84,20 +85,22 @@
                   <span class="member-email">{{ member.user.email }}</span>
                 </div>
                 <span class="role-badge" [class.admin]="member.role === 'admin'">
-                  {{ member.role === 'admin' ? 'Адмін' : 'Учасник' }}
+                  {{ t('family.roles.' + member.role) }}
                 </span>
               </div>
             }
           </div>
 
           @if (invitationsResource.value()?.length) {
-            <h3>Очікують відповіді</h3>
+            <h3>{{ t('family.pendingInvitations') }}</h3>
             <div class="members-list">
               @for (invitation of invitationsResource.value(); track invitation.id) {
                 <div class="member-row">
                   <div class="member-info">
                     <span class="member-name">{{ invitation.email }}</span>
-                    <span class="member-email">дійсне до {{ invitation.expiresAt | date: 'dd.MM.yyyy' }}</span>
+                    <span class="member-email">{{
+                      t('family.validUntil', { date: (invitation.expiresAt | translocoDate: { dateStyle: 'short' }) })
+                    }}</span>
                   </div>
                   @if (isAdmin()) {
                     <button
@@ -105,9 +108,9 @@
                       class="secondary"
                       [disabled]="pending()"
                       (click)="revokeInvitation(invitation.id)"
-                      [attr.aria-label]="'Скасувати запрошення ' + invitation.email"
+                      [attr.aria-label]="t('family.revokeAria', { email: invitation.email })"
                     >
-                      Скасувати
+                      {{ t('common.cancel') }}
                     </button>
                   }
                 </div>
@@ -120,22 +123,22 @@
               <input
                 type="email"
                 [formField]="inviteForm.email"
-                placeholder="Email учасника"
-                aria-label="Email учасника"
+                [placeholder]="t('family.inviteEmail')"
+                [attr.aria-label]="t('family.inviteEmail')"
               />
               <button type="submit" [disabled]="!inviteForm().valid() || pending() || seatsTaken() >= maxFamilySize">
-                Запросити
+                {{ t('family.invite') }}
               </button>
             </form>
           }
 
           <div class="invite-form">
             @if (confirmingLeave()) {
-              <span>Покинути сім'ю? Спільні дані стануть недоступними.</span>
-              <button type="button" [disabled]="pending()" (click)="leaveFamily()">Так, покинути</button>
-              <button type="button" (click)="confirmingLeave.set(false)">Скасувати</button>
+              <span>{{ t('family.leaveConfirm') }}</span>
+              <button type="button" [disabled]="pending()" (click)="leaveFamily()">{{ t('family.leaveYes') }}</button>
+              <button type="button" (click)="confirmingLeave.set(false)">{{ t('common.cancel') }}</button>
             } @else {
-              <button type="button" (click)="confirmingLeave.set(true)">Покинути сім'ю</button>
+              <button type="button" (click)="confirmingLeave.set(true)">{{ t('family.leave') }}</button>
             }
           </div>
         </section>

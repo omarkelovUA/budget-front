@@ -56,7 +56,7 @@ describe('AccountClose', () => {
 
     const options = Array.from(el.querySelectorAll('#close-target option')).map((o) => (o as HTMLOptionElement).value);
     expect(options).toEqual(['', 'savings', 'bobs-shared']);
-    expect(el.textContent).toContain('Залишок 100.00 UAH буде переказано');
+    expect(el.textContent).toMatch(/Залишок 100,00\s₴ буде переказано/);
   });
 
   it('needs a target before confirming a non-zero balance', async () => {
@@ -64,7 +64,7 @@ describe('AccountClose', () => {
     const el = await render(card, [card, account('savings', 0)]);
     const confirm = el.querySelector('.danger') as HTMLButtonElement;
 
-    expect(el.textContent).toContain('Борг 40.00 UAH буде погашено');
+    expect(el.textContent).toMatch(/Борг 40,00\s₴ буде погашено/);
     expect(confirm.disabled).toBe(true);
 
     const select = el.querySelector('#close-target') as HTMLSelectElement;

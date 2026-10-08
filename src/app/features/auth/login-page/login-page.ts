@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { email, form, FormField, required } from '@angular/forms/signals';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { Observable } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
 import { IUser } from '../../../model/types';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormField, RouterLink],
+  imports: [FormField, RouterLink, TranslocoDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login-page.html',
   styleUrl: '../shared/auth-page.css',
@@ -25,12 +26,14 @@ export class LoginPage {
   });
 
   protected readonly pending = signal(false);
-  // Set when the backend's Google login redirects back with ?error=oauth.
-  protected readonly errorMessage = signal<string | null>(
+  protected readonly errorMessage = signal<string | null>(null);
+  // Set when the backend's Google login redirects back with ?error=oauth; a key, so
+  // it follows the language.
+  protected readonly oauthErrorKey = signal<string | null>(
     this.route.snapshot.queryParamMap.get('error') === 'oauth'
       ? this.route.snapshot.queryParamMap.get('reason') === 'email-not-verified'
-        ? 'Email вашого Google-акаунта не підтверджено'
-        : 'Не вдалося увійти через Google'
+        ? 'auth.login.googleEmailNotVerified'
+        : 'auth.login.googleFailed'
       : null,
   );
 
@@ -48,6 +51,7 @@ export class LoginPage {
   private run(request$: Observable<IUser>) {
     this.pending.set(true);
     this.errorMessage.set(null);
+    this.oauthErrorKey.set(null);
     request$.subscribe({
       next: () => {
         this.pending.set(false);

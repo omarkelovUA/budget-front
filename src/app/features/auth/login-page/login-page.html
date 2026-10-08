@@ -1,31 +1,33 @@
-<section class="auth-page">
-  <h2>Вхід</h2>
+<section class="auth-page" *transloco="let t">
+  <h2>{{ t('auth.login.title') }}</h2>
 
   <form novalidate (submit)="$event.preventDefault(); submit()" class="auth-form">
     <div class="form-group">
-      <label for="login-email">Email</label>
+      <label for="login-email">{{ t('auth.email') }}</label>
       <input id="login-email" type="email" [formField]="form.email" placeholder="demo@family.app" />
     </div>
 
     <div class="form-group">
-      <label for="login-password">Пароль</label>
+      <label for="login-password">{{ t('auth.password') }}</label>
       <input id="login-password" type="password" [formField]="form.password" />
     </div>
 
     @if (errorMessage(); as message) {
       <p class="error" role="alert">{{ message }}</p>
+    } @else if (oauthErrorKey(); as key) {
+      <p class="error" role="alert">{{ t(key) }}</p>
     }
 
     <button type="submit" [disabled]="!form().valid() || pending()">
-      {{ pending() ? 'Вхід...' : 'Увійти' }}
+      {{ pending() ? t('auth.login.pending') : t('auth.login.submit') }}
     </button>
   </form>
 
-  <div class="divider"><span>або</span></div>
+  <div class="divider"><span>{{ t('auth.login.or') }}</span></div>
 
   <button type="button" class="google-button" [disabled]="pending()" (click)="loginWithGoogle()">
-    Увійти через Google
+    {{ t('auth.login.google') }}
   </button>
 
-  <p class="switch-link">Немає акаунта? <a routerLink="/register">Зареєструватися</a></p>
+  <p class="switch-link">{{ t('auth.login.noAccount') }} <a routerLink="/register">{{ t('auth.login.registerLink') }}</a></p>
 </section>

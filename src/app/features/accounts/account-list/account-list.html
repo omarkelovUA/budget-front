@@ -1,8 +1,8 @@
-<div class="account-list-container">
+<div class="account-list-container" *transloco="let t">
   <header class="list-header">
-    <h2>Рахунки</h2>
+    <h2>{{ t('accounts.title') }}</h2>
     <button type="button" class="add-button" (click)="openCreateForm()">
-      <span aria-hidden="true">+</span> Новий рахунок
+      <span aria-hidden="true">+</span> {{ t('accounts.add') }}
     </button>
   </header>
 
@@ -14,33 +14,33 @@
     @if (accountsResource.isLoading()) {
       <div class="status-message" role="status">
         <div class="spinner" aria-hidden="true"></div>
-        <p>Завантаження акаунтів...</p>
+        <p>{{ t('accounts.loading') }}</p>
       </div>
     }
 
     @else if (accountsResource.error()) {
       <div class="status-message error" role="alert">
-        <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
+        <p>{{ t('common.loadFailed') }}</p>
       </div>
     }
 
     @else {
-      @for (group of groups(); track group.title) {
-        <section class="account-group" [attr.aria-label]="group.title">
-          <h3>{{ group.title }}</h3>
+      @for (group of groups(); track group.key) {
+        <section class="account-group" [attr.aria-label]="t('accounts.groups.' + group.key)">
+          <h3>{{ t('accounts.groups.' + group.key) }}</h3>
           <div class="accounts-grid">
             @for (acc of group.accounts; track acc.id) {
               <div class="account-card" [class.active]="selectedAccount()?.id === acc.id" [class.readonly]="acc.access !== 'owner'">
                 @if (acc.access === 'owner') {
                   <button type="button" class="card-select" (click)="selectAccount(acc)"
-                          [attr.aria-label]="'Редагувати рахунок ' + acc.name">
+                          [attr.aria-label]="t('accounts.editAria', { name: acc.name })">
                     <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: acc }" />
                   </button>
                   <div class="card-actions">
                     <button type="button" class="text-button" (click)="startClosing(acc)"
-                            [attr.aria-label]="'Закрити рахунок ' + acc.name">Закрити</button>
+                            [attr.aria-label]="t('accounts.closeAria', { name: acc.name })">{{ t('accounts.close') }}</button>
                     <button type="button" class="delete-button" (click)="deleteAccount(acc)"
-                            [attr.aria-label]="'Видалити рахунок ' + acc.name">×</button>
+                            [attr.aria-label]="t('accounts.deleteAria', { name: acc.name })">×</button>
                   </div>
                 } @else {
                   <div class="card-select">
@@ -50,7 +50,7 @@
               </div>
             } @empty {
               <div class="status-message">
-                <p>У вас поки немає створених рахунків.</p>
+                <p>{{ t('accounts.empty') }}</p>
               </div>
             }
           </div>
@@ -69,12 +69,12 @@
     </span>
     <span class="account-info">
       <span class="account-name">{{ acc.name }}</span>
-      <span class="account-currency">{{ acc.balance }} {{ acc.currency }}</span>
+      <span class="account-currency">{{ acc.balance | translocoCurrency: 'symbol' : {} : acc.currency }}</span>
       <app-access-badge [access]="acc.access" />
       @if (acc.access !== 'owner') {
-        <span class="account-meta">Власник: {{ acc.owner.displayName }}</span>
+        <span class="account-meta">{{ t('accounts.owner', { name: acc.owner.displayName }) }}</span>
       } @else if (sharedWith(acc)) {
-        <span class="account-meta">Доступ: {{ sharedWith(acc) }}</span>
+        <span class="account-meta">{{ t('accounts.sharedWith', { names: sharedWith(acc) }) }}</span>
       }
     </span>
   </ng-template>

@@ -1,28 +1,30 @@
-<section class="account-close" aria-labelledby="close-title">
-  <h3 id="close-title">Закрити рахунок «{{ account().name }}»</h3>
+<section class="account-close" aria-labelledby="close-title" *transloco="let t">
+  <h3 id="close-title">{{ t('accounts.closeDialog.title', { name: account().name }) }}</h3>
 
   @if (!needsTarget()) {
-    <p>Залишок нульовий. Рахунок буде закрито, історія транзакцій збережеться.</p>
+    <p>{{ t('accounts.closeDialog.zeroBalance') }}</p>
   } @else if (targets().length === 0) {
     <p class="form-error" role="alert">
-      Немає іншого рахунку у {{ account().currency }}, на який можна перенести
-      {{ account().balance > 0 ? 'залишок' : 'борг' }}. Створіть такий рахунок і спробуйте знову.
+      {{
+        t(account().balance > 0 ? 'accounts.closeDialog.noTargetForBalance' : 'accounts.closeDialog.noTargetForDebt', {
+          currency: account().currency,
+        })
+      }}
     </p>
   } @else {
+    @let amountText = amount() | translocoCurrency: 'symbol' : {} : account().currency;
     <p>
-      @if (account().balance > 0) {
-        Залишок {{ amount() | number: '1.2-2' }} {{ account().currency }} буде переказано на обраний рахунок.
-      } @else {
-        Борг {{ amount() | number: '1.2-2' }} {{ account().currency }} буде погашено з обраного рахунку.
-      }
-      Після цього рахунок буде закрито, історія транзакцій збережеться.
+      {{ t(account().balance > 0 ? 'accounts.closeDialog.moveBalance' : 'accounts.closeDialog.payDebt', { amount: amountText }) }}
+      {{ t('accounts.closeDialog.afterwards') }}
     </p>
     <div class="form-group">
-      <label for="close-target">Рахунок</label>
+      <label for="close-target">{{ t('common.account') }}</label>
       <select id="close-target" [value]="targetId()" (change)="targetId.set($any($event.target).value)">
-        <option value="" disabled>Оберіть рахунок</option>
+        <option value="" disabled>{{ t('common.chooseAccount') }}</option>
         @for (target of targets(); track target.id) {
-          <option [value]="target.id">{{ target.name }} ({{ target.balance }} {{ target.currency }})</option>
+          <option [value]="target.id">
+            {{ target.name }} ({{ target.balance | translocoCurrency: 'symbol' : {} : target.currency }})
+          </option>
         }
       </select>
     </div>
@@ -33,7 +35,9 @@
   }
 
   <div class="actions">
-    <button type="button" class="danger" [disabled]="!canConfirm()" (click)="confirm()">Закрити рахунок</button>
-    <button type="button" class="secondary" (click)="cancelled.emit()">Скасувати</button>
+    <button type="button" class="danger" [disabled]="!canConfirm()" (click)="confirm()">
+      {{ t('accounts.closeDialog.confirm') }}
+    </button>
+    <button type="button" class="secondary" (click)="cancelled.emit()">{{ t('common.cancel') }}</button>
   </div>
 </section>

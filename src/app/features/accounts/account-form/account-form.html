@@ -1,17 +1,22 @@
-<form novalidate (submit)="$event.preventDefault(); submit()" class="account-form">
+<form novalidate (submit)="$event.preventDefault(); submit()" class="account-form" *transloco="let t">
   <div class="form-group">
-    <label for="account-name">Назва</label>
-    <input id="account-name" [formField]="form.name" placeholder="Наприклад: Моя картка" />
+    <label for="account-name">{{ t('common.name') }}</label>
+    <input id="account-name" [formField]="form.name" [placeholder]="t('accounts.form.namePlaceholder')" />
   </div>
 
   <div class="form-group">
-    <label for="account-currency">Валюта</label>
-    <input id="account-currency" [formField]="form.currency" />
+    <label for="account-currency">{{ t('common.currency') }}</label>
+    <input id="account-currency" list="account-currencies" [formField]="form.currency" />
+    <datalist id="account-currencies">
+      @for (currency of usedCurrencies(); track currency) {
+        <option [value]="currency"></option>
+      }
+    </datalist>
   </div>
 
   <div class="form-group">
-    <label>Іконка</label>
-    <div class="icon-picker" role="radiogroup" aria-label="Іконка">
+    <label>{{ t('common.icon') }}</label>
+    <div class="icon-picker" role="radiogroup" [attr.aria-label]="t('common.icon')">
       @for (icon of icons; track icon) {
         <label class="icon-option">
           <input type="radio" [formField]="form.icon" [value]="'assets/' + icon + '.svg'" />
@@ -24,8 +29,8 @@
   </div>
 
   <div class="form-group">
-    <label>Колір</label>
-    <div class="color-picker" role="radiogroup" aria-label="Колір">
+    <label>{{ t('common.color') }}</label>
+    <div class="color-picker" role="radiogroup" [attr.aria-label]="t('common.color')">
       @for (color of colors; track color) {
         <label class="color-option">
           <input type="radio" [formField]="form.color" [value]="color" [attr.aria-label]="color" />
@@ -36,28 +41,28 @@
   </div>
 
   <fieldset class="form-group access-editor">
-    <legend>Хто бачить рахунок</legend>
+    <legend>{{ t('accounts.form.whoSees') }}</legend>
     @for (member of members(); track member.id) {
-      <div class="member-access" role="radiogroup" [attr.aria-label]="'Доступ для ' + member.displayName">
+      <div class="member-access" role="radiogroup" [attr.aria-label]="t('accounts.form.memberAccessAria', { name: member.displayName })">
         <span class="member-name">{{ member.displayName }}</span>
-        @for (level of accessLevels; track level.value) {
+        @for (level of accessLevels; track level) {
           <label class="visibility-option">
             <input
               type="radio"
               [name]="'access-' + member.id"
-              [value]="level.value"
-              [checked]="accessOf(member.id) === level.value"
-              (change)="setAccess(member.id, level.value)"
+              [value]="level"
+              [checked]="accessOf(member.id) === level"
+              (change)="setAccess(member.id, level)"
             />
-            <span class="visibility-label">{{ level.label }}</span>
+            <span class="visibility-label">{{ t('accounts.form.levels.' + level) }}</span>
           </label>
         }
       </div>
     } @empty {
-      <p class="hint">Рахунок бачите лише ви. Щоб поділитися ним, створіть сім'ю або приєднайтеся до неї.</p>
+      <p class="hint">{{ t('accounts.form.noFamilyHint') }}</p>
     }
     @if (members().length > 0) {
-      <p class="hint">Перегляд — бачить рахунок і транзакції. Спільний — ще й записує транзакції.</p>
+      <p class="hint">{{ t('accounts.form.levelsHint') }}</p>
     }
   </fieldset>
 
@@ -65,5 +70,5 @@
     <p class="form-error" role="alert">{{ message }}</p>
   }
 
-  <button type="submit" [disabled]="!form().valid()">Зберегти</button>
+  <button type="submit" [disabled]="!form().valid()">{{ t('common.save') }}</button>
 </form>

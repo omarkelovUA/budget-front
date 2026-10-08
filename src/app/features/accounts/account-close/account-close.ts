@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoCurrencyPipe } from '@jsverse/transloco-locale';
 import { canRecordOn, IAccount } from '../../../model/types';
 import { AccountRepository } from '../data/account-repository';
 
@@ -7,7 +8,7 @@ import { AccountRepository } from '../data/account-repository';
 // archives the account. Only its owner sees this.
 @Component({
   selector: 'app-account-close',
-  imports: [DecimalPipe],
+  imports: [TranslocoDirective, TranslocoCurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './account-close.html',
   styleUrl: './account-close.css',

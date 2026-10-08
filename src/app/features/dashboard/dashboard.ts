@@ -1,10 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe } from '@jsverse/transloco-locale';
 import { map } from 'rxjs';
 import { AuthState } from '../../core/auth/auth-state';
-import { IAccount, IBudget, IInTransit, isTransferTransaction, Transaction } from '../../model/types';
+import {
+  IAccount,
+  IBudget,
+  IInTransit,
+  isTransferTransaction,
+  Transaction,
+  transactionCurrency,
+} from '../../model/types';
 import { FamilyTransferRepository } from '../family-transfers/data/family-transfer-repository';
 import { AccountRepository } from '../accounts/data/account-repository';
 import { BudgetRepository } from '../budgets/data/budget-repository';
@@ -56,7 +64,7 @@ export function balancesByCurrency(accounts: IAccount[], sentInTransit: IInTrans
 @Component({
   selector: 'app-dashboard',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DatePipe],
+  imports: [RouterLink, TranslocoDirective, TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -68,15 +76,15 @@ export class Dashboard {
 
   protected readonly currentUser = inject(AuthState).currentUser;
   protected readonly isTransfer = isTransferTransaction;
+  protected readonly currencyOf = transactionCurrency;
 
   private readonly thisMonth = toPeriod(new Date());
   protected readonly period = signal(this.thisMonth);
   protected readonly isCurrentMonth = computed(() => this.period() === this.thisMonth);
-  protected readonly periodLabel = computed(() => {
+  // Shown as month and year in the active language.
+  protected readonly periodStart = computed(() => {
     const [year, month] = this.period().split('-').map(Number);
-    return new Intl.DateTimeFormat('uk-UA', { month: 'long', year: 'numeric' }).format(
-      new Date(year, month - 1, 1),
-    );
+    return new Date(year, month - 1, 1);
   });
 
   protected readonly accountsResource = rxResource({
@@ -117,10 +125,6 @@ export class Dashboard {
     this.period.update((p) => shiftPeriod(p, 1));
   }
 
-  money(amount: number, currency: string): string {
-    return new Intl.NumberFormat('uk-UA', { style: 'currency', currency }).format(amount);
-  }
-
   usage(budget: IBudget): number {
     if (budget.plannedAmount <= 0) return budget.factAmount > 0 ? Infinity : 0;
     return budget.factAmount / budget.plannedAmount;
@@ -135,9 +139,8 @@ export class Dashboard {
   }
 
   // Payments are signed by category type; transfers just move money, so they're neutral.
-  signedAmount(tx: Transaction): string {
-    if (this.isTransfer(tx)) return `${tx.amount} ${tx.fromAccount.currency}`;
-    const sign = tx.category.type === 'income' ? '+' : '−';
-    return `${sign}${tx.amount} ${tx.account.currency}`;
+  sign(tx: Transaction): string {
+    if (this.isTransfer(tx)) return '';
+    return tx.category.type === 'income' ? '+' : '−';
   }
 }

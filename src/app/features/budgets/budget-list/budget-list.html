@@ -1,8 +1,8 @@
-<div class="budget-list-container">
+<div class="budget-list-container" *transloco="let t">
   <header class="list-header">
-    <h2>Бюджети</h2>
+    <h2>{{ t('budgets.title') }}</h2>
     <button type="button" class="add-button" (click)="openCreateForm()">
-      <span aria-hidden="true">+</span> Новий бюджет
+      <span aria-hidden="true">+</span> {{ t('budgets.add') }}
     </button>
   </header>
 
@@ -14,13 +14,13 @@
     @if (budgetsResource.isLoading()) {
       <div class="status-message" role="status">
         <div class="spinner" aria-hidden="true"></div>
-        <p>Завантаження бюджетів...</p>
+        <p>{{ t('budgets.loading') }}</p>
       </div>
     }
 
     @else if (budgetsResource.error()) {
       <div class="status-message error" role="alert">
-        <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
+        <p>{{ t('common.loadFailed') }}</p>
       </div>
     }
 
@@ -38,25 +38,25 @@
               </div>
               <app-visibility-badge [visibility]="budget.visibility" />
               <button type="button" class="delete-button" (click)="deleteBudget(budget)"
-                      [attr.aria-label]="'Видалити бюджет ' + budget.category.name + ' ' + budget.period">×</button>
+                      [attr.aria-label]="t('budgets.deleteAria', { name: budget.category.name, period: budget.period })">×</button>
             </div>
 
             <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"
                  [attr.aria-valuenow]="progressPercent(budget)"
-                 [attr.aria-label]="'Витрачено ' + progressPercent(budget) + '% бюджету'">
+                 [attr.aria-label]="t('budgets.spentAria', { percent: progressPercent(budget) })">
               <div class="progress-fill" [style.width.%]="progressPercent(budget)"></div>
             </div>
 
             <div class="budget-amounts">
-              <span>{{ budget.factAmount }} / {{ budget.plannedAmount }}</span>
+              <span>{{ budget.factAmount | translocoDecimal }} / {{ budget.plannedAmount | translocoDecimal }}</span>
               @if (isOverBudget(budget)) {
-                <span class="over-label">Перевищено</span>
+                <span class="over-label">{{ t('budgets.over') }}</span>
               }
             </div>
           </div>
         } @empty {
           <div class="status-message">
-            <p>У вас поки немає створених бюджетів.</p>
+            <p>{{ t('budgets.empty') }}</p>
           </div>
         }
       </div>

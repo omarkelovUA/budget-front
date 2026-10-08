@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, output, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, min } from '@angular/forms/signals';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { canRecordOn, NewTransaction } from '../../../model/types';
 import { TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
@@ -30,7 +31,7 @@ const DEFAULT_MODEL: TransactionFormModel = {
 
 @Component({
   selector: 'app-transaction-form',
-  imports: [FormField],
+  imports: [FormField, TranslocoDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './transaction-form.html',
   styleUrl: './transaction-form.css',

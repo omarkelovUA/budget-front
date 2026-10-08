@@ -1,24 +1,24 @@
-<form novalidate (submit)="$event.preventDefault(); submit()" class="category-form">
+<form novalidate (submit)="$event.preventDefault(); submit()" class="category-form" *transloco="let t">
   <div class="form-group">
-    <label for="category-name">Назва</label>
-    <input id="category-name" [formField]="form.name" placeholder="Наприклад: Продукти" />
+    <label for="category-name">{{ t('common.name') }}</label>
+    <input id="category-name" [formField]="form.name" [placeholder]="t('categories.form.namePlaceholder')" />
   </div>
 
   <div class="form-group">
-    <label>Тип</label>
-    <div class="type-picker" role="radiogroup" aria-label="Тип">
+    <label>{{ t('common.type') }}</label>
+    <div class="type-picker" role="radiogroup" [attr.aria-label]="t('common.type')">
       @for (type of types; track type) {
         <label class="type-option">
           <input type="radio" [formField]="form.type" [value]="type" />
-          <span class="type-label">{{ type === 'income' ? 'Дохід' : 'Витрата' }}</span>
+          <span class="type-label">{{ t('common.categoryType.' + type) }}</span>
         </label>
       }
     </div>
   </div>
 
   <div class="form-group">
-    <label>Іконка</label>
-    <div class="icon-picker" role="radiogroup" aria-label="Іконка">
+    <label>{{ t('common.icon') }}</label>
+    <div class="icon-picker" role="radiogroup" [attr.aria-label]="t('common.icon')">
       @for (icon of icons; track icon) {
         <label class="icon-option">
           <input type="radio" [formField]="form.icon" [value]="'assets/' + icon + '.svg'" />
@@ -31,8 +31,8 @@
   </div>
 
   <div class="form-group">
-    <label>Колір</label>
-    <div class="color-picker" role="radiogroup" aria-label="Колір">
+    <label>{{ t('common.color') }}</label>
+    <div class="color-picker" role="radiogroup" [attr.aria-label]="t('common.color')">
       @for (color of colors; track color) {
         <label class="color-option">
           <input type="radio" [formField]="form.color" [value]="color" [attr.aria-label]="color" />
@@ -43,12 +43,12 @@
   </div>
 
   <div class="form-group">
-    <label>Доступ</label>
-    <div class="visibility-picker" role="radiogroup" aria-label="Доступ">
+    <label>{{ t('common.access') }}</label>
+    <div class="visibility-picker" role="radiogroup" [attr.aria-label]="t('common.access')">
       @for (visibility of visibilities; track visibility) {
         <label class="visibility-option">
           <input type="radio" [formField]="form.visibility" [value]="visibility" />
-          <span class="visibility-label">{{ visibility === 'shared' ? 'Сімейний' : 'Особистий' }}</span>
+          <span class="visibility-label">{{ t('common.visibility.' + visibility) }}</span>
         </label>
       }
     </div>
@@ -58,5 +58,5 @@
     <p class="form-error" role="alert">{{ message }}</p>
   }
 
-  <button type="submit" [disabled]="!form().valid()">Зберегти</button>
+  <button type="submit" [disabled]="!form().valid()">{{ t('common.save') }}</button>
 </form>

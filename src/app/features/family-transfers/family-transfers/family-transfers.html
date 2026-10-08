@@ -1,30 +1,28 @@
-<section class="family-transfers" aria-labelledby="in-transit-title">
-  <h3 id="in-transit-title">Перекази в сім'ї</h3>
+<section class="family-transfers" aria-labelledby="in-transit-title" *transloco="let t">
+  <h3 id="in-transit-title">{{ t('familyTransfers.title') }}</h3>
 
   @if (transfersResource.value(); as transfers) {
     @for (group of [
-      { title: 'Чекають на вас', items: transfers.incoming, mode: 'collect', action: 'Отримати', who: 'Від' },
-      { title: 'Надіслані, ще не отримані', items: transfers.outgoing, mode: 'takeBack', action: 'Забрати назад', who: 'Для' },
+      { title: 'incoming', items: transfers.incoming, mode: 'collect', who: 'from' },
+      { title: 'outgoing', items: transfers.outgoing, mode: 'takeBack', who: 'to' },
     ]; track group.title) {
       @if (group.items.length > 0) {
-        <h4>{{ group.title }}</h4>
+        <h4>{{ t('familyTransfers.' + group.title) }}</h4>
         @for (transfer of group.items; track transfer.id) {
           <div class="transit-row">
-            <span>{{ group.who }}: <strong>{{ transfer.counterpart.displayName }}</strong></span>
-            <span class="amount">{{ transfer.amount | number: '1.2-2' }} {{ transfer.currency }}</span>
+            <span>{{ t('familyTransfers.' + group.who) }}: <strong>{{ transfer.counterpart.displayName }}</strong></span>
+            <span class="amount">{{ transfer.amount | translocoCurrency: 'symbol' : {} : transfer.currency }}</span>
             <button type="button" [disabled]="pending()" (click)="startWithdraw(transfer, $any(group.mode))">
-              {{ group.action }}
+              {{ t('familyTransfers.' + group.mode) }}
             </button>
           </div>
           @if (withdrawing()?.transfer?.id === transfer.id) {
             <div class="withdraw-panel">
               @if (targetsFor(transfer).length === 0) {
-                <p class="form-error" role="alert">
-                  Немає вашого рахунку у {{ transfer.currency }}. Створіть його, щоб отримати гроші.
-                </p>
+                <p class="form-error" role="alert">{{ t('familyTransfers.noTarget', { currency: transfer.currency }) }}</p>
               } @else {
                 <label>
-                  На рахунок
+                  {{ t('familyTransfers.toAccount') }}
                   <select [value]="targetId()" (change)="targetId.set($any($event.target).value)">
                     @for (account of targetsFor(transfer); track account.id) {
                       <option [value]="account.id">{{ account.name }}</option>
@@ -32,7 +30,7 @@
                   </select>
                 </label>
                 <label>
-                  Сума (порожньо — усе)
+                  {{ t('familyTransfers.amountOptional') }}
                   <input
                     type="number"
                     min="0.01"
@@ -41,9 +39,9 @@
                     (input)="withdrawAmount.set($any($event.target).value)"
                   />
                 </label>
-                <button type="button" [disabled]="pending()" (click)="confirmWithdraw()">Підтвердити</button>
+                <button type="button" [disabled]="pending()" (click)="confirmWithdraw()">{{ t('familyTransfers.confirm') }}</button>
               }
-              <button type="button" class="secondary" (click)="withdrawing.set(null)">Скасувати</button>
+              <button type="button" class="secondary" (click)="withdrawing.set(null)">{{ t('common.cancel') }}</button>
             </div>
           }
         }
@@ -53,31 +51,33 @@
 
   @if (recipients().length > 0) {
     <form novalidate class="send-form" (submit)="$event.preventDefault(); send()">
-      <h4>Надіслати члену сім'ї</h4>
+      <h4>{{ t('familyTransfers.send.title') }}</h4>
       <label>
-        З рахунку
+        {{ t('familyTransfers.send.fromAccount') }}
         <select [formField]="sendForm.fromAccountId">
-          <option value="" disabled>Оберіть рахунок</option>
+          <option value="" disabled>{{ t('common.chooseAccount') }}</option>
           @for (account of ownAccounts(); track account.id) {
-            <option [value]="account.id">{{ account.name }} ({{ account.balance }} {{ account.currency }})</option>
+            <option [value]="account.id">
+              {{ account.name }} ({{ account.balance | translocoCurrency: 'symbol' : {} : account.currency }})
+            </option>
           }
         </select>
       </label>
       <label>
-        Кому
+        {{ t('familyTransfers.send.recipient') }}
         <select [formField]="sendForm.recipientId">
-          <option value="" disabled>Оберіть учасника</option>
+          <option value="" disabled>{{ t('familyTransfers.send.chooseMember') }}</option>
           @for (member of recipients(); track member.id) {
             <option [value]="member.id">{{ member.displayName }}</option>
           }
         </select>
       </label>
       <label>
-        Сума
+        {{ t('common.amount') }}
         <input type="number" [formField]="sendForm.amount" />
       </label>
-      <button type="submit" [disabled]="pending() || !sendForm().valid()">Надіслати</button>
-      <p class="hint">Гроші чекатимуть, доки отримувач не перекаже їх на свій рахунок.</p>
+      <button type="submit" [disabled]="pending() || !sendForm().valid()">{{ t('familyTransfers.send.submit') }}</button>
+      <p class="hint">{{ t('familyTransfers.send.hint') }}</p>
     </form>
   }
 

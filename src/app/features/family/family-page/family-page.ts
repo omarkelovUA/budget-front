@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoDatePipe } from '@jsverse/transloco-locale';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { Observable } from 'rxjs';
@@ -12,7 +13,7 @@ export const MAX_FAMILY_SIZE = 10;
 
 @Component({
   selector: 'app-family-page',
-  imports: [FormField, DatePipe],
+  imports: [FormField, TranslocoDirective, TranslocoDatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './family-page.html',
   styleUrl: './family-page.css',

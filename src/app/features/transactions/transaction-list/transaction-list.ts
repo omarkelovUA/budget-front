@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoCurrencyPipe, TranslocoDatePipe } from '@jsverse/transloco-locale';
 import { Subscription } from 'rxjs';
-import { getTransactionAccess, isTransferTransaction, Transaction } from '../../../model/types';
+import { getTransactionAccess, isTransferTransaction, Transaction, transactionCurrency } from '../../../model/types';
 import { TransactionRepository } from '../data/transaction-repository';
 import { TransactionForm } from '../transaction-form/transaction-form';
 import { AccessBadge } from '../../../shared/ui/access-badge/access-badge';
@@ -9,7 +10,7 @@ import { AccessBadge } from '../../../shared/ui/access-badge/access-badge';
 @Component({
   selector: 'app-transaction-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TransactionForm, AccessBadge, DatePipe],
+  imports: [TransactionForm, AccessBadge, TranslocoDirective, TranslocoDatePipe, TranslocoCurrencyPipe],
   templateUrl: './transaction-list.html',
   styleUrl: './transaction-list.css',
 })
@@ -18,6 +19,7 @@ export class TransactionList {
   protected readonly isFormOpen = signal(false);
   protected readonly isTransfer = isTransferTransaction;
   protected readonly accessOf = getTransactionAccess;
+  protected readonly currencyOf = transactionCurrency;
 
   // Pages are appended as the user asks for more; the backend already sorts newest first.
   protected readonly transactions = signal<Transaction[]>([]);

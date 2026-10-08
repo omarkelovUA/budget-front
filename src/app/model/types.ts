@@ -1,7 +1,12 @@
-// The current user's own settings (more to come); defaultCurrency is ISO 4217,
-// picked from the region at sign-up.
+import { Language } from '../core/i18n/languages';
+
+// The current user's own settings (more to come). language is ISO 639-1 and
+// defaultCurrency ISO 4217, both picked from the region at sign-up; usedCurrencies
+// are what currency pickers offer and always include defaultCurrency.
 export interface IUserSettings {
+  language: Language;
   defaultCurrency: string;
+  usedCurrencies: string[];
 }
 
 export type Visibility = 'private' | 'shared';
@@ -172,6 +177,11 @@ export type NewTransaction = Omit<Transaction, 'id' | 'editable'>;
 
 export function isTransferTransaction(transaction: Transaction): transaction is TransferTransaction {
   return transaction.fromAccount !== undefined;
+}
+
+// A transfer moves money between accounts in the same currency (no FX in v1).
+export function transactionCurrency(transaction: Transaction): string {
+  return isTransferTransaction(transaction) ? transaction.fromAccount.currency : transaction.account.currency;
 }
 
 const ACCESS_RANK: Record<AccountAccess, number> = { none: 0, visible: 1, shared: 2, owner: 3 };

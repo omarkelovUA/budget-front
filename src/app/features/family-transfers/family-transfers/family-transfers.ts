@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { DecimalPipe } from '@angular/common';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoCurrencyPipe } from '@jsverse/transloco-locale';
 import { form, FormField, min, required } from '@angular/forms/signals';
 import { Observable } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
@@ -14,7 +15,7 @@ type WithdrawMode = 'collect' | 'takeBack';
 // waiting for you, take back what you sent and wasn't collected yet.
 @Component({
   selector: 'app-family-transfers',
-  imports: [FormField, DecimalPipe],
+  imports: [FormField, TranslocoDirective, TranslocoCurrencyPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './family-transfers.html',
   styleUrl: './family-transfers.css',

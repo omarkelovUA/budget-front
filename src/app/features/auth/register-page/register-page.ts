@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { email, form, FormField, minLength, required } from '@angular/forms/signals';
+import { TranslocoDirective } from '@jsverse/transloco';
 import { AuthState } from '../../../core/auth/auth-state';
 
 @Component({
   selector: 'app-register-page',
-  imports: [FormField, RouterLink],
+  imports: [FormField, RouterLink, TranslocoDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './register-page.html',
   styleUrl: '../shared/auth-page.css',

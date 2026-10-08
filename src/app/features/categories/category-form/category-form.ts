@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject, input, output, sign
 import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 type CategoryFormModel = Omit<ICategory, 'id'>;
 
@@ -15,7 +16,7 @@ const DEFAULT_MODEL: CategoryFormModel = {
 
 @Component({
   selector: 'app-category-form',
-  imports: [FormField],
+  imports: [FormField, TranslocoDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './category-form.html',
   styleUrl: './category-form.css',

@@ -1,19 +1,19 @@
-<section class="auth-page">
-  <h2>Реєстрація</h2>
+<section class="auth-page" *transloco="let t">
+  <h2>{{ t('auth.register.title') }}</h2>
 
   <form novalidate (submit)="$event.preventDefault(); submit()" class="auth-form">
     <div class="form-group">
-      <label for="register-displayName">Ім'я</label>
-      <input id="register-displayName" [formField]="form.displayName" placeholder="Наприклад: Олена" />
+      <label for="register-displayName">{{ t('auth.register.displayName') }}</label>
+      <input id="register-displayName" [formField]="form.displayName" [placeholder]="t('auth.register.displayNamePlaceholder')" />
     </div>
 
     <div class="form-group">
-      <label for="register-email">Email</label>
+      <label for="register-email">{{ t('auth.email') }}</label>
       <input id="register-email" type="email" [formField]="form.email" />
     </div>
 
     <div class="form-group">
-      <label for="register-password">Пароль (мін. 8 символів)</label>
+      <label for="register-password">{{ t('auth.register.password') }}</label>
       <input id="register-password" type="password" [formField]="form.password" />
     </div>
 
@@ -22,9 +22,9 @@
     }
 
     <button type="submit" [disabled]="!form().valid() || pending()">
-      {{ pending() ? 'Реєстрація...' : 'Зареєструватися' }}
+      {{ pending() ? t('auth.register.pending') : t('auth.register.submit') }}
     </button>
   </form>
 
-  <p class="switch-link">Вже маєте акаунт? <a routerLink="/login">Увійти</a></p>
+  <p class="switch-link">{{ t('auth.register.haveAccount') }} <a routerLink="/login">{{ t('auth.register.loginLink') }}</a></p>
 </section>

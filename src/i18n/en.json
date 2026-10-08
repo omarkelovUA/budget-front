@@ -1,0 +1,292 @@
+{
+  "app": {
+    "title": "Family Budget"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "dashboard": "Dashboard",
+    "accounts": "Accounts",
+    "categories": "Categories",
+    "transactions": "Transactions",
+    "budgets": "Budgets",
+    "family": "Family",
+    "settings": "Settings",
+    "logout": "Log out"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "loading": "Loading...",
+    "loadFailed": "Couldn't load the data. Please try again later.",
+    "name": "Name",
+    "icon": "Icon",
+    "color": "Color",
+    "access": "Access",
+    "type": "Type",
+    "amount": "Amount",
+    "date": "Date",
+    "account": "Account",
+    "category": "Category",
+    "currency": "Currency",
+    "chooseAccount": "Choose an account",
+    "chooseCategory": "Choose a category",
+    "visibility": {
+      "private": "Personal",
+      "shared": "Family"
+    },
+    "categoryType": {
+      "income": "Income",
+      "expense": "Expense"
+    },
+    "accessLevel": {
+      "owner": "Mine",
+      "shared": "Shared",
+      "visible": "View only"
+    }
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "login": {
+      "title": "Sign in",
+      "submit": "Sign in",
+      "pending": "Signing in...",
+      "or": "or",
+      "google": "Sign in with Google",
+      "noAccount": "No account yet?",
+      "registerLink": "Sign up",
+      "googleEmailNotVerified": "Your Google account's email isn't verified",
+      "googleFailed": "Couldn't sign in with Google"
+    },
+    "register": {
+      "title": "Sign up",
+      "displayName": "Name",
+      "displayNamePlaceholder": "e.g. Olena",
+      "password": "Password (at least 8 characters)",
+      "submit": "Sign up",
+      "pending": "Signing up...",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Sign in"
+    }
+  },
+  "accounts": {
+    "title": "Accounts",
+    "add": "New account",
+    "loading": "Loading accounts...",
+    "empty": "You don't have any accounts yet.",
+    "groups": {
+      "mine": "My accounts",
+      "shared": "Shared with me",
+      "visible": "Visible to me"
+    },
+    "editAria": "Edit account {{name}}",
+    "close": "Close",
+    "closeAria": "Close account {{name}}",
+    "deleteAria": "Delete account {{name}}",
+    "owner": "Owner: {{name}}",
+    "sharedWith": "Access: {{names}}",
+    "form": {
+      "namePlaceholder": "e.g. My card",
+      "whoSees": "Who can see the account",
+      "memberAccessAria": "Access for {{name}}",
+      "levels": {
+        "hidden": "Hidden",
+        "visible": "View only",
+        "shared": "Shared"
+      },
+      "noFamilyHint": "Only you can see this account. To share it, create a family or join one.",
+      "levelsHint": "View only: sees the account and its transactions. Shared: can also record transactions."
+    },
+    "closeDialog": {
+      "title": "Close account “{{name}}”",
+      "zeroBalance": "The balance is zero. The account will be closed; its transaction history is kept.",
+      "noTargetForBalance": "There's no other account in {{currency}} to move the balance to. Create one and try again.",
+      "noTargetForDebt": "There's no other account in {{currency}} to pay off the debt from. Create one and try again.",
+      "moveBalance": "The balance of {{amount}} will be transferred to the selected account.",
+      "payDebt": "The debt of {{amount}} will be paid off from the selected account.",
+      "afterwards": "Then the account will be closed; its transaction history is kept.",
+      "confirm": "Close account"
+    }
+  },
+  "categories": {
+    "title": "Categories",
+    "add": "New category",
+    "loading": "Loading categories...",
+    "empty": "You don't have any categories yet.",
+    "editAria": "Edit category {{name}}",
+    "deleteAria": "Delete category {{name}}",
+    "form": {
+      "namePlaceholder": "e.g. Groceries"
+    }
+  },
+  "budgets": {
+    "title": "Budgets",
+    "add": "New budget",
+    "loading": "Loading budgets...",
+    "empty": "You don't have any budgets yet.",
+    "deleteAria": "Delete budget {{name}} {{period}}",
+    "spentAria": "{{percent}}% of the budget spent",
+    "over": "Over budget",
+    "form": {
+      "category": "Expense category",
+      "period": "Month (YYYY-MM)",
+      "planned": "Planned amount"
+    }
+  },
+  "transactions": {
+    "title": "Transactions",
+    "add": "New transaction",
+    "loading": "Loading transactions...",
+    "empty": "You don't have any transactions yet.",
+    "transfer": "Transfer: {{from}} → {{to}}",
+    "deleteAria": "Delete the transaction of {{date}} for {{amount}}",
+    "loadMoreFailed": "Couldn't load more transactions.",
+    "loadMore": "Show more",
+    "form": {
+      "kind": "Kind",
+      "kinds": {
+        "payment": "Payment",
+        "transfer": "Transfer"
+      },
+      "fromAccount": "From account",
+      "toAccount": "To account"
+    }
+  },
+  "dashboard": {
+    "title": "Overview",
+    "monthGroup": "Selected month",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "personalOnly": "You only see personal data.",
+    "createFamilyLink": "Create a family or join one",
+    "personalOnlyEnd": " to keep a shared budget.",
+    "balance": "Balance",
+    "accountsFailed": "Couldn't load the accounts.",
+    "mine": "mine {{amount}}",
+    "sharedWithMe": "shared with me {{amount}}",
+    "viewOnly": "view only {{amount}}",
+    "inTransit": "in transit {{amount}}",
+    "noAccounts": "No accounts yet.",
+    "createFirstAccount": "Create your first account",
+    "month": "This month",
+    "summaryFailed": "Couldn't load the totals.",
+    "income": "Income",
+    "expense": "Expenses",
+    "net": "Net",
+    "noPayments": "No payments this month yet.",
+    "budgets": "Budgets",
+    "budgetsFailed": "Couldn't load the budgets.",
+    "over": "over budget",
+    "spentAria": "{{name}}: {{percent}}% spent",
+    "noBudgets": "No budgets for this month.",
+    "createBudget": "Create a budget",
+    "recent": "Recent transactions",
+    "recentFailed": "Couldn't load the transactions.",
+    "noTransactions": "No transactions yet.",
+    "allTransactions": "All transactions →"
+  },
+  "family": {
+    "verifyHint": "Family invitations are tied to an email address. To see and accept them, confirm your email by signing in with Google.",
+    "received": {
+      "title": "Invitations for you",
+      "details": "Invited by {{name}} · members: {{count}} · valid until {{date}}",
+      "switchWarning": "You will leave your current family. If you are its last member, it will be deleted.",
+      "confirmSwitch": "Yes, switch",
+      "accept": "Accept",
+      "decline": "Decline"
+    },
+    "create": {
+      "title": "You don't have a family yet",
+      "intro": "Create a family to share your budget with your loved ones, or accept an invitation from one of them.",
+      "name": "Family name",
+      "namePlaceholder": "e.g. The Shevchenkos",
+      "submit": "Create family"
+    },
+    "loading": "Loading the family...",
+    "seats": "People in the family, invitations included: {{taken}} / {{max}}",
+    "roles": {
+      "admin": "Admin",
+      "member": "Member"
+    },
+    "pendingInvitations": "Awaiting a response",
+    "validUntil": "valid until {{date}}",
+    "revokeAria": "Cancel the invitation for {{email}}",
+    "inviteEmail": "Member's email",
+    "invite": "Invite",
+    "leaveConfirm": "Leave the family? Shared data will no longer be available to you.",
+    "leaveYes": "Yes, leave",
+    "leave": "Leave family"
+  },
+  "familyTransfers": {
+    "title": "Family transfers",
+    "incoming": "Waiting for you",
+    "outgoing": "Sent, not collected yet",
+    "collect": "Collect",
+    "takeBack": "Take back",
+    "from": "From",
+    "to": "To",
+    "noTarget": "You have no account in {{currency}}. Create one to collect the money.",
+    "toAccount": "To account",
+    "amountOptional": "Amount (empty = all of it)",
+    "confirm": "Confirm",
+    "send": {
+      "title": "Send to a family member",
+      "fromAccount": "From account",
+      "recipient": "To",
+      "chooseMember": "Choose a member",
+      "submit": "Send",
+      "hint": "The money waits until the recipient moves it to one of their accounts."
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "defaultCurrency": "Default currency",
+    "defaultCurrencyHint": "New accounts and transfers to family members start in it.",
+    "usedCurrencies": "Currencies I use",
+    "usedCurrenciesHint": "The account form offers these. Any other ISO 4217 code can still be typed in there.",
+    "addCurrency": "Add a currency",
+    "addCurrencyPlaceholder": "ISO 4217 code, e.g. EUR",
+    "add": "Add",
+    "removeCurrencyAria": "Remove {{currency}}",
+    "defaultCurrencyBadge": "default",
+    "invalidCode": "Enter a three-letter ISO 4217 code",
+    "tooMany": "At most {{max}} currencies"
+  },
+  "errors": {
+    "fallback": "Something went wrong. Please try again later.",
+    "badRequest": "Please check what you entered",
+    "invalid-credentials": "Wrong email or password",
+    "email-taken": "An account with this email already exists",
+    "not-found": "Not found",
+    "already-in-family": "You already belong to a family",
+    "invalid-invite": "The invitation is invalid, expired or already used",
+    "already-invited": "This address has already been invited",
+    "already-member": "This person is already in your family",
+    "family-full": "A family can have at most 10 people, invitations included",
+    "email-not-verified": "Sign in with Google to use invitations",
+    "admin-required": "Only a family admin can do this",
+    "last-admin": "The family needs at least one admin",
+    "no-family": "Create a family or join one to share data",
+    "visibility-immutable": "Access (personal/family) can't be changed after creation",
+    "category-type-immutable": "A category's type can't be changed after creation",
+    "account-in-use": "The account has transactions; close it instead of deleting it",
+    "not-account-owner": "Only the account's owner can do this",
+    "account-read-only": "You can only view this account",
+    "account-closed": "The account is closed",
+    "grantee-not-in-family": "Access can only be given to other members of your family",
+    "close-target-required": "Choose the account to move the balance to",
+    "transient-account": "Money in transit between family members only moves through family transfers",
+    "recipient-not-in-family": "You can only send money to another member of your family",
+    "insufficient-in-transit": "This transfer doesn't hold that much money",
+    "invalid-currency": "Unknown currency code",
+    "category-in-use": "Delete this category's transactions and budgets first",
+    "currency-mismatch": "Transfers between accounts in different currencies aren't supported",
+    "transaction-not-editable": "This transaction touches an account you have no access to",
+    "category-not-shared": "A family budget needs a family category",
+    "budget-exists": "This category already has a budget for this month",
+    "unsupported-language": "This language isn't supported",
+    "invalid-used-currencies": "Choose between 1 and 20 currencies",
+    "default-currency-not-used": "The default currency must be one of the currencies you use"
+  }
+}

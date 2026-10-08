@@ -4,6 +4,7 @@ import { form, FormField, min, required } from '@angular/forms/signals';
 import { IBudget } from '../../../model/types';
 import { BudgetRepository } from '../data/budget-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
+import { TranslocoDirective } from '@jsverse/transloco';
 
 interface BudgetFormModel {
   categoryId: string;
@@ -21,7 +22,7 @@ const DEFAULT_MODEL: BudgetFormModel = {
 
 @Component({
   selector: 'app-budget-form',
-  imports: [FormField],
+  imports: [FormField, TranslocoDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './budget-form.html',
   styleUrl: './budget-form.css',

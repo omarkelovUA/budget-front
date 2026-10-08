@@ -1,6 +1,14 @@
-import { ApplicationConfig, inject, provideAppInitializer, provideBrowserGlobalErrorListeners } from '@angular/core';
+import {
+  ApplicationConfig,
+  inject,
+  isDevMode,
+  provideAppInitializer,
+  provideBrowserGlobalErrorListeners,
+} from '@angular/core';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
+import { provideTransloco } from '@jsverse/transloco';
+import { provideTranslocoLocale } from '@jsverse/transloco-locale';
 
 import { routes } from './app.routes';
 import { provideAngularSvgIcon } from 'angular-svg-icon';
@@ -22,6 +30,9 @@ import { HttpFamilyTransferRepository } from './features/family-transfers/data/h
 import { HttpSettingsRepository } from './features/settings/data/http-settings-repository';
 import { AuthState } from './core/auth/auth-state';
 import { authInterceptor } from './core/http/auth.interceptor';
+import { LanguageService } from './core/i18n/language';
+import { FALLBACK_LANGUAGE, LANGUAGE_CODES, LANGUAGE_LOCALES } from './core/i18n/languages';
+import { TranslationLoader } from './core/i18n/translation-loader';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,8 +40,23 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideAngularSvgIcon(),
     provideHttpClient(withInterceptors([authInterceptor])),
-    // Restore the session from the refresh cookie before the first route guard runs.
-    provideAppInitializer(() => inject(AuthState).restoreSession()),
+    provideTransloco({
+      config: {
+        availableLangs: LANGUAGE_CODES,
+        defaultLang: FALLBACK_LANGUAGE,
+        reRenderOnLangChange: true,
+        prodMode: !isDevMode(),
+      },
+      loader: TranslationLoader,
+    }),
+    provideTranslocoLocale({ langToLocaleMapping: LANGUAGE_LOCALES }),
+    // Load the device's language, then restore the session from the refresh cookie
+    // (which switches to the account's language) before the first route guard runs.
+    provideAppInitializer(() => {
+      const languageService = inject(LanguageService);
+      const authState = inject(AuthState);
+      return languageService.init().then(() => authState.restoreSession());
+    }),
     { provide: AccountRepository, useClass: HttpAccountRepository },
     { provide: CategoryRepository, useClass: HttpCategoryRepository },
     { provide: TransactionRepository, useClass: HttpTransactionRepository },

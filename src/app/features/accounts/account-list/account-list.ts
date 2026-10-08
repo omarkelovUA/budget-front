@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { TranslocoDirective } from '@jsverse/transloco';
+import { TranslocoCurrencyPipe } from '@jsverse/transloco-locale';
 import { IAccount } from '../../../model/types';
 import { AccessBadge } from '../../../shared/ui/access-badge/access-badge';
 import { AccountRepository } from '../data/account-repository';
@@ -12,7 +14,15 @@ import { AuthState } from '../../../core/auth/auth-state';
 @Component({
   selector: 'app-account-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [AccountForm, AccountClose, AccessBadge, NgTemplateOutlet, FamilyTransfers],
+  imports: [
+    AccountForm,
+    AccountClose,
+    AccessBadge,
+    NgTemplateOutlet,
+    FamilyTransfers,
+    TranslocoDirective,
+    TranslocoCurrencyPipe,
+  ],
   templateUrl: './account-list.html',
   styleUrl: './account-list.css',
 })
@@ -32,9 +42,9 @@ export class AccountList {
   protected readonly groups = computed(() => {
     const accounts = this.accountsResource.value() ?? [];
     return [
-      { title: 'Мої рахунки', accounts: accounts.filter((a) => a.access === 'owner') },
-      { title: 'Спільні зі мною', accounts: accounts.filter((a) => a.access === 'shared') },
-      { title: 'Доступні для перегляду', accounts: accounts.filter((a) => a.access === 'visible') },
+      { key: 'mine', accounts: accounts.filter((a) => a.access === 'owner') },
+      { key: 'shared', accounts: accounts.filter((a) => a.access === 'shared') },
+      { key: 'visible', accounts: accounts.filter((a) => a.access === 'visible') },
     ].filter((group, index) => index === 0 || group.accounts.length > 0);
   });
 

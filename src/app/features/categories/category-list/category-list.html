@@ -1,8 +1,8 @@
-<div class="category-list-container">
+<div class="category-list-container" *transloco="let t">
   <header class="list-header">
-    <h2>Категорії</h2>
+    <h2>{{ t('categories.title') }}</h2>
     <button type="button" class="add-button" (click)="openCreateForm()">
-      <span aria-hidden="true">+</span> Нова категорія
+      <span aria-hidden="true">+</span> {{ t('categories.add') }}
     </button>
   </header>
 
@@ -14,13 +14,13 @@
     @if (categoriesResource.isLoading()) {
       <div class="status-message" role="status">
         <div class="spinner" aria-hidden="true"></div>
-        <p>Завантаження категорій...</p>
+        <p>{{ t('categories.loading') }}</p>
       </div>
     }
 
     @else if (categoriesResource.error()) {
       <div class="status-message error" role="alert">
-        <p>Не вдалося завантажити дані. Спробуйте пізніше.</p>
+        <p>{{ t('common.loadFailed') }}</p>
       </div>
     }
 
@@ -29,7 +29,7 @@
         @for (cat of categoriesResource.value(); track cat.id) {
           <div class="category-card" [class.active]="selectedCategory()?.id === cat.id">
             <button type="button" class="card-select" (click)="selectCategory(cat)"
-                    [attr.aria-label]="'Редагувати категорію ' + cat.name">
+                    [attr.aria-label]="t('categories.editAria', { name: cat.name })">
               <span class="icon-box" [style.background-color]="cat.color">
                 <img [src]="cat.icon" alt="" />
               </span>
@@ -37,18 +37,18 @@
               <span class="category-info">
                 <span class="category-name">{{ cat.name }}</span>
                 <span class="category-type" [class.income]="cat.type === 'income'">
-                  {{ cat.type === 'income' ? 'Дохід' : 'Витрата' }}
+                  {{ t('common.categoryType.' + cat.type) }}
                 </span>
                 <app-visibility-badge [visibility]="cat.visibility" />
               </span>
             </button>
 
             <button type="button" class="delete-button" (click)="deleteCategory(cat)"
-                    [attr.aria-label]="'Видалити категорію ' + cat.name">×</button>
+                    [attr.aria-label]="t('categories.deleteAria', { name: cat.name })">×</button>
           </div>
         } @empty {
           <div class="status-message">
-            <p>У вас поки немає створених категорій.</p>
+            <p>{{ t('categories.empty') }}</p>
           </div>
         }
       </div>

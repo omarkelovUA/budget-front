@@ -1,22 +1,24 @@
-<header class="app-header">
-  <h1>Family Budget</h1>
-  @if (currentUser(); as user) {
-    <nav class="app-nav" aria-label="Головна навігація">
-      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-      <a routerLink="/accounts" routerLinkActive="active">Accounts</a>
-      <a routerLink="/categories" routerLinkActive="active">Categories</a>
-      <a routerLink="/transactions" routerLinkActive="active">Transactions</a>
-      <a routerLink="/budgets" routerLinkActive="active">Budgets</a>
-      <a routerLink="/family" routerLinkActive="active">Family</a>
-    </nav>
-    <div class="user-menu">
-      <span class="user-name">{{ user.displayName }}</span>
-      <button type="button" class="logout-button" (click)="openSettings()">Налаштування</button>
-      <button type="button" class="logout-button" (click)="logout()">Вийти</button>
-    </div>
-    <app-settings-dialog />
-  }
-</header>
+<ng-container *transloco="let t">
+  <header class="app-header">
+    <h1>{{ t('app.title') }}</h1>
+    @if (currentUser(); as user) {
+      <nav class="app-nav" [attr.aria-label]="t('nav.label')">
+        <a routerLink="/dashboard" routerLinkActive="active">{{ t('nav.dashboard') }}</a>
+        <a routerLink="/accounts" routerLinkActive="active">{{ t('nav.accounts') }}</a>
+        <a routerLink="/categories" routerLinkActive="active">{{ t('nav.categories') }}</a>
+        <a routerLink="/transactions" routerLinkActive="active">{{ t('nav.transactions') }}</a>
+        <a routerLink="/budgets" routerLinkActive="active">{{ t('nav.budgets') }}</a>
+        <a routerLink="/family" routerLinkActive="active">{{ t('nav.family') }}</a>
+      </nav>
+      <div class="user-menu">
+        <span class="user-name">{{ user.displayName }}</span>
+        <button type="button" class="logout-button" (click)="openSettings()">{{ t('nav.settings') }}</button>
+        <button type="button" class="logout-button" (click)="logout()">{{ t('nav.logout') }}</button>
+      </div>
+      <app-settings-dialog />
+    }
+  </header>
+</ng-container>
 
 <main class="app-main">
   <router-outlet></router-outlet>
