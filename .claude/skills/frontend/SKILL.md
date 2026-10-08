@@ -20,6 +20,9 @@ description: Essential facts about budget-app-front (Angular SPA). Load before r
 - `features/<domain>/`: `data/` holds an abstract `XRepository` plus `HttpXRepository`,
   bound in `app.config.ts`. Components are `x-list`/`x-form`. `settings/settings-state.ts`
   caches the user's settings.
+- Static files go in `public/`, the only folder the build copies. Icons are
+  `public/assets/*.svg`, stored as `assets/<name>.svg`; the backend also uses
+  `family` and `transit`.
 - `shared/ui/` holds the badges. `model/types.ts` holds every wire type and helper
   (`canRecordOn`, `transactionCurrency`).
 
