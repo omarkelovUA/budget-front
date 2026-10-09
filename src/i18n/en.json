@@ -354,7 +354,8 @@
     "unsupported-language": "This language isn't supported",
     "invalid-used-currencies": "Choose between 1 and 20 currencies",
     "default-currency-not-used": "The default currency must be one of the currencies you use",
-    "unsupported-theme": "This theme isn't supported"
+    "unsupported-theme": "This theme isn't supported",
+    "validation-failed": "Some of what you entered isn't valid. Check the fields and try again."
   },
   "colors": {
     "dollar": "Dollar green",

@@ -24,7 +24,13 @@ describe('problem mapping', () => {
     expect(toUserError(problem('invalid-credentials', 401)).message).toBe('Wrong email or password');
   });
 
-  it('falls back for validation errors and unknown failures', () => {
+  it('explains requests the server rejected as invalid', () => {
+    expect(toUserError(problem('validation-failed', 400)).message).toBe(
+      'Деякі дані введено неправильно. Перевірте поля й спробуйте ще раз.',
+    );
+  });
+
+  it('falls back for other bad requests and unknown failures', () => {
     expect(toUserError(new HttpErrorResponse({ status: 400, error: {} })).message).toBe(
       'Перевірте правильність введених даних',
     );

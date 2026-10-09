@@ -187,7 +187,9 @@ The backend returns every error as a `ProblemDetail` with a stable `type` URI (l
 the backend doc §5.4). `core/http/problem.ts` maps the type slug to a user-facing message,
 so components switch on the problem type, never on the bare HTTP status. The message is
 `errors.<slug>` from the translation files, in the language active when the error
-happens; the backend's English `detail` is never shown.
+happens; the backend's English `detail` is never shown. Requests the backend rejects as malformed
+(invalid fields, unreadable JSON, wrong parameters) come as `validation-failed`; any other
+unknown 400 falls back to `errors.badRequest`, everything else to `errors.fallback`.
 
 ### 4.6 Internationalization
 

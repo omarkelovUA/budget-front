@@ -41,6 +41,7 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'invalid-used-currencies',
   'default-currency-not-used',
   'unsupported-theme',
+  'validation-failed',
 ]);
 
 export function problemType(err: unknown): string | null {

@@ -354,7 +354,8 @@
     "unsupported-language": "Ця мова не підтримується",
     "invalid-used-currencies": "Оберіть від 1 до 20 валют",
     "default-currency-not-used": "Основна валюта має бути серед валют, якими ви користуєтеся",
-    "unsupported-theme": "Ця тема не підтримується"
+    "unsupported-theme": "Ця тема не підтримується",
+    "validation-failed": "Деякі дані введено неправильно. Перевірте поля й спробуйте ще раз."
   },
   "colors": {
     "dollar": "Доларовий зелений",
