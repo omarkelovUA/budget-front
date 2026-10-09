@@ -2,7 +2,8 @@
 
 This is the frontend repo. The backend lives in `../budget-app-backend/`, and the plans, which
 aren't versioned, are in `../.docs/` (`PLAN.md` plus one file per feature). Before you start
-work here, load the `frontend` skill (`.claude/skills/frontend/SKILL.md`).
+work here, load the `frontend` skill (`.claude/skills/frontend/SKILL.md`), and for UI or visual work
+also the `design` skill.
 
 ## Rules
 - Write maintainable, fast code that follows current best practices. Follow the

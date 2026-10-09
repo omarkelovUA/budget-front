@@ -42,10 +42,13 @@ description: Essential facts about budget-app-front (Angular SPA). Load before r
     `translocoDate`. Never use Angular's `date`/`number` pipes or a fixed `Intl` locale.
   - Error text is `errors.<slug>`; a new slug goes into `KNOWN_PROBLEMS`.
 - **Colours:**
-  - Only use `var(--color-*)` tokens from `src/styles/theme.css` (OKLCH, `light-dark()`,
-    derived from `--primary-h`/`--primary-c`). No hex, rgb or named colours; a spec
-    enforces this.
-  - The theme switches through `ThemeService` (`color-scheme`).
+  - Only use the tokens from `src/styles/theme.css` (`--color-*`, `--gradient-*`, …;
+    OKLCH, `light-dark()`, all derived from the user's primary hue via
+    `core/theme/palette.ts`). No hex, rgb, `oklch()` or named colours; a spec enforces
+    this. Reference: `docs/colors.md`.
+  - **For any UI or visual work, also load the `design` skill** (M3 classes, page
+    header, illustrations).
+  - The theme and hue switch through `ThemeService` (`color-scheme`, `useHue`).
   - Draw icons with `<app-icon [src]>`, not `<img>`.
   - Keep text at WCAG AA in both themes.
 - **Specs:**
@@ -55,4 +58,4 @@ description: Essential facts about budget-app-front (Angular SPA). Load before r
   - Await `fixture.whenStable()`.
 - **Performance:** keep `track` on every `@for`, routes lazy-loaded, no subscriptions
   without teardown (prefer `rxResource`/`toSignal`), and impure work out of templates.
-- **Docs:** `docs/ARCHITECTURE.md` (§4.6 i18n, §4.7 theme).
+- **Docs:** `docs/ARCHITECTURE.md` (§4.6 i18n, §4.7 theme and design), `docs/colors.md`.

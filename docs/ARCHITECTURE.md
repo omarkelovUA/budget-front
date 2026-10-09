@@ -66,7 +66,8 @@ The backend enforces these; the UI only has to present them correctly:
   can record on, then archives it. The close dialog only offers such targets.
 - **Settings** (header → *Settings*, `SettingsDialog`; cached in `SettingsState`, loaded
   when the session starts): the UI **language**, the **theme** (light, dark or device),
-  the **used currencies** and the
+  the **primary colour** (9 presets or any hue, previewed live; §4.7), the **used
+  currencies** and the
   **default currency**, which must be one of them. The backend picks the language and
   default currency from the browser's region at sign-up. New accounts start in the
   default currency, and the account form offers the used currencies; any other code can
@@ -214,20 +215,55 @@ happens; the backend's English `detail` is never shown.
 - **Specs** get both languages synchronously through `src/test-providers.ts` (the unit-test
   builder's `providersFile`), in Ukrainian unless a spec switches.
 
-### 4.7 Theme and colours
+### 4.7 Theme, colours and design
 
-- **Tokens:** every colour comes from `src/styles/theme.css` (`--color-*`; plan and later
-  phases in the workspace's `.docs/theme.md`). Values are OKLCH, derived from two inputs,
-  `--primary-h` and `--primary-c`, so a user-chosen primary colour (phase 2) only sets
-  those two. Component CSS never uses raw colours; `colors.spec.ts` fails on any hex,
-  rgb or named colour outside `theme.css`.
-- **Light and dark:** each token is `light-dark(light, dark)`. `ThemeService`
-  (`core/theme`) sets `color-scheme` on `<html>` to `light`, `dark` or `light dark`
-  (device). Precedence is the same as for the language: the account's `theme` setting,
-  then the device's last choice (`localStorage`), then `system`.
+The full colour reference is [colors.md](colors.md). The design rules for new screens
+are in the workspace's `design` skill (`.claude/skills/design`), and the plan is the
+workspace's `.docs/redesign.md` (M17).
+
+- **One input: the primary hue.** The user picks it in settings (`primaryHue`, 0–359;
+  default 150, a "dollar" green). `core/theme/palette.ts` turns it into
+  `--primary-h`/`--primary-c`/`--primary-l`/`--tertiary-c`:
+  - the most vivid chroma that fits sRGB, capped at 0.18;
+  - a lightness at which white text passes WCAG AA on both gradient stops.
+
+  `ThemeService.useHue` sets those inputs on `<html>`, and every token in
+  `src/styles/theme.css` is derived from them. `previewHue`/`restoreHue` back the settings
+  dialog's live preview.
+- **Tokens:** Material 3 roles, all OKLCH:
+  - primary, secondary container, tertiary (hue + 60);
+  - surface containers from lowest to highest;
+  - text, lines, status;
+  - gradients (`--gradient-primary`, `-soft`, `-card`);
+  - shape (`--radius-*`), elevation (`--elevation-*`), state layers (`--state-*`) and
+    type (`--type-*`).
+
+  Component CSS and illustrations never use raw colours. `colors.spec.ts` fails on any
+  hex, rgb, `oklch()` or named colour outside `theme.css`, and on SVG paint attributes.
+- **Light and dark:** each token is `light-dark(light, dark)`. `ThemeService` sets
+  `color-scheme` on `<html>` to `light`, `dark` or `light dark` (device). The theme and
+  the hue follow the same precedence as the language:
+  1. the account's setting;
+  2. the device's last choice (`localStorage`);
+  3. the default (`system`, hue 150).
+- **Material 3 classes** (`src/styles.css`): `.btn-filled` (on the gradient),
+  `.btn-tonal`, `.btn-outlined`, `.btn-text`, `.btn-danger`, `.card`, `.field`, `.chip`,
+  `.empty-state` and `.panel-header`. `<dialog>` gets M3 shape, elevation and an entry
+  animation, and there's no motion under `prefers-reduced-motion`.
+- **Page header and illustrations:**
+  - **Pages:** every page starts with `<app-page-header>` (`shared/ui/page-header`): a
+    title, a subtitle, `[actions]` and the page's `[art]` on the primary gradient. The
+    art is hidden below 600px.
+  - **Art components:** each one is a standalone `*Art` component in
+    `shared/ui/illustrations`, whose template is an `.svg` file (320×200, `aria-hidden`,
+    no text). It's coloured only through the classes in `illustration.css`, so it
+    follows the hue and the theme.
+  - **Forms and lists:** form panels and the settings dialog show a small art in their
+    header, and empty lists show `app-empty-art`. `screens.spec.ts` checks every screen.
 - **Icons** are drawn by `app-icon` as a CSS mask filled with `currentColor`, so they
   follow the theme. Don't use `<img>` for them.
-- **Contrast:** text tokens pass WCAG AA on the surfaces they're used on, in both themes;
+- **Contrast:** `palette.spec.ts` checks every hue (white text on both gradient stops,
+  primary text in both themes). Text tokens pass WCAG AA on the surfaces they're used on;
   keep it that way when adding tokens.
 
 ### 4.8 Local dev
