@@ -1,4 +1,4 @@
-<dialog #dialog class="settings-dialog" aria-labelledby="settings-title">
+<dialog #dialog class="settings-dialog" aria-labelledby="settings-title" (close)="restoreHue()">
   <div class="dialog-hero">
     <app-settings-art />
   </div>
@@ -25,6 +25,43 @@
           }
         </select>
       </div>
+
+      <fieldset class="form-group">
+        <legend>{{ t('settings.primaryColor') }}</legend>
+        <div class="swatches" role="radiogroup" [attr.aria-label]="t('settings.primaryColor')">
+          @for (preset of presets; track preset.key) {
+            <input
+              type="radio"
+              name="primary-hue"
+              class="swatch palette-swatch"
+              [style.--swatch-h]="preset.palette.h"
+              [style.--swatch-c]="preset.palette.c"
+              [style.--swatch-tertiary-c]="preset.palette.tertiaryC"
+              [style.--swatch-l]="preset.palette.l * 100 + '%'"
+              [attr.aria-label]="t('colors.' + preset.key)"
+              [title]="t('colors.' + preset.key)"
+              [checked]="hue() === preset.hue"
+              (change)="pickHue(preset.hue)"
+            />
+          }
+        </div>
+        <label for="settings-hue" class="hue-label">
+          {{ t('settings.customColor') }}
+          @if (isCustom()) {
+            <span class="hue-dot" aria-hidden="true"></span>
+          }
+        </label>
+        <input
+          id="settings-hue"
+          type="range"
+          class="hue-slider"
+          min="0"
+          max="359"
+          step="1"
+          [value]="hue()"
+          (input)="pickHue(+$any($event.target).value)"
+        />
+      </fieldset>
 
       <fieldset class="form-group">
         <legend>{{ t('settings.usedCurrencies') }}</legend>

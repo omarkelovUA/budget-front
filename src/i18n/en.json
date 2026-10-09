@@ -314,7 +314,9 @@
     "removeCurrencyAria": "Remove {{currency}}",
     "defaultCurrencyBadge": "default",
     "invalidCode": "Enter a three-letter ISO 4217 code",
-    "tooMany": "At most {{max}} currencies"
+    "tooMany": "At most {{max}} currencies",
+    "primaryColor": "Primary colour",
+    "customColor": "Custom colour"
   },
   "errors": {
     "fallback": "Something went wrong. Please try again later.",
@@ -352,5 +354,16 @@
     "invalid-used-currencies": "Choose between 1 and 20 currencies",
     "default-currency-not-used": "The default currency must be one of the currencies you use",
     "unsupported-theme": "This theme isn't supported"
+  },
+  "colors": {
+    "dollar": "Dollar green",
+    "teal": "Teal",
+    "sky": "Sky",
+    "blue": "Blue",
+    "indigo": "Indigo",
+    "violet": "Violet",
+    "rose": "Rose",
+    "red": "Red",
+    "amber": "Amber"
   }
 }

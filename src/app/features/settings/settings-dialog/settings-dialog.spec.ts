@@ -36,6 +36,13 @@ describe('SettingsDialog', () => {
     });
   });
 
+  afterEach(() => {
+    localStorage.clear();
+    document.documentElement.removeAttribute('style');
+  });
+
+  const primaryHue = () => document.documentElement.style.getPropertyValue('--primary-h');
+
   async function open() {
     const fixture = TestBed.createComponent(SettingsDialog);
     fixture.componentInstance.open();
@@ -120,5 +127,42 @@ describe('SettingsDialog', () => {
     expect(saved).toEqual([
       { language: 'uk', theme: 'dark', primaryHue: 305, defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR'] },
     ]);
+  });
+
+  it('previews a preset colour without keeping it yet', async () => {
+    const { fixture, el } = await open();
+
+    const violet = el.querySelector('input[aria-label="Фіолетовий"]') as HTMLInputElement;
+    violet.click();
+    await fixture.whenStable();
+
+    expect(violet.checked).toBe(true);
+    expect(primaryHue()).toBe('305');
+    expect(TestBed.inject(ThemeService).hue()).toBe(150);
+  });
+
+  it('saves a custom colour picked on the hue slider', async () => {
+    const { fixture, type } = await open();
+
+    await type('#settings-hue', '70');
+    expect(primaryHue()).toBe('70');
+    fixture.componentInstance.save();
+    await fixture.whenStable();
+
+    expect(saved[0].primaryHue).toBe(70);
+    expect(TestBed.inject(ThemeService).hue()).toBe(70);
+  });
+
+  it('restores the saved colour when closed without saving, e.g. with Esc', async () => {
+    const { fixture, el, type } = await open();
+    TestBed.inject(ThemeService).useHue(150);
+
+    await type('#settings-hue', '305');
+    const dialog = el.querySelector('dialog') as HTMLDialogElement;
+    dialog.close();
+    dialog.dispatchEvent(new Event('close'));
+    await fixture.whenStable();
+
+    expect(primaryHue()).toBe('150');
   });
 });

@@ -2,8 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signa
 import { form, FormField, maxLength, required } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Language, LANGUAGES } from '../../../core/i18n/languages';
-import { DEFAULT_HUE } from '../../../core/theme/palette';
-import { Theme, THEMES } from '../../../core/theme/theme';
+import { DEFAULT_HUE, paletteFor, PRESETS } from '../../../core/theme/palette';
+import { Theme, THEMES, ThemeService } from '../../../core/theme/theme';
 import { SettingsState } from '../settings-state';
 import { SettingsArt } from '../../../shared/ui/illustrations/settings-art';
 
@@ -24,6 +24,7 @@ const CURRENCY_CODE = /^[A-Z]{3}$/;
 })
 export class SettingsDialog {
   private readonly settingsState = inject(SettingsState);
+  private readonly themeService = inject(ThemeService);
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
 
   protected readonly languages = LANGUAGES;
@@ -34,7 +35,10 @@ export class SettingsDialog {
     theme: 'system',
     defaultCurrency: '',
   });
+  // The primary colour being picked; previewed on the whole app until saved or closed.
   protected readonly hue = signal(DEFAULT_HUE);
+  protected readonly presets = PRESETS.map((preset) => ({ ...preset, palette: paletteFor(preset.hue) }));
+  protected readonly isCustom = computed(() => !PRESETS.some((preset) => preset.hue === this.hue()));
   protected readonly form = form(this.model, (f) => {
     required(f.language);
     required(f.defaultCurrency);
@@ -86,6 +90,17 @@ export class SettingsDialog {
 
   close() {
     this.dialog().nativeElement.close();
+  }
+
+  pickHue(hue: number) {
+    this.hue.set(hue);
+    this.themeService.previewHue(hue);
+  }
+
+  // However the dialog closes (Save, Cancel, Esc), the app shows the saved colour again;
+  // after a save that is already the new one.
+  protected restoreHue() {
+    this.themeService.restoreHue();
   }
 
   addCurrency() {

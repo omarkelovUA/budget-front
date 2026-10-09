@@ -314,7 +314,9 @@
     "removeCurrencyAria": "Прибрати {{currency}}",
     "defaultCurrencyBadge": "основна",
     "invalidCode": "Введіть трилітерний код ISO 4217",
-    "tooMany": "Не більше {{max}} валют"
+    "tooMany": "Не більше {{max}} валют",
+    "primaryColor": "Основний колір",
+    "customColor": "Власний колір"
   },
   "errors": {
     "fallback": "Щось пішло не так. Спробуйте пізніше.",
@@ -352,5 +354,16 @@
     "invalid-used-currencies": "Оберіть від 1 до 20 валют",
     "default-currency-not-used": "Основна валюта має бути серед валют, якими ви користуєтеся",
     "unsupported-theme": "Ця тема не підтримується"
+  },
+  "colors": {
+    "dollar": "Доларовий зелений",
+    "teal": "Бірюзовий",
+    "sky": "Небесний",
+    "blue": "Синій",
+    "indigo": "Індиго",
+    "violet": "Фіолетовий",
+    "rose": "Рожевий",
+    "red": "Червоний",
+    "amber": "Бурштиновий"
   }
 }
