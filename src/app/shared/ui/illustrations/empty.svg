@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+<defs>
+<linearGradient id="empty-grad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" class="a-stop-1"/>
+<stop offset="1" class="a-stop-2"/>
+</linearGradient>
+</defs>
+<ellipse class="a-glow" cx="160" cy="100" rx="128" ry="84"/>
+<ellipse class="a-glow-2" cx="206" cy="78" rx="70" ry="52"/>
+<ellipse class="a-shadow" cx="160" cy="184" rx="108" ry="9"/>
+<path class="a-secondary" d="M76 120L104 70H216L244 120Z"/>
+<path class="a-surface" d="M76 120H124L134 140H186L196 120H244V164A10 10 0 0 1 234 174H86A10 10 0 0 1 76 164Z"/>
+<path style="fill: url(#empty-grad)" d="M124 120L134 140H186L196 120H244V132H202L192 152H128L118 132H76V120Z" opacity="0.35"/>
+<path class="a-primary" d="M160 39.4Q162.1 49.9 172.6 52Q162.1 54.1 160 64.6Q157.9 54.1 147.4 52Q157.9 49.9 160 39.4Z"/>
+<path class="a-tertiary" d="M118 32.8Q119.2 38.8 125.2 40Q119.2 41.2 118 47.2Q116.8 41.2 110.8 40Q116.8 38.8 118 32.8Z"/>
+<path class="a-tertiary" d="M206 25.9Q207.35 32.65 214.1 34Q207.35 35.35 206 42.1Q204.65 35.35 197.9 34Q204.65 32.65 206 25.9Z"/>
+<circle class="a-tertiary" cx="244" cy="70" r="4"/>
+<circle class="a-primary" cx="84" cy="62" r="3"/>
+</svg>

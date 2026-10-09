@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+<defs>
+<linearGradient id="accounts-grad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" class="a-stop-1"/>
+<stop offset="1" class="a-stop-2"/>
+</linearGradient>
+</defs>
+<ellipse class="a-glow" cx="160" cy="100" rx="128" ry="84"/>
+<ellipse class="a-glow-2" cx="206" cy="78" rx="70" ry="52"/>
+<ellipse class="a-shadow" cx="160" cy="184" rx="108" ry="9"/>
+<path class="a-surface" d="M36 92L80 70L124 92Z"/>
+<rect class="a-surface" x="40" y="92" width="80" height="8" rx="2"/>
+<rect class="a-muted" x="48" y="104" width="10" height="50" rx="3"/>
+<rect class="a-muted" x="75" y="104" width="10" height="50" rx="3"/>
+<rect class="a-muted" x="102" y="104" width="10" height="50" rx="3"/>
+<rect class="a-surface" x="36" y="156" width="88" height="12" rx="3"/>
+<circle class="a-primary" cx="80" cy="84" r="5"/>
+<rect class="a-secondary" x="150" y="44" width="110" height="70" rx="10" transform="rotate(-10 205 79)"/>
+<rect class="a-surface" x="160" y="54" width="110" height="70" rx="10" transform="rotate(6 215 89)"/>
+<rect class="a-gold" x="176" y="72" width="22" height="16" rx="3" transform="rotate(6 215 89)"/>
+<rect style="fill: url(#accounts-grad)" x="136" y="100" width="150" height="80" rx="16"/>
+<path class="a-primary" d="M236 120H286V160H236A20 20 0 0 1 236 120Z" opacity="0.9"/>
+<circle class="a-on" cx="240" cy="140" r="7"/>
+<path class="a-tertiary" d="M140 37.0Q141.5 44.5 149.0 46Q141.5 47.5 140 55.0Q138.5 47.5 131.0 46Q138.5 44.5 140 37.0Z"/>
+<path class="a-primary" d="M294 53.7Q295.05 58.95 300.3 60Q295.05 61.05 294 66.3Q292.95 61.05 287.7 60Q292.95 58.95 294 53.7Z"/>
+</svg>

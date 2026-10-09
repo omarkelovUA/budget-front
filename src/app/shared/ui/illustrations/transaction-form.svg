@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+<defs>
+<linearGradient id="transaction-form-grad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" class="a-stop-1"/>
+<stop offset="1" class="a-stop-2"/>
+</linearGradient>
+</defs>
+<ellipse class="a-glow" cx="160" cy="100" rx="128" ry="84"/>
+<ellipse class="a-glow-2" cx="206" cy="78" rx="70" ry="52"/>
+<ellipse class="a-shadow" cx="160" cy="184" rx="108" ry="9"/>
+<path class="a-surface" d="M96 52H196V178L183 168L170 178L157 168L144 178L131 168L118 178L105 168L96 174Z"/>
+<rect class="a-secondary" x="88" y="44" width="116" height="14" rx="7"/>
+<rect class="a-muted" x="110" y="80" width="60" height="8" rx="4"/>
+<rect class="a-muted" x="110" y="98" width="44" height="8" rx="4"/>
+<rect style="fill: url(#transaction-form-grad)" x="110" y="124" width="72" height="22" rx="11"/>
+<path class="a-stroke-on" d="M146 129V141M140 135H152" style="stroke-width: 3"/>
+<path class="a-stroke" d="M226 84Q200 50 166 38" style="stroke-dasharray: 2 9; stroke: var(--color-tertiary)"/>
+<circle class="a-gold" cx="240" cy="104" r="22"/>
+<circle class="a-stroke-on" cx="240" cy="104" r="13.6" style="stroke-width: 2.5"/>
+<path class="a-stroke-on" d="M240 96V112M232 104H248" style="stroke-width: 3"/>
+<path class="a-primary" d="M272 58.8Q273.2 64.8 279.2 66Q273.2 67.2 272 73.2Q270.8 67.2 264.8 66Q270.8 64.8 272 58.8Z"/>
+<path class="a-tertiary" d="M60 71.0Q61.5 78.5 69.0 80Q61.5 81.5 60 89.0Q58.5 81.5 51.0 80Q58.5 78.5 60 71.0Z"/>
+<path class="a-tertiary" d="M256 154.6Q256.9 159.1 261.4 160Q256.9 160.9 256 165.4Q255.1 160.9 250.6 160Q255.1 159.1 256 154.6Z"/>
+</svg>

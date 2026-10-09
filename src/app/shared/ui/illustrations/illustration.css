@@ -1,0 +1,46 @@
+/* Colour classes for the illustrations (*.svg). SVG paint attributes can't take var(), so
+   every shape picks one of these; they follow the theme and the user's primary colour. */
+:host {
+  display: block;
+}
+
+svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.a-primary { fill: var(--color-primary); }
+.a-tertiary { fill: var(--color-tertiary); }
+.a-secondary { fill: var(--color-secondary-container); }
+.a-soft { fill: var(--color-primary-soft); }
+.a-surface { fill: var(--color-surface-container-lowest); }
+.a-muted { fill: var(--color-surface-container-high); }
+.a-ink { fill: var(--color-text); }
+.a-on { fill: var(--color-on-primary); }
+.a-gold { fill: var(--color-warning); }
+.a-success { fill: var(--color-success); }
+.a-danger { fill: var(--color-danger); }
+.a-glow { fill: var(--color-glow-primary); }
+.a-glow-2 { fill: var(--color-glow-tertiary); }
+.a-shadow { fill: var(--color-shadow-soft); }
+
+.a-line,
+.a-stroke,
+.a-stroke-on,
+.a-stroke-muted {
+  fill: none;
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.a-line { stroke: var(--color-border-strong); stroke-width: 3; }
+.a-stroke { stroke: var(--color-primary); }
+.a-stroke-on { stroke: var(--color-on-primary); }
+.a-stroke-muted { stroke: var(--color-surface-container-high); }
+
+/* Gradient stops: each SVG defines <linearGradient id="<name>-grad"> with these two. */
+.a-stop-1 { stop-color: var(--color-primary); }
+.a-stop-2 { stop-color: var(--color-tertiary); }

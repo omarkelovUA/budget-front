@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+<defs>
+<linearGradient id="category-form-grad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" class="a-stop-1"/>
+<stop offset="1" class="a-stop-2"/>
+</linearGradient>
+</defs>
+<ellipse class="a-glow" cx="160" cy="100" rx="128" ry="84"/>
+<ellipse class="a-glow-2" cx="206" cy="78" rx="70" ry="52"/>
+<ellipse class="a-shadow" cx="160" cy="184" rx="108" ry="9"/>
+<path style="fill: url(#category-form-grad)" d="M86 62H186L226 102L186 142H86A14 14 0 0 1 72 128V76A14 14 0 0 1 86 62Z"/>
+<circle class="a-surface" cx="194" cy="102" r="9"/>
+<rect class="a-on" x="92" y="86" width="70" height="10" rx="5" opacity="0.85"/>
+<rect class="a-on" x="92" y="106" width="46" height="9" rx="4.5" opacity="0.55"/>
+<g transform="rotate(40 240 110)">
+<rect class="a-gold" x="230" y="40" width="22" height="100" rx="4"/>
+<rect class="a-tertiary" x="230" y="40" width="22" height="16" rx="4"/>
+<path class="a-surface" d="M230 140H252L241 164Z"/>
+<path class="a-ink" d="M237 156H245L241 164Z"/>
+</g>
+<path class="a-tertiary" d="M60 41.0Q61.5 48.5 69.0 50Q61.5 51.5 60 59.0Q58.5 51.5 51.0 50Q58.5 48.5 60 41.0Z"/>
+<path class="a-primary" d="M270 153.7Q271.05 158.95 276.3 160Q271.05 161.05 270 166.3Q268.95 161.05 263.7 160Q268.95 158.95 270 153.7Z"/>
+</svg>

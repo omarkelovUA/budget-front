@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+<defs>
+<linearGradient id="register-grad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" class="a-stop-1"/>
+<stop offset="1" class="a-stop-2"/>
+</linearGradient>
+</defs>
+<ellipse class="a-glow" cx="160" cy="100" rx="128" ry="84"/>
+<ellipse class="a-glow-2" cx="206" cy="78" rx="70" ry="52"/>
+<ellipse class="a-shadow" cx="160" cy="184" rx="108" ry="9"/>
+<rect class="a-surface" x="70" y="40" width="170" height="122" rx="16"/>
+<rect style="fill: url(#register-grad)" x="70" y="40" width="170" height="34" rx="16"/>
+<rect style="fill: url(#register-grad)" x="70" y="58" width="170" height="16"/>
+<circle class="a-surface" cx="112" cy="92" r="26"/>
+<circle class="a-primary" cx="112" cy="82" r="8.06"/>
+<path class="a-primary" d="M98.36 114.24000000000001a13.64 16.12 0 0 1 27.28 0Z"/>
+<circle class="a-on" cx="109.52" cy="80.14" r="1.8599999999999999" opacity="0.5"/>
+<rect class="a-muted" x="150" y="86" width="70" height="9" rx="4.5"/>
+<rect class="a-muted" x="150" y="104" width="50" height="9" rx="4.5"/>
+<rect class="a-secondary" x="94" y="132" width="122" height="12" rx="6"/>
+<circle class="a-primary" cx="240" cy="150" r="24"/>
+<path class="a-stroke-on" d="M240 138V162M228 150H252"/>
+<path class="a-tertiary" d="M58 43.0Q59.5 50.5 67.0 52Q59.5 53.5 58 61.0Q56.5 53.5 49.0 52Q56.5 50.5 58 43.0Z"/>
+<path class="a-primary" d="M270 54.8Q271.2 60.8 277.2 62Q271.2 63.2 270 69.2Q268.8 63.2 262.8 62Q268.8 60.8 270 54.8Z"/>
+<path class="a-tertiary" d="M54 144.6Q54.9 149.1 59.4 150Q54.9 150.9 54 155.4Q53.1 150.9 48.6 150Q53.1 149.1 54 144.6Z"/>
+</svg>

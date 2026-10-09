@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+<defs>
+<linearGradient id="login-grad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" class="a-stop-1"/>
+<stop offset="1" class="a-stop-2"/>
+</linearGradient>
+</defs>
+<ellipse class="a-glow" cx="160" cy="100" rx="128" ry="84"/>
+<ellipse class="a-glow-2" cx="206" cy="78" rx="70" ry="52"/>
+<ellipse class="a-shadow" cx="160" cy="184" rx="108" ry="9"/>
+<path class="a-glow-2" d="M120 172L66 196H258L196 172Z"/>
+<rect class="a-surface" x="110" y="34" width="96" height="140" rx="8"/>
+<rect class="a-muted" x="120" y="44" width="76" height="130" rx="4"/>
+<path style="fill: url(#login-grad)" d="M120 44L170 56V186L120 174Z"/>
+<circle class="a-on" cx="160" cy="118" r="5"/>
+<circle class="a-gold" cx="236" cy="96" r="18"/>
+<circle class="a-surface" cx="236" cy="96" r="7"/>
+<path class="a-gold" d="M250 104L290 136L282 146L274 140L268 148L260 142L266 134L242 116Z"/>
+<path class="a-tertiary" d="M78 51.0Q79.5 58.5 87.0 60Q79.5 61.5 78 69.0Q76.5 61.5 69.0 60Q76.5 58.5 78 51.0Z"/>
+<path class="a-primary" d="M262 45.7Q263.05 50.95 268.3 52Q263.05 53.05 262 58.3Q260.95 53.05 255.7 52Q260.95 50.95 262 45.7Z"/>
+<path class="a-tertiary" d="M214 154.6Q214.9 159.1 219.4 160Q214.9 160.9 214 165.4Q213.1 160.9 208.6 160Q213.1 159.1 214 154.6Z"/>
+</svg>

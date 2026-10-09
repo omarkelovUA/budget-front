@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200">
+<defs>
+<linearGradient id="family-transfers-grad" x1="0" y1="0" x2="1" y2="1">
+<stop offset="0" class="a-stop-1"/>
+<stop offset="1" class="a-stop-2"/>
+</linearGradient>
+</defs>
+<ellipse class="a-glow" cx="160" cy="100" rx="128" ry="84"/>
+<ellipse class="a-glow-2" cx="206" cy="78" rx="70" ry="52"/>
+<ellipse class="a-shadow" cx="160" cy="184" rx="108" ry="9"/>
+<circle class="a-primary" cx="76" cy="96" r="14.3"/>
+<path class="a-primary" d="M51.8 153.2a24.200000000000003 28.6 0 0 1 48.400000000000006 0Z"/>
+<circle class="a-on" cx="71.6" cy="92.7" r="3.3000000000000003" opacity="0.5"/>
+<circle class="a-tertiary" cx="244" cy="96" r="14.3"/>
+<path class="a-tertiary" d="M219.8 153.2a24.200000000000003 28.6 0 0 1 48.400000000000006 0Z"/>
+<circle class="a-on" cx="239.6" cy="92.7" r="3.3000000000000003" opacity="0.5"/>
+<path class="a-stroke" d="M100 82Q160 20 220 82" style="stroke-dasharray: 2 10"/>
+<path class="a-stroke" d="M210 70L220 82L206 86"/>
+<path class="a-stroke" d="M220 122Q160 170 100 122" style="stroke-dasharray: 2 10; stroke: var(--color-tertiary)"/>
+<path class="a-stroke" d="M110 134L100 122L114 118" style="stroke: var(--color-tertiary)"/>
+<circle class="a-gold" cx="160" cy="50" r="18"/>
+<circle class="a-stroke-on" cx="160" cy="50" r="11.2" style="stroke-width: 2.5"/>
+<rect class="a-surface" x="138" y="128" width="44" height="28" rx="6"/>
+<rect style="fill: url(#family-transfers-grad)" x="138" y="128" width="44" height="9" rx="4"/>
+<path class="a-tertiary" d="M160 97.7Q161.05 102.95 166.3 104Q161.05 105.05 160 110.3Q158.95 105.05 153.7 104Q158.95 102.95 160 97.7Z"/>
+<path class="a-primary" d="M290 43.7Q291.05 48.95 296.3 50Q291.05 51.05 290 56.3Q288.95 51.05 283.7 50Q288.95 48.95 290 43.7Z"/>
+</svg>

@@ -1,0 +1,82 @@
+.page-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 160px;
+  padding: 24px 32px;
+  overflow: hidden;
+  border-radius: var(--radius-xl);
+  background: var(--gradient-primary);
+  color: var(--color-on-primary);
+  box-shadow: var(--elevation-2);
+}
+
+/* A soft light in the corner gives the flat gradient some depth. */
+.page-header::before {
+  content: '';
+  position: absolute;
+  inset: -40% auto auto -10%;
+  width: 60%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in oklch, var(--color-on-primary) 18%, transparent), transparent);
+  pointer-events: none;
+}
+
+.page-header-text {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+h1 {
+  margin: 0;
+  font: var(--type-headline);
+}
+
+.subtitle {
+  margin: 0;
+  max-width: 48ch;
+  opacity: 0.92;
+}
+
+.page-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.page-header-actions:empty {
+  display: none;
+}
+
+/* The art sits on a frosted surface panel: its gradient shapes would vanish straight on
+   the header's own gradient. */
+.page-header-art {
+  position: relative;
+  flex: 0 0 220px;
+  padding: 10px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--color-surface-container-lowest) 88%, transparent);
+  box-shadow: var(--elevation-1);
+}
+
+.page-header-art:empty {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .page-header {
+    min-height: 0;
+    padding: 20px;
+  }
+
+  .page-header-art {
+    display: none;
+  }
+}
