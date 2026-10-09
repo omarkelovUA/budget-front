@@ -93,7 +93,7 @@
   --gradient-soft:
     radial-gradient(60rem 40rem at 0% 0%, var(--color-glow-primary), transparent 70%),
     radial-gradient(50rem 40rem at 100% 0%, var(--color-glow-tertiary), transparent 70%);
-  --gradient-card: linear-gradient(180deg, var(--color-glow-primary), transparent 35%);
+  --gradient-card: linear-gradient(180deg, var(--color-glow-primary), transparent 120px);
   /* Every hue at the primary's lightness, for the colour picker's slider track. */
   --hue-track: linear-gradient(
     90deg in oklch longer hue,

@@ -125,7 +125,7 @@ Illustrations also draw their gold coins with `--color-warning`.
 |---|---|---|
 | `--gradient-primary` | 135°, gradient-start → gradient-end | app bar, page headers, `.btn-filled`, auth panel, budget bars |
 | `--gradient-soft` | two radial glows (primary top left, tertiary top right) | page background, dialog hero band |
-| `--gradient-card` | glow-primary fading out at 35% | the top of every `.card` |
+| `--gradient-card` | glow-primary fading out over 120px | the top of every `.card` |
 | `--hue-track` | every hue at L 54% | the colour picker's slider |
 
 `.palette-swatch` (also in theme.css) paints a preview of *another* palette: the

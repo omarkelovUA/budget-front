@@ -59,9 +59,12 @@
   background-color: color-mix(in oklch, var(--color-on-primary) var(--state-hover), transparent);
 }
 
+/* The active tab is a surface pill, because on-primary text over a translucent on-primary layer would drop
+   below AA on the gradient's lighter stop. */
 .app-nav a.active {
   opacity: 1;
-  background-color: color-mix(in oklch, var(--color-on-primary) 22%, transparent);
+  background-color: var(--color-surface-container-lowest);
+  color: var(--color-primary-text);
 }
 
 .app-nav a:focus-visible,

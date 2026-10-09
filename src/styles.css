@@ -17,8 +17,13 @@ body {
 input,
 select,
 textarea {
+  font: inherit;
   color: var(--color-text);
   background-color: var(--color-surface-container-lowest);
+}
+
+a {
+  color: var(--color-primary-text);
 }
 
 ::placeholder {

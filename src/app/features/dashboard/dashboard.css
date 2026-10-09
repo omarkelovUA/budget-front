@@ -4,7 +4,7 @@
   gap: 24px;
 }
 
-/* Sits on the header's gradient: round translucent buttons in the on-primary colour. */
+/* Sits on the header's gradient: round surface buttons, readable on either stop. */
 .month-switcher {
   display: flex;
   align-items: center;
@@ -16,14 +16,15 @@
   height: 36px;
   border: none;
   border-radius: 50%;
-  background: color-mix(in oklch, var(--color-on-primary) 20%, transparent);
-  color: var(--color-on-primary);
+  background: var(--color-surface-container-lowest);
+  color: var(--color-primary-text);
   font-size: 1.2rem;
   cursor: pointer;
+  box-shadow: var(--elevation-1);
 }
 
 .month-switcher button:not(:disabled):hover {
-  background: color-mix(in oklch, var(--color-on-primary) 30%, transparent);
+  box-shadow: var(--elevation-2);
 }
 
 .month-switcher button:focus-visible {
