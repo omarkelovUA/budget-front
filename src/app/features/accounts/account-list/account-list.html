@@ -1,10 +1,10 @@
 <div class="account-list-container" *transloco="let t">
-  <header class="list-header">
-    <h2>{{ t('accounts.title') }}</h2>
-    <button type="button" class="add-button" (click)="openCreateForm()">
+  <app-page-header [title]="t('accounts.title')" [subtitle]="t('accounts.subtitle')">
+    <button actions type="button" class="btn-tonal add-button" (click)="openCreateForm()">
       <span aria-hidden="true">+</span> {{ t('accounts.add') }}
     </button>
-  </header>
+    <app-accounts-art art />
+  </app-page-header>
 
   @if (actionError(); as message) {
     <p class="form-error" role="alert">{{ message }}</p>
@@ -30,7 +30,7 @@
           <h3>{{ t('accounts.groups.' + group.key) }}</h3>
           <div class="accounts-grid">
             @for (acc of group.accounts; track acc.id) {
-              <div class="account-card" [class.active]="selectedAccount()?.id === acc.id" [class.readonly]="acc.access !== 'owner'">
+              <div class="account-card card" [class.active]="selectedAccount()?.id === acc.id" [class.readonly]="acc.access !== 'owner'">
                 @if (acc.access === 'owner') {
                   <button type="button" class="card-select" (click)="selectAccount(acc)"
                           [attr.aria-label]="t('accounts.editAria', { name: acc.name })">
@@ -49,7 +49,8 @@
                 }
               </div>
             } @empty {
-              <div class="status-message">
+              <div class="empty-state">
+                <app-empty-art />
                 <p>{{ t('accounts.empty') }}</p>
               </div>
             }
@@ -80,13 +81,13 @@
   </ng-template>
 
   @if (isFormOpen()) {
-    <div class="form-panel">
+    <div class="form-panel card">
       <app-account-form [account]="selectedAccount() ?? undefined" (edited)="onEdited()" />
     </div>
   }
 
   @if (closingAccount(); as account) {
-    <div class="form-panel">
+    <div class="form-panel card">
       <app-account-close
         [account]="account"
         [accounts]="accountsResource.value() ?? []"

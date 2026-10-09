@@ -17,6 +17,8 @@ import { FamilyTransferRepository } from '../family-transfers/data/family-transf
 import { AccountRepository } from '../accounts/data/account-repository';
 import { BudgetRepository } from '../budgets/data/budget-repository';
 import { TransactionRepository } from '../transactions/data/transaction-repository';
+import { DashboardArt } from '../../shared/ui/illustrations/dashboard-art';
+import { PageHeader } from '../../shared/ui/page-header/page-header';
 
 // By the user's access: their own accounts, shared with them, only visible; plus
 // money they sent to family members that hasn't been collected yet (still theirs).
@@ -64,7 +66,15 @@ export function balancesByCurrency(accounts: IAccount[], sentInTransit: IInTrans
 @Component({
   selector: 'app-dashboard',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, TranslocoDirective, TranslocoCurrencyPipe, TranslocoDatePipe, TranslocoDecimalPipe],
+  imports: [
+    RouterLink,
+    TranslocoDirective,
+    TranslocoCurrencyPipe,
+    TranslocoDatePipe,
+    TranslocoDecimalPipe,
+    PageHeader,
+    DashboardArt,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

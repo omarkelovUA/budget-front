@@ -1,18 +1,28 @@
 .settings-dialog {
-  width: min(420px, calc(100vw - 32px));
-  padding: 24px;
-  border: none;
-  border-radius: 12px;
-  box-shadow: 0 8px 32px var(--color-shadow);
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
 }
 
-.settings-dialog::backdrop {
-  background: var(--color-backdrop);
+/* The dialog's illustration on a soft band of the primary and tertiary glows. */
+.dialog-hero {
+  display: flex;
+  justify-content: center;
+  padding: 20px 24px 8px;
+  background: var(--gradient-soft), var(--color-surface-container);
+}
+
+.dialog-hero app-settings-art {
+  width: min(240px, 70%);
+}
+
+.settings-dialog form {
+  padding: 20px 24px 24px;
 }
 
 .settings-dialog h2 {
   margin: 0 0 16px;
-  font-size: 1.25rem;
+  font: var(--type-headline);
 }
 
 .form-group {
@@ -31,9 +41,10 @@
 
 .form-group input,
 .form-group select {
-  padding: 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
 }
 
 .form-group input {
@@ -53,16 +64,6 @@
   list-style: none;
 }
 
-.currency-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background-color: var(--color-surface-container-high);
-  font-size: 0.9rem;
-}
-
 .chip-remove {
   padding: 0 2px;
   border: none;
@@ -70,7 +71,7 @@
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
-  color: var(--color-text-secondary);
+  color: inherit;
 }
 
 .add-currency {
@@ -83,20 +84,6 @@
   min-width: 0;
 }
 
-.add-currency button {
-  padding: 8px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  background-color: var(--color-surface-container-high);
-  color: var(--color-text);
-}
-
-.add-currency button:disabled {
-  cursor: default;
-  opacity: 0.6;
-}
-
 .hint,
 .muted {
   margin: 0;
@@ -106,30 +93,13 @@
 
 .actions {
   display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
   gap: 8px;
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
-.actions button {
-  padding: 10px 16px;
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-  cursor: pointer;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-}
-
-.actions button:disabled {
-  background-color: var(--color-disabled);
-}
-
-.actions .secondary {
-  background-color: var(--color-surface-container-high);
-  color: var(--color-text);
-}
-
-/* On the chip's muted background, the usual muted grey is too faint. */
+/* On the chip's tonal background, the usual muted grey is too faint. */
 .currency-chip .muted {
-  color: var(--color-text-secondary);
+  color: inherit;
 }

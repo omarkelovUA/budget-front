@@ -1,30 +1,37 @@
 <section class="auth-page" *transloco="let t">
-  <h2>{{ t('auth.register.title') }}</h2>
+  <div class="auth-hero">
+    <div class="auth-art"><app-register-art /></div>
+    <p class="auth-tagline">{{ t('auth.tagline') }}</p>
+  </div>
 
-  <form novalidate (submit)="$event.preventDefault(); submit()" class="auth-form">
-    <div class="form-group">
-      <label for="register-displayName">{{ t('auth.register.displayName') }}</label>
-      <input id="register-displayName" [formField]="form.displayName" [placeholder]="t('auth.register.displayNamePlaceholder')" />
-    </div>
+  <div class="auth-body">
+    <h2>{{ t('auth.register.title') }}</h2>
 
-    <div class="form-group">
-      <label for="register-email">{{ t('auth.email') }}</label>
-      <input id="register-email" type="email" [formField]="form.email" />
-    </div>
+    <form novalidate (submit)="$event.preventDefault(); submit()" class="auth-form">
+      <div class="field">
+        <label for="register-displayName">{{ t('auth.register.displayName') }}</label>
+        <input id="register-displayName" [formField]="form.displayName" [placeholder]="t('auth.register.displayNamePlaceholder')" />
+      </div>
 
-    <div class="form-group">
-      <label for="register-password">{{ t('auth.register.password') }}</label>
-      <input id="register-password" type="password" [formField]="form.password" />
-    </div>
+      <div class="field">
+        <label for="register-email">{{ t('auth.email') }}</label>
+        <input id="register-email" type="email" [formField]="form.email" />
+      </div>
 
-    @if (errorMessage(); as message) {
-      <p class="error" role="alert">{{ message }}</p>
-    }
+      <div class="field">
+        <label for="register-password">{{ t('auth.register.password') }}</label>
+        <input id="register-password" type="password" [formField]="form.password" />
+      </div>
 
-    <button type="submit" [disabled]="!form().valid() || pending()">
-      {{ pending() ? t('auth.register.pending') : t('auth.register.submit') }}
-    </button>
-  </form>
+      @if (errorMessage(); as message) {
+        <p class="error" role="alert">{{ message }}</p>
+      }
 
-  <p class="switch-link">{{ t('auth.register.haveAccount') }} <a routerLink="/login">{{ t('auth.register.loginLink') }}</a></p>
+      <button type="submit" class="btn-filled" [disabled]="!form().valid() || pending()">
+        {{ pending() ? t('auth.register.pending') : t('auth.register.submit') }}
+      </button>
+    </form>
+
+    <p class="switch-link">{{ t('auth.register.haveAccount') }} <a routerLink="/login">{{ t('auth.register.loginLink') }}</a></p>
+  </div>
 </section>

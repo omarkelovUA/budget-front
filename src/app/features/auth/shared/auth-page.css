@@ -1,17 +1,48 @@
+/* Sign-in and sign-up: one card, the illustration on a gradient panel beside the form. */
 .auth-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  max-width: 880px;
+  width: 100%;
+  margin: 24px auto;
+  overflow: hidden;
+  background: var(--color-surface-container-lowest);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--elevation-3);
+}
+
+.auth-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  padding: 40px 32px;
+  background: var(--gradient-primary);
+  color: var(--color-on-primary);
+}
+
+.auth-art {
+  padding: 12px;
+  border-radius: var(--radius-lg);
+  background: color-mix(in oklch, var(--color-surface-container-lowest) 88%, transparent);
+  box-shadow: var(--elevation-1);
+}
+
+.auth-tagline {
+  margin: 0;
+  font: var(--type-title);
+}
+
+.auth-body {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 400px;
-  margin: 40px auto;
-  padding: 24px;
-  background: var(--color-surface-container-low);
-  border-radius: 12px;
+  padding: 40px 32px;
 }
 
-.auth-page h2 {
+.auth-body h2 {
   margin: 0;
-  color: var(--color-text);
+  font: var(--type-headline);
 }
 
 .auth-form {
@@ -20,45 +51,9 @@
   gap: 16px;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-group input {
-  padding: 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-}
-
 .error {
   margin: 0;
   color: var(--color-danger);
-}
-
-button {
-  padding: 10px 16px;
-  cursor: pointer;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-}
-
-button:disabled {
-  background-color: var(--color-disabled);
-}
-
-.google-button {
-  background-color: var(--color-surface-container-lowest);
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-}
-
-.google-button:disabled {
-  background-color: var(--color-surface-container-high);
 }
 
 .divider {
@@ -66,7 +61,7 @@ button:disabled {
   align-items: center;
   gap: 8px;
   color: var(--color-text-muted);
-  font-size: 0.85rem;
+  font: var(--type-label);
 }
 
 .divider::before,
@@ -80,4 +75,28 @@ button:disabled {
   margin: 0;
   color: var(--color-text-muted);
   text-align: center;
+}
+
+.switch-link a {
+  color: var(--color-primary-text);
+  font-weight: 500;
+}
+
+@media (max-width: 720px) {
+  .auth-page {
+    grid-template-columns: 1fr;
+    margin: 0 auto;
+  }
+
+  .auth-hero {
+    padding: 24px;
+  }
+
+  .auth-art {
+    max-width: 260px;
+  }
+
+  .auth-body {
+    padding: 24px;
+  }
 }

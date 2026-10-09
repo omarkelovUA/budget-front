@@ -1,10 +1,10 @@
 <div class="category-list-container" *transloco="let t">
-  <header class="list-header">
-    <h2>{{ t('categories.title') }}</h2>
-    <button type="button" class="add-button" (click)="openCreateForm()">
+  <app-page-header [title]="t('categories.title')" [subtitle]="t('categories.subtitle')">
+    <button actions type="button" class="btn-tonal add-button" (click)="openCreateForm()">
       <span aria-hidden="true">+</span> {{ t('categories.add') }}
     </button>
-  </header>
+    <app-categories-art art />
+  </app-page-header>
 
   @if (actionError(); as message) {
     <p class="form-error" role="alert">{{ message }}</p>
@@ -27,7 +27,7 @@
     @else {
       <div class="categories-grid">
         @for (cat of categoriesResource.value(); track cat.id) {
-          <div class="category-card" [class.active]="selectedCategory()?.id === cat.id">
+          <div class="category-card card" [class.active]="selectedCategory()?.id === cat.id">
             <button type="button" class="card-select" (click)="selectCategory(cat)"
                     [attr.aria-label]="t('categories.editAria', { name: cat.name })">
               <span class="icon-box" [style.background-color]="cat.color">
@@ -47,7 +47,8 @@
                     [attr.aria-label]="t('categories.deleteAria', { name: cat.name })">×</button>
           </div>
         } @empty {
-          <div class="status-message">
+          <div class="empty-state">
+            <app-empty-art />
             <p>{{ t('categories.empty') }}</p>
           </div>
         }
@@ -56,7 +57,7 @@
   </div>
 
   @if (isFormOpen()) {
-    <div class="form-panel">
+    <div class="form-panel card">
       <app-category-form [category]="selectedCategory() ?? undefined" (edited)="onEdited()" />
     </div>
   }

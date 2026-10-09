@@ -1,13 +1,17 @@
 <div class="family-page" *transloco="let t">
+  <app-page-header [title]="t('nav.family')" [subtitle]="t('family.subtitle')">
+    <app-family-art art />
+  </app-page-header>
+
   @if (receivedResource.hasValue()) {
     @let received = receivedResource.value();
     @if (received === null) {
-      <section class="received-invitations">
+      <section class="received-invitations card">
         <p class="hint">{{ t('family.verifyHint') }}</p>
-        <button type="button" (click)="loginWithGoogle()">{{ t('auth.login.google') }}</button>
+        <button type="button" class="btn-filled" (click)="loginWithGoogle()">{{ t('auth.login.google') }}</button>
       </section>
     } @else if (received.length > 0) {
-      <section class="received-invitations">
+      <section class="received-invitations card">
         <h2>{{ t('family.received.title') }}</h2>
         @for (invitation of received; track invitation.id) {
           <div class="invitation-row">
@@ -26,15 +30,15 @@
             <div class="row-actions">
               @if (confirmingAccept() === invitation.id) {
                 <span class="warning">{{ t('family.received.switchWarning') }}</span>
-                <button type="button" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">
+                <button type="button" class="btn-filled" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">
                   {{ t('family.received.confirmSwitch') }}
                 </button>
-                <button type="button" class="secondary" (click)="confirmingAccept.set(null)">{{ t('common.cancel') }}</button>
+                <button type="button" class="btn-outlined secondary" (click)="confirmingAccept.set(null)">{{ t('common.cancel') }}</button>
               } @else {
-                <button type="button" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">{{ t('family.received.accept') }}</button>
+                <button type="button" class="btn-filled" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">{{ t('family.received.accept') }}</button>
                 <button
-                  type="button"
-                  class="secondary"
+                  type="button" class="btn-filled"
+                  class="btn-outlined secondary"
                   [disabled]="pending()"
                   (click)="declineInvitation(invitation.id)"
                 >
@@ -49,16 +53,16 @@
   }
 
   @if (!currentUser()?.familyId) {
-    <section class="create-family">
+    <section class="create-family card">
       <h2>{{ t('family.create.title') }}</h2>
       <p>{{ t('family.create.intro') }}</p>
 
       <form novalidate (submit)="$event.preventDefault(); createFamily()" class="family-form">
-        <div class="form-group">
+        <div class="field">
           <label for="family-name">{{ t('family.create.name') }}</label>
           <input id="family-name" [formField]="createForm.name" [placeholder]="t('family.create.namePlaceholder')" />
         </div>
-        <button type="submit" [disabled]="!createForm().valid() || pending()">{{ t('family.create.submit') }}</button>
+        <button type="submit" class="btn-filled" [disabled]="!createForm().valid() || pending()">{{ t('family.create.submit') }}</button>
       </form>
     </section>
   } @else {
@@ -73,7 +77,7 @@
       </div>
     } @else {
       @if (familyResource.value(); as family) {
-        <section class="family-details">
+        <section class="family-details card">
           <h2>{{ family.name }}</h2>
           <p class="hint">{{ t('family.seats', { taken: seatsTaken(), max: maxFamilySize }) }}</p>
 
@@ -104,8 +108,8 @@
                   </div>
                   @if (isAdmin()) {
                     <button
-                      type="button"
-                      class="secondary"
+                      type="button" class="btn-filled"
+                      class="btn-outlined secondary"
                       [disabled]="pending()"
                       (click)="revokeInvitation(invitation.id)"
                       [attr.aria-label]="t('family.revokeAria', { email: invitation.email })"
@@ -126,7 +130,7 @@
                 [placeholder]="t('family.inviteEmail')"
                 [attr.aria-label]="t('family.inviteEmail')"
               />
-              <button type="submit" [disabled]="!inviteForm().valid() || pending() || seatsTaken() >= maxFamilySize">
+              <button type="submit" class="btn-filled" [disabled]="!inviteForm().valid() || pending() || seatsTaken() >= maxFamilySize">
                 {{ t('family.invite') }}
               </button>
             </form>
@@ -135,10 +139,10 @@
           <div class="invite-form">
             @if (confirmingLeave()) {
               <span>{{ t('family.leaveConfirm') }}</span>
-              <button type="button" [disabled]="pending()" (click)="leaveFamily()">{{ t('family.leaveYes') }}</button>
-              <button type="button" (click)="confirmingLeave.set(false)">{{ t('common.cancel') }}</button>
+              <button type="button" class="btn-danger" [disabled]="pending()" (click)="leaveFamily()">{{ t('family.leaveYes') }}</button>
+              <button type="button" class="btn-text" (click)="confirmingLeave.set(false)">{{ t('common.cancel') }}</button>
             } @else {
-              <button type="button" (click)="confirmingLeave.set(true)">{{ t('family.leave') }}</button>
+              <button type="button" class="btn-outlined" (click)="confirmingLeave.set(true)">{{ t('family.leave') }}</button>
             }
           </div>
         </section>

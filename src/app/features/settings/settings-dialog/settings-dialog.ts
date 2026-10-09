@@ -5,6 +5,7 @@ import { Language, LANGUAGES } from '../../../core/i18n/languages';
 import { DEFAULT_HUE } from '../../../core/theme/palette';
 import { Theme, THEMES } from '../../../core/theme/theme';
 import { SettingsState } from '../settings-state';
+import { SettingsArt } from '../../../shared/ui/illustrations/settings-art';
 
 // Offered when adding a used currency; any other ISO 4217 code can still be typed in.
 export const COMMON_CURRENCIES = ['UAH', 'EUR', 'USD', 'PLN', 'GBP', 'CZK', 'CHF', 'HUF', 'RON', 'GEL'];
@@ -16,7 +17,7 @@ const CURRENCY_CODE = /^[A-Z]{3}$/;
 
 @Component({
   selector: 'app-settings-dialog',
-  imports: [FormField, TranslocoDirective],
+  imports: [FormField, TranslocoDirective, SettingsArt],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './settings-dialog.html',
   styleUrl: './settings-dialog.css',

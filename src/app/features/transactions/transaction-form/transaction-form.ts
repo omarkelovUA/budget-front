@@ -6,6 +6,7 @@ import { canRecordOn, NewTransaction } from '../../../model/types';
 import { TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
+import { TransactionFormArt } from '../../../shared/ui/illustrations/transaction-form-art';
 
 type Kind = 'payment' | 'transfer';
 
@@ -31,7 +32,7 @@ const DEFAULT_MODEL: TransactionFormModel = {
 
 @Component({
   selector: 'app-transaction-form',
-  imports: [FormField, TranslocoDirective],
+  imports: [FormField, TranslocoDirective, TransactionFormArt],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './transaction-form.html',
   styleUrl: './transaction-form.css',

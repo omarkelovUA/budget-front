@@ -11,6 +11,9 @@ import { AccountForm } from '../account-form/account-form';
 import { FamilyTransfers } from '../../family-transfers/family-transfers/family-transfers';
 import { AuthState } from '../../../core/auth/auth-state';
 import { Icon } from '../../../shared/ui/icon/icon';
+import { PageHeader } from '../../../shared/ui/page-header/page-header';
+import { AccountsArt } from '../../../shared/ui/illustrations/accounts-art';
+import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 
 @Component({
   selector: 'app-account-list',
@@ -24,6 +27,9 @@ import { Icon } from '../../../shared/ui/icon/icon';
     FamilyTransfers,
     TranslocoDirective,
     TranslocoCurrencyPipe,
+    PageHeader,
+    AccountsArt,
+    EmptyArt,
   ],
   templateUrl: './account-list.html',
   styleUrl: './account-list.css',

@@ -1,10 +1,7 @@
 .family-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 24px;
-  background: var(--color-surface-container-low);
-  border-radius: 12px;
+  gap: 24px;
 }
 
 .create-family h2,
@@ -34,35 +31,10 @@
 
 .invite-form input {
   flex: 1;
-  padding: 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.form-group input {
-  padding: 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-}
-
-button {
-  padding: 10px 16px;
-  cursor: pointer;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  border-radius: 4px;
-  font-weight: 500;
-}
-
-button:disabled {
-  background-color: var(--color-disabled);
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
 }
 
 .members-list {
@@ -77,9 +49,9 @@ button:disabled {
   justify-content: space-between;
   gap: 16px;
   padding: 12px 16px;
-  background: var(--color-surface-container-lowest);
+  background: var(--color-surface-container-low);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 
 .member-info {
@@ -162,9 +134,9 @@ button:disabled {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 16px;
-  background: var(--color-surface-container-lowest);
+  background: var(--color-primary-soft);
   border: 1px solid var(--color-primary-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 
 .row-actions {
@@ -177,9 +149,4 @@ button:disabled {
 .warning {
   color: var(--color-warning);
   font-size: 0.85rem;
-}
-
-button.secondary {
-  background-color: var(--color-surface-container-high);
-  color: var(--color-text);
 }

@@ -6,11 +6,14 @@ import { getTransactionAccess, isTransferTransaction, Transaction, transactionCu
 import { TransactionRepository } from '../data/transaction-repository';
 import { TransactionForm } from '../transaction-form/transaction-form';
 import { AccessBadge } from '../../../shared/ui/access-badge/access-badge';
+import { PageHeader } from '../../../shared/ui/page-header/page-header';
+import { TransactionsArt } from '../../../shared/ui/illustrations/transactions-art';
+import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 
 @Component({
   selector: 'app-transaction-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TransactionForm, AccessBadge, TranslocoDirective, TranslocoDatePipe, TranslocoCurrencyPipe],
+  imports: [TransactionForm, AccessBadge, TranslocoDirective, TranslocoDatePipe, TranslocoCurrencyPipe, PageHeader, TransactionsArt, EmptyArt],
   templateUrl: './transaction-list.html',
   styleUrl: './transaction-list.css',
 })

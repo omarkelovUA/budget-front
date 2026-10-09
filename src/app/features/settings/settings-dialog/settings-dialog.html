@@ -1,4 +1,7 @@
 <dialog #dialog class="settings-dialog" aria-labelledby="settings-title">
+  <div class="dialog-hero">
+    <app-settings-art />
+  </div>
   <form *transloco="let t" novalidate (submit)="$event.preventDefault(); save()">
     <h2 id="settings-title">{{ t('settings.title') }}</h2>
 
@@ -27,7 +30,7 @@
         <legend>{{ t('settings.usedCurrencies') }}</legend>
         <ul class="currency-chips">
           @for (currency of usedCurrencies(); track currency) {
-            <li class="currency-chip">
+            <li class="currency-chip chip">
               {{ currency }}
               @if (currency === form.defaultCurrency().value()) {
                 <span class="muted">· {{ t('settings.defaultCurrencyBadge') }}</span>
@@ -53,7 +56,7 @@
               <option [value]="currency"></option>
             }
           </datalist>
-          <button type="button" class="secondary" [disabled]="!newCurrency() || newCurrencyError()"
+          <button type="button" class="btn-tonal" [disabled]="!newCurrency() || newCurrencyError()"
                   (click)="addCurrency(); newCurrencyInput.focus()">{{ t('settings.add') }}</button>
         </div>
         @if (newCurrencyError(); as key) {
@@ -78,8 +81,8 @@
     }
 
     <div class="actions">
-      <button type="submit" [disabled]="loading() || pending() || !form().valid()">{{ t('common.save') }}</button>
-      <button type="button" class="secondary" (click)="close()">{{ t('common.cancel') }}</button>
+      <button type="submit" class="btn-filled" [disabled]="loading() || pending() || !form().valid()">{{ t('common.save') }}</button>
+      <button type="button" class="btn-text secondary" (click)="close()">{{ t('common.cancel') }}</button>
     </div>
   </form>
 </dialog>

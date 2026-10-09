@@ -1,5 +1,8 @@
-<section class="family-transfers" aria-labelledby="in-transit-title" *transloco="let t">
-  <h3 id="in-transit-title">{{ t('familyTransfers.title') }}</h3>
+<section class="family-transfers card" aria-labelledby="in-transit-title" *transloco="let t">
+  <div class="panel-header">
+    <app-family-transfers-art />
+    <h3 id="in-transit-title">{{ t('familyTransfers.title') }}</h3>
+  </div>
 
   @if (transfersResource.value(); as transfers) {
     @for (group of [
@@ -12,7 +15,7 @@
           <div class="transit-row">
             <span>{{ t('familyTransfers.' + group.who) }}: <strong>{{ transfer.counterpart.displayName }}</strong></span>
             <span class="amount">{{ transfer.amount | translocoCurrency: 'symbol' : {} : transfer.currency }}</span>
-            <button type="button" [disabled]="pending()" (click)="startWithdraw(transfer, $any(group.mode))">
+            <button type="button" class="btn-tonal" [disabled]="pending()" (click)="startWithdraw(transfer, $any(group.mode))">
               {{ t('familyTransfers.' + group.mode) }}
             </button>
           </div>
@@ -39,9 +42,9 @@
                     (input)="withdrawAmount.set($any($event.target).value)"
                   />
                 </label>
-                <button type="button" [disabled]="pending()" (click)="confirmWithdraw()">{{ t('familyTransfers.confirm') }}</button>
+                <button type="button" class="btn-filled" [disabled]="pending()" (click)="confirmWithdraw()">{{ t('familyTransfers.confirm') }}</button>
               }
-              <button type="button" class="secondary" (click)="withdrawing.set(null)">{{ t('common.cancel') }}</button>
+              <button type="button" class="btn-text secondary" (click)="withdrawing.set(null)">{{ t('common.cancel') }}</button>
             </div>
           }
         }
@@ -76,7 +79,7 @@
         {{ t('common.amount') }}
         <input type="number" [formField]="sendForm.amount" />
       </label>
-      <button type="submit" [disabled]="pending() || !sendForm().valid()">{{ t('familyTransfers.send.submit') }}</button>
+      <button type="submit" class="btn-filled" [disabled]="pending() || !sendForm().valid()">{{ t('familyTransfers.send.submit') }}</button>
       <p class="hint">{{ t('familyTransfers.send.hint') }}</p>
     </form>
   }

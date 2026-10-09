@@ -5,6 +5,7 @@ import { CategoryRepository } from '../data/category-repository';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
 import { CATEGORY_ICONS } from '../../../shared/ui/icon-picker/icons';
+import { CategoryFormArt } from '../../../shared/ui/illustrations/category-form-art';
 
 type CategoryFormModel = Omit<ICategory, 'id'>;
 
@@ -18,7 +19,7 @@ const DEFAULT_MODEL: CategoryFormModel = {
 
 @Component({
   selector: 'app-category-form',
-  imports: [FormField, TranslocoDirective, IconPicker],
+  imports: [FormField, TranslocoDirective, IconPicker, CategoryFormArt],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './category-form.html',
   styleUrl: './category-form.css',

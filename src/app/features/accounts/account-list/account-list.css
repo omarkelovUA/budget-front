@@ -1,41 +1,7 @@
 .account-list-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 24px;
-  background: var(--color-surface-container-low);
-  border-radius: 12px;
-  height: 100%;
-}
-
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.list-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: var(--color-text);
-}
-
-.add-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.add-button:hover {
-  background-color: var(--color-primary-hover);
+  gap: 24px;
 }
 
 .accounts-grid {
@@ -49,23 +15,18 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: var(--color-surface-container-lowest);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
   cursor: pointer;
-  transition: all 0.2s ease;
   position: relative;
 }
 
 .account-card:hover {
+  box-shadow: var(--elevation-2);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--color-shadow-soft);
-  border-color: var(--color-border);
 }
 
 .account-card.active {
   border-color: var(--color-primary);
-  background-color: var(--color-primary-soft);
+  background: var(--color-primary-soft);
 }
 
 .icon-box {
@@ -74,7 +35,7 @@
   justify-content: center;
   width: 48px;
   height: 48px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 
 .icon-box app-icon {
@@ -104,13 +65,6 @@
   color: var(--color-text-muted);
 }
 
-.form-panel {
-  padding: 20px;
-  background: var(--color-surface-container-lowest);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-}
-
 .status-message {
   text-align: center;
   padding: 40px;
@@ -132,12 +86,6 @@
   100% { transform: rotate(360deg); }
 }
 
-@media (max-width: 720px) {
-  .account-list-container {
-    padding: 12px;
-  }
-}
-
 .delete-button {
   background: none;
   border: none;
@@ -152,7 +100,9 @@
 
 .account-group h3 {
   margin: 0 0 12px;
-  font-size: 1rem;
+  font: var(--type-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
 }
 

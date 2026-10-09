@@ -1,22 +1,10 @@
 .dashboard {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
 }
 
-.dashboard-header {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-
-.dashboard-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-}
-
+/* Sits on the header's gradient: round translucent buttons in the on-primary colour. */
 .month-switcher {
   display: flex;
   align-items: center;
@@ -24,13 +12,22 @@
 }
 
 .month-switcher button {
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background: var(--color-surface-container-lowest);
-  font-size: 1.1rem;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--color-on-primary) 20%, transparent);
+  color: var(--color-on-primary);
+  font-size: 1.2rem;
   cursor: pointer;
+}
+
+.month-switcher button:not(:disabled):hover {
+  background: color-mix(in oklch, var(--color-on-primary) 30%, transparent);
+}
+
+.month-switcher button:focus-visible {
+  outline-color: var(--color-on-primary);
 }
 
 .month-switcher button:disabled {
@@ -48,7 +45,7 @@
   margin: 0;
   padding: 12px 16px;
   background: var(--color-primary-soft);
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 .dashboard-grid {
@@ -57,16 +54,9 @@
   gap: 16px;
 }
 
-.panel {
-  padding: 20px;
-  background: var(--color-surface-container-low);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-}
-
 .panel h3 {
   margin: 0 0 12px;
-  font-size: 1.1rem;
+  font: var(--type-title);
 }
 
 .muted {
@@ -81,8 +71,8 @@
 }
 
 .big-number {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font: var(--type-headline);
+  color: var(--color-primary-text);
 }
 
 .summary {
@@ -124,13 +114,14 @@
 .progress-track {
   height: 8px;
   background: var(--color-surface-container-high);
-  border-radius: 4px;
+  border-radius: 999px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: var(--color-primary);
+  border-radius: inherit;
+  background: var(--gradient-primary);
 }
 
 .budget-row.over .progress-fill {

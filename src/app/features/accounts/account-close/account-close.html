@@ -1,5 +1,8 @@
 <section class="account-close" aria-labelledby="close-title" *transloco="let t">
-  <h3 id="close-title">{{ t('accounts.closeDialog.title', { name: account().name }) }}</h3>
+  <div class="panel-header">
+    <app-account-close-art />
+    <h3 id="close-title">{{ t('accounts.closeDialog.title', { name: account().name }) }}</h3>
+  </div>
 
   @if (!needsTarget()) {
     <p>{{ t('accounts.closeDialog.zeroBalance') }}</p>
@@ -17,7 +20,7 @@
       {{ t(account().balance > 0 ? 'accounts.closeDialog.moveBalance' : 'accounts.closeDialog.payDebt', { amount: amountText }) }}
       {{ t('accounts.closeDialog.afterwards') }}
     </p>
-    <div class="form-group">
+    <div class="field">
       <label for="close-target">{{ t('common.account') }}</label>
       <select id="close-target" [value]="targetId()" (change)="targetId.set($any($event.target).value)">
         <option value="" disabled>{{ t('common.chooseAccount') }}</option>
@@ -35,9 +38,9 @@
   }
 
   <div class="actions">
-    <button type="button" class="danger" [disabled]="!canConfirm()" (click)="confirm()">
+    <button type="button" class="btn-danger danger" [disabled]="!canConfirm()" (click)="confirm()">
       {{ t('accounts.closeDialog.confirm') }}
     </button>
-    <button type="button" class="secondary" (click)="cancelled.emit()">{{ t('common.cancel') }}</button>
+    <button type="button" class="btn-text secondary" (click)="cancelled.emit()">{{ t('common.cancel') }}</button>
   </div>
 </section>

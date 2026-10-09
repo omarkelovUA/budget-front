@@ -9,6 +9,7 @@ import { GrantLevel, IAccount } from '../../../model/types';
 import { FamilyRepository } from '../../family/data/family-repository';
 import { SettingsState } from '../../settings/settings-state';
 import { AccountRepository } from '../data/account-repository';
+import { AccountFormArt } from '../../../shared/ui/illustrations/account-form-art';
 
 interface AccountFormModel {
   name: string;
@@ -29,7 +30,7 @@ export type MemberAccess = GrantLevel | 'hidden';
 // Only the owner opens this form: other members see the account read-only.
 @Component({
   selector: 'app-account-form',
-  imports: [FormField, TranslocoDirective, IconPicker],
+  imports: [FormField, TranslocoDirective, IconPicker, AccountFormArt],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './account-form.html',
   styleUrl: './account-form.css',

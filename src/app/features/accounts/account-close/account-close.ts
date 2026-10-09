@@ -3,12 +3,13 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoCurrencyPipe } from '@jsverse/transloco-locale';
 import { canRecordOn, IAccount } from '../../../model/types';
 import { AccountRepository } from '../data/account-repository';
+import { AccountCloseArt } from '../../../shared/ui/illustrations/account-close-art';
 
 // Closing moves the remaining balance to another account as a transfer, then
 // archives the account. Only its owner sees this.
 @Component({
   selector: 'app-account-close',
-  imports: [TranslocoDirective, TranslocoCurrencyPipe],
+  imports: [TranslocoDirective, TranslocoCurrencyPipe, AccountCloseArt],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './account-close.html',
   styleUrl: './account-close.css',

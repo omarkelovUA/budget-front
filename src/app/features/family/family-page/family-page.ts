@@ -7,13 +7,15 @@ import { Observable } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
 import { IFamily } from '../../../model/types';
 import { FamilyRepository } from '../data/family-repository';
+import { PageHeader } from '../../../shared/ui/page-header/page-header';
+import { FamilyArt } from '../../../shared/ui/illustrations/family-art';
 
 // Members plus pending invitations (enforced by the backend).
 export const MAX_FAMILY_SIZE = 10;
 
 @Component({
   selector: 'app-family-page',
-  imports: [FormField, TranslocoDirective, TranslocoDatePipe],
+  imports: [FormField, TranslocoDirective, TranslocoDatePipe, PageHeader, FamilyArt],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './family-page.html',
   styleUrl: './family-page.css',

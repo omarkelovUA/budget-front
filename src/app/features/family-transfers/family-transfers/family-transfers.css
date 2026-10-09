@@ -1,13 +1,7 @@
 .family-transfers {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-}
-
-.family-transfers h3 {
-  margin: 0;
-  font-size: 1rem;
-  color: var(--color-text-secondary);
+  gap: 12px;
 }
 
 .family-transfers h4 {
@@ -24,9 +18,9 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: var(--color-surface-container-lowest);
+  background: var(--color-surface-container-low);
   border: 1px solid var(--color-border);
-  border-radius: 10px;
+  border-radius: var(--radius-md);
 }
 
 .withdraw-panel {
@@ -47,27 +41,10 @@ label {
 
 select,
 input {
-  padding: 6px 8px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-}
-
-button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 4px;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  cursor: pointer;
-}
-
-button:disabled {
-  background-color: var(--color-disabled);
-}
-
-button.secondary {
-  background-color: var(--color-surface-container-high);
-  color: var(--color-text);
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
 }
 
 .send-form h4 {

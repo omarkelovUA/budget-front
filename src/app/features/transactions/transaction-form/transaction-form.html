@@ -1,5 +1,10 @@
 <form novalidate (submit)="$event.preventDefault(); submit()" class="transaction-form" *transloco="let t">
-  <div class="form-group">
+  <div class="panel-header">
+    <app-transaction-form-art />
+    <h3>{{ t('transactions.add') }}</h3>
+  </div>
+
+  <div class="field">
     <label>{{ t('transactions.form.kind') }}</label>
     <div class="kind-picker" role="radiogroup" [attr.aria-label]="t('transactions.form.kind')">
       @for (kind of kinds; track kind) {
@@ -11,18 +16,18 @@
     </div>
   </div>
 
-  <div class="form-group">
+  <div class="field">
     <label for="transaction-amount">{{ t('common.amount') }}</label>
     <input id="transaction-amount" type="number" [formField]="form.amount" step="0.01" />
   </div>
 
-  <div class="form-group">
+  <div class="field">
     <label for="transaction-date">{{ t('common.date') }}</label>
     <input id="transaction-date" type="date" [formField]="form.date" />
   </div>
 
   @if (form.kind().value() === 'payment') {
-    <div class="form-group">
+    <div class="field">
       <label for="transaction-accountId">{{ t('common.account') }}</label>
       <select id="transaction-accountId" [formField]="form.accountId">
         <option value="" disabled>{{ t('common.chooseAccount') }}</option>
@@ -32,7 +37,7 @@
       </select>
     </div>
 
-    <div class="form-group">
+    <div class="field">
       <label for="transaction-categoryId">{{ t('common.category') }}</label>
       <select id="transaction-categoryId" [formField]="form.categoryId">
         <option value="" disabled>{{ t('common.chooseCategory') }}</option>
@@ -42,7 +47,7 @@
       </select>
     </div>
   } @else {
-    <div class="form-group">
+    <div class="field">
       <label for="transaction-fromAccountId">{{ t('transactions.form.fromAccount') }}</label>
       <select id="transaction-fromAccountId" [formField]="form.fromAccountId">
         <option value="" disabled>{{ t('common.chooseAccount') }}</option>
@@ -52,7 +57,7 @@
       </select>
     </div>
 
-    <div class="form-group">
+    <div class="field">
       <label for="transaction-toAccountId">{{ t('transactions.form.toAccount') }}</label>
       <select id="transaction-toAccountId" [formField]="form.toAccountId">
         <option value="" disabled>{{ t('common.chooseAccount') }}</option>
@@ -67,5 +72,5 @@
     <p class="form-error" role="alert">{{ message }}</p>
   }
 
-  <button type="submit" [disabled]="!form().valid()">{{ t('common.save') }}</button>
+  <button type="submit" class="btn-filled" [disabled]="!form().valid()">{{ t('common.save') }}</button>
 </form>

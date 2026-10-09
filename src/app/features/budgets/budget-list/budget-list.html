@@ -1,10 +1,10 @@
 <div class="budget-list-container" *transloco="let t">
-  <header class="list-header">
-    <h2>{{ t('budgets.title') }}</h2>
-    <button type="button" class="add-button" (click)="openCreateForm()">
+  <app-page-header [title]="t('budgets.title')" [subtitle]="t('budgets.subtitle')">
+    <button actions type="button" class="btn-tonal add-button" (click)="openCreateForm()">
       <span aria-hidden="true">+</span> {{ t('budgets.add') }}
     </button>
-  </header>
+    <app-budgets-art art />
+  </app-page-header>
 
   @if (actionError(); as message) {
     <p class="form-error" role="alert">{{ message }}</p>
@@ -27,7 +27,7 @@
     @else {
       <div class="budgets-grid">
         @for (budget of budgetsResource.value(); track budget.id) {
-          <div class="budget-card" [class.over]="isOverBudget(budget)">
+          <div class="budget-card card" [class.over]="isOverBudget(budget)">
             <div class="budget-header">
               <div class="icon-box" [style.background-color]="budget.category.color">
                 <app-icon [src]="budget.category.icon" />
@@ -55,7 +55,8 @@
             </div>
           </div>
         } @empty {
-          <div class="status-message">
+          <div class="empty-state">
+            <app-empty-art />
             <p>{{ t('budgets.empty') }}</p>
           </div>
         }
@@ -64,7 +65,7 @@
   </div>
 
   @if (isFormOpen()) {
-    <div class="form-panel">
+    <div class="form-panel card">
       <app-budget-form (created)="onCreated()" />
     </div>
   }

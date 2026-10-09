@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
+import { LoginArt } from '../../../shared/ui/illustrations/login-art';
 import { Observable } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
 import { IUser } from '../../../model/types';
 
 @Component({
   selector: 'app-login-page',
-  imports: [FormField, RouterLink, TranslocoDirective],
+  imports: [FormField, RouterLink, TranslocoDirective, LoginArt],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './login-page.html',
   styleUrl: '../shared/auth-page.css',

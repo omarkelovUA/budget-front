@@ -1,12 +1,12 @@
 <div class="dashboard" *transloco="let t">
-  <header class="dashboard-header">
-    <h2>{{ t('dashboard.title') }}</h2>
-    <div class="month-switcher" role="group" [attr.aria-label]="t('dashboard.monthGroup')">
+  <app-page-header [title]="t('dashboard.title')" [subtitle]="t('dashboard.subtitle')">
+    <div actions class="month-switcher" role="group" [attr.aria-label]="t('dashboard.monthGroup')">
       <button type="button" (click)="previousMonth()" [attr.aria-label]="t('dashboard.previousMonth')">‹</button>
       <span class="month-label" aria-live="polite">{{ periodStart() | translocoDate: { month: 'long', year: 'numeric' } }}</span>
       <button type="button" (click)="nextMonth()" [disabled]="isCurrentMonth()" [attr.aria-label]="t('dashboard.nextMonth')">›</button>
     </div>
-  </header>
+    <app-dashboard-art art />
+  </app-page-header>
 
   @if (!currentUser()?.familyId) {
     <p class="hint">
@@ -15,7 +15,7 @@
   }
 
   <div class="dashboard-grid">
-    <section class="panel" aria-labelledby="balances-title">
+    <section class="panel card" aria-labelledby="balances-title">
       <h3 id="balances-title">{{ t('dashboard.balance') }}</h3>
       @if (accountsResource.isLoading()) {
         <p class="muted" role="status">{{ t('common.loading') }}</p>
@@ -44,7 +44,7 @@
       }
     </section>
 
-    <section class="panel" aria-labelledby="month-title">
+    <section class="panel card" aria-labelledby="month-title">
       <h3 id="month-title">{{ t('dashboard.month') }}</h3>
       @if (summaryResource.isLoading()) {
         <p class="muted" role="status">{{ t('common.loading') }}</p>
@@ -74,7 +74,7 @@
       }
     </section>
 
-    <section class="panel" aria-labelledby="budgets-title">
+    <section class="panel card" aria-labelledby="budgets-title">
       <h3 id="budgets-title">{{ t('dashboard.budgets') }}</h3>
       @if (budgetsResource.isLoading()) {
         <p class="muted" role="status">{{ t('common.loading') }}</p>
@@ -104,7 +104,7 @@
       }
     </section>
 
-    <section class="panel" aria-labelledby="recent-title">
+    <section class="panel card" aria-labelledby="recent-title">
       <h3 id="recent-title">{{ t('dashboard.recent') }}</h3>
       @if (recentResource.isLoading()) {
         <p class="muted" role="status">{{ t('common.loading') }}</p>

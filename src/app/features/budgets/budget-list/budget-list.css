@@ -1,41 +1,7 @@
 .budget-list-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 24px;
-  background: var(--color-surface-container-low);
-  border-radius: 12px;
-  height: 100%;
-}
-
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.list-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: var(--color-text);
-}
-
-.add-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 16px;
-  background-color: var(--color-primary);
-  color: var(--color-on-primary);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.add-button:hover {
-  background-color: var(--color-primary-hover);
+  gap: 24px;
 }
 
 .budgets-grid {
@@ -49,9 +15,6 @@
   flex-direction: column;
   gap: 12px;
   padding: 16px;
-  background: var(--color-surface-container-lowest);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
 }
 
 .budget-card.over {
@@ -119,7 +82,8 @@
 
 .progress-fill {
   height: 100%;
-  background: var(--color-primary);
+  border-radius: inherit;
+  background: var(--gradient-primary);
   transition: width 0.3s ease;
 }
 
@@ -142,13 +106,6 @@
   text-transform: uppercase;
 }
 
-.form-panel {
-  padding: 20px;
-  background: var(--color-surface-container-lowest);
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
-}
-
 .status-message {
   text-align: center;
   padding: 40px;
@@ -168,10 +125,4 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-@media (max-width: 720px) {
-  .budget-list-container {
-    padding: 12px;
-  }
 }

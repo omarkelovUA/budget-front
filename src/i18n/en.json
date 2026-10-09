@@ -117,7 +117,8 @@
       "pending": "Signing up...",
       "haveAccount": "Already have an account?",
       "loginLink": "Sign in"
-    }
+    },
+    "tagline": "Your family’s money, in one bright, shared place."
   },
   "accounts": {
     "title": "Accounts",
@@ -156,7 +157,8 @@
       "payDebt": "The debt of {{amount}} will be paid off from the selected account.",
       "afterwards": "Then the account will be closed; its transaction history is kept.",
       "confirm": "Close account"
-    }
+    },
+    "subtitle": "Cards, cash and savings, yours and the family’s."
   },
   "categories": {
     "title": "Categories",
@@ -167,7 +169,8 @@
     "deleteAria": "Delete category {{name}}",
     "form": {
       "namePlaceholder": "e.g. Groceries"
-    }
+    },
+    "subtitle": "Sort income and spending the way your family thinks about money."
   },
   "budgets": {
     "title": "Budgets",
@@ -181,7 +184,8 @@
       "category": "Expense category",
       "period": "Month (YYYY-MM)",
       "planned": "Planned amount"
-    }
+    },
+    "subtitle": "Set monthly limits and watch how much is left."
   },
   "transactions": {
     "title": "Transactions",
@@ -200,7 +204,8 @@
       },
       "fromAccount": "From account",
       "toAccount": "To account"
-    }
+    },
+    "subtitle": "Every income, expense and transfer, in one place."
   },
   "dashboard": {
     "title": "Overview",
@@ -233,7 +238,8 @@
     "recent": "Recent transactions",
     "recentFailed": "Couldn't load the transactions.",
     "noTransactions": "No transactions yet.",
-    "allTransactions": "All transactions →"
+    "allTransactions": "All transactions →",
+    "subtitle": "Balances, spending and budgets at a glance."
   },
   "family": {
     "verifyHint": "Family invitations are tied to an email address. To see and accept them, confirm your email by signing in with Google.",
@@ -265,7 +271,8 @@
     "invite": "Invite",
     "leaveConfirm": "Leave the family? Shared data will no longer be available to you.",
     "leaveYes": "Yes, leave",
-    "leave": "Leave family"
+    "leave": "Leave family",
+    "subtitle": "The people you share accounts, categories and budgets with."
   },
   "familyTransfers": {
     "title": "Family transfers",

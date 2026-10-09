@@ -8,6 +8,7 @@ import { AuthState } from '../../../core/auth/auth-state';
 import { IAccount, IInTransit } from '../../../model/types';
 import { FamilyRepository } from '../../family/data/family-repository';
 import { FamilyTransferRepository } from '../data/family-transfer-repository';
+import { FamilyTransfersArt } from '../../../shared/ui/illustrations/family-transfers-art';
 
 type WithdrawMode = 'collect' | 'takeBack';
 
@@ -15,7 +16,7 @@ type WithdrawMode = 'collect' | 'takeBack';
 // waiting for you, take back what you sent and wasn't collected yet.
 @Component({
   selector: 'app-family-transfers',
-  imports: [FormField, TranslocoDirective, TranslocoCurrencyPipe],
+  imports: [FormField, TranslocoDirective, TranslocoCurrencyPipe, FamilyTransfersArt],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './family-transfers.html',
   styleUrl: './family-transfers.css',

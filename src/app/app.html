@@ -1,6 +1,9 @@
 <ng-container *transloco="let t">
   <header class="app-header">
-    <h1>{{ t('app.title') }}</h1>
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <h1>{{ t('app.title') }}</h1>
+    </div>
     @if (currentUser(); as user) {
       <nav class="app-nav" [attr.aria-label]="t('nav.label')">
         <a routerLink="/dashboard" routerLinkActive="active">{{ t('nav.dashboard') }}</a>
@@ -11,9 +14,10 @@
         <a routerLink="/family" routerLinkActive="active">{{ t('nav.family') }}</a>
       </nav>
       <div class="user-menu">
+        <span class="user-avatar" aria-hidden="true">{{ user.displayName.charAt(0) }}</span>
         <span class="user-name">{{ user.displayName }}</span>
-        <button type="button" class="logout-button" (click)="openSettings()">{{ t('nav.settings') }}</button>
-        <button type="button" class="logout-button" (click)="logout()">{{ t('nav.logout') }}</button>
+        <button type="button" class="btn-text" (click)="openSettings()">{{ t('nav.settings') }}</button>
+        <button type="button" class="btn-text" (click)="logout()">{{ t('nav.logout') }}</button>
       </div>
       <app-settings-dialog />
     }
