@@ -4,12 +4,13 @@ import { Theme } from '../core/theme/theme';
 // The current user's own settings (more to come). language is ISO 639-1 and
 // defaultCurrency ISO 4217, both picked from the region at sign-up; usedCurrencies
 // are what currency pickers offer and always include defaultCurrency; theme 'system'
-// follows the device.
+// follows the device; primaryHue (0–359) is the OKLCH hue the UI palette derives from.
 export interface IUserSettings {
   language: Language;
   defaultCurrency: string;
   usedCurrencies: string[];
   theme: Theme;
+  primaryHue: number;
 }
 
 export type Visibility = 'private' | 'shared';

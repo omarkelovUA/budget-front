@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signa
 import { form, FormField, maxLength, required } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Language, LANGUAGES } from '../../../core/i18n/languages';
+import { DEFAULT_HUE } from '../../../core/theme/palette';
 import { Theme, THEMES } from '../../../core/theme/theme';
 import { SettingsState } from '../settings-state';
 
@@ -32,6 +33,7 @@ export class SettingsDialog {
     theme: 'system',
     defaultCurrency: '',
   });
+  protected readonly hue = signal(DEFAULT_HUE);
   protected readonly form = form(this.model, (f) => {
     required(f.language);
     required(f.defaultCurrency);
@@ -72,6 +74,7 @@ export class SettingsDialog {
           defaultCurrency: settings.defaultCurrency,
         });
         this.usedCurrencies.set(settings.usedCurrencies);
+        this.hue.set(settings.primaryHue);
       },
       error: (err: Error) => {
         this.loading.set(false);
@@ -101,7 +104,8 @@ export class SettingsDialog {
     this.pending.set(true);
     this.errorMessage.set(null);
     // The new language applies as soon as the server has accepted it.
-    this.settingsState.update({ ...this.form().value(), usedCurrencies: this.usedCurrencies() }).subscribe({
+    const settings = { ...this.form().value(), usedCurrencies: this.usedCurrencies(), primaryHue: this.hue() };
+    this.settingsState.update(settings).subscribe({
       next: () => {
         this.pending.set(false);
         this.close();

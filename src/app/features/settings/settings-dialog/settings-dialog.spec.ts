@@ -25,7 +25,7 @@ describe('SettingsDialog', () => {
           provide: SettingsRepository,
           useValue: {
             getSettings: () =>
-              of({ language: 'uk', defaultCurrency: 'UAH', usedCurrencies: ['UAH', 'EUR'], theme: 'system' }),
+              of({ language: 'uk', defaultCurrency: 'UAH', usedCurrencies: ['UAH', 'EUR'], theme: 'system', primaryHue: 150 }),
             updateSettings: (settings: IUserSettings) => {
               saved.push(settings);
               return of(settings);
@@ -75,7 +75,13 @@ describe('SettingsDialog', () => {
     expect(chips()).toEqual(['UAH ×', 'EUR · default', 'USD ×']);
     expect((el.querySelector('#settings-new-currency') as HTMLInputElement).value).toBe('');
     expect(saved).toEqual([
-      { language: 'en', theme: 'dark', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR', 'USD'] },
+      {
+        language: 'en',
+        theme: 'dark',
+        primaryHue: 150,
+        defaultCurrency: 'EUR',
+        usedCurrencies: ['UAH', 'EUR', 'USD'],
+      },
     ]);
     expect(TestBed.inject(LanguageService).current()).toBe('en');
     expect(TestBed.inject(ThemeService).current()).toBe('dark');
@@ -99,7 +105,7 @@ describe('SettingsDialog', () => {
   it('saves unchanged settings unchanged when the default is not the first currency', async () => {
     TestBed.overrideProvider(SettingsRepository, {
       useValue: {
-        getSettings: () => of({ language: 'uk', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR'], theme: 'dark' }),
+        getSettings: () => of({ language: 'uk', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR'], theme: 'dark', primaryHue: 305 }),
         updateSettings: (settings: IUserSettings) => {
           saved.push(settings);
           return of(settings);
@@ -111,6 +117,8 @@ describe('SettingsDialog', () => {
     expect((el.querySelector('#settings-currency') as HTMLSelectElement).value).toBe('EUR');
     fixture.componentInstance.save();
 
-    expect(saved).toEqual([{ language: 'uk', theme: 'dark', defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR'] }]);
+    expect(saved).toEqual([
+      { language: 'uk', theme: 'dark', primaryHue: 305, defaultCurrency: 'EUR', usedCurrencies: ['UAH', 'EUR'] },
+    ]);
   });
 });

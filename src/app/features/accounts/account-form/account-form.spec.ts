@@ -48,7 +48,7 @@ describe('AccountForm', () => {
           provide: SettingsRepository,
           useValue: {
             getSettings: () =>
-              of({ language: 'uk', defaultCurrency: 'PLN', usedCurrencies: ['PLN', 'EUR'], theme: 'system' }),
+              of({ language: 'uk', defaultCurrency: 'PLN', usedCurrencies: ['PLN', 'EUR'], theme: 'system', primaryHue: 150 }),
           },
         },
       ],

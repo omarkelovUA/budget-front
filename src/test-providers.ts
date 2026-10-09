@@ -13,6 +13,7 @@ export const TEST_SETTINGS: IUserSettings = {
   defaultCurrency: 'UAH',
   usedCurrencies: ['UAH'],
   theme: 'system',
+  primaryHue: 150,
 };
 
 // Every spec gets real translations, synchronously. Ukrainian by default, so specs
