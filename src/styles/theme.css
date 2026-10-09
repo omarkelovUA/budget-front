@@ -113,7 +113,10 @@
   --elevation-2: 0 1px 2px var(--color-shadow-soft), 0 4px 12px 2px var(--color-shadow-soft);
   --elevation-3: 0 4px 8px var(--color-shadow-soft), 0 12px 32px 4px var(--color-shadow);
 
-  /* State layers: how much of the content colour covers a hovered or pressed control. */
+  /* State layers: how much of the content colour covers a hovered or pressed control. On
+     the primary gradient a light layer would cost white text its contrast, so controls
+     there darken instead. */
+  --color-state-on-gradient: oklch(0% 0 0 / 0.14);
   --state-hover: 8%;
   --state-press: 12%;
 

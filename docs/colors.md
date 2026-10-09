@@ -117,7 +117,10 @@ Illustrations also draw their gold coins with `--color-warning`.
 
 ### Effects
 
-`--color-focus` (the primary), `--color-shadow`, `--color-shadow-soft`, `--color-backdrop`.
+`--color-focus` (the primary), `--color-shadow`, `--color-shadow-soft`, `--color-backdrop`, and
+`--color-state-on-gradient` (a 14% black layer). Controls on the primary gradient (nav tabs,
+header buttons) use it as their hover state: the usual light state layer would push their
+white text below AA.
 
 ### Gradients
 

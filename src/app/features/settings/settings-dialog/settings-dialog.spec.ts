@@ -15,8 +15,11 @@ describe('SettingsDialog', () => {
     HTMLDialogElement.prototype.showModal ??= function (this: HTMLDialogElement) {
       this.open = true;
     };
-    HTMLDialogElement.prototype.close ??= function (this: HTMLDialogElement) {
+    // Like a browser (Save, Cancel or Esc): closing fires 'close'.
+    HTMLDialogElement.prototype.close = function (this: HTMLDialogElement) {
+      if (!this.open) return;
       this.open = false;
+      this.dispatchEvent(new Event('close'));
     };
     TestBed.configureTestingModule({
       imports: [SettingsDialog],
@@ -158,11 +161,31 @@ describe('SettingsDialog', () => {
     TestBed.inject(ThemeService).useHue(150);
 
     await type('#settings-hue', '305');
-    const dialog = el.querySelector('dialog') as HTMLDialogElement;
-    dialog.close();
-    dialog.dispatchEvent(new Event('close'));
+    (el.querySelector('dialog') as HTMLDialogElement).close();
     await fixture.whenStable();
 
     expect(primaryHue()).toBe('150');
+  });
+
+  it('restores the saved colour when it goes away while open, e.g. on sign-out', async () => {
+    const { fixture, type } = await open();
+    TestBed.inject(ThemeService).useHue(150);
+
+    await type('#settings-hue', '305');
+    fixture.destroy();
+
+    expect(primaryHue()).toBe('150');
+  });
+
+  it('names the colours once and speaks the slider value as a colour', async () => {
+    const { el, type } = await open();
+    const slider = el.querySelector('#settings-hue') as HTMLInputElement;
+
+    expect(el.querySelector('.swatches')?.hasAttribute('aria-label')).toBe(false);
+    expect(slider.getAttribute('aria-valuetext')).toBe('Доларовий зелений');
+    await type('#settings-hue', '70');
+    expect(slider.getAttribute('aria-valuetext')).toBe('Бурштиновий');
+    await type('#settings-hue', '100');
+    expect(slider.getAttribute('aria-valuetext')).toBe('Відтінок 100');
   });
 });

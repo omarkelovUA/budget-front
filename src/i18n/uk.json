@@ -316,7 +316,8 @@
     "invalidCode": "Введіть трилітерний код ISO 4217",
     "tooMany": "Не більше {{max}} валют",
     "primaryColor": "Основний колір",
-    "customColor": "Власний колір"
+    "customColor": "Власний колір",
+    "hueValue": "Відтінок {{hue}}"
   },
   "errors": {
     "fallback": "Щось пішло не так. Спробуйте пізніше.",

@@ -316,7 +316,8 @@
     "invalidCode": "Enter a three-letter ISO 4217 code",
     "tooMany": "At most {{max}} currencies",
     "primaryColor": "Primary colour",
-    "customColor": "Custom colour"
+    "customColor": "Custom colour",
+    "hueValue": "Hue {{hue}}"
   },
   "errors": {
     "fallback": "Something went wrong. Please try again later.",

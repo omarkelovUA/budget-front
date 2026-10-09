@@ -51,7 +51,7 @@ describe('ThemeService', () => {
   });
 
   it('ignores a stored colour that is not a hue', () => {
-    for (const stored of ['abc', '400', '-5', '1.5']) {
+    for (const stored of ['abc', '400', '-5', '1.5', '', ' ', '0x96', '1e2']) {
       localStorage.setItem('primaryHue', stored);
 
       TestBed.inject(ThemeService).init();

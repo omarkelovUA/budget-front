@@ -39,7 +39,7 @@ describe('AccountList', () => {
     const el = fixture.nativeElement as HTMLElement;
 
     const groups = Array.from(el.querySelectorAll('.account-group'));
-    expect(groups.map((g) => g.querySelector('h3')?.textContent?.trim())).toEqual([
+    expect(groups.map((g) => g.querySelector('h2')?.textContent?.trim())).toEqual([
       'Мої рахунки',
       'Спільні зі мною',
       'Доступні для перегляду',

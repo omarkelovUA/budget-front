@@ -1,7 +1,7 @@
 <section class="account-close" aria-labelledby="close-title" *transloco="let t">
   <div class="panel-header">
     <app-account-close-art />
-    <h3 id="close-title">{{ t('accounts.closeDialog.title', { name: account().name }) }}</h3>
+    <h2 id="close-title">{{ t('accounts.closeDialog.title', { name: account().name }) }}</h2>
   </div>
 
   @if (!needsTarget()) {
@@ -38,9 +38,9 @@
   }
 
   <div class="actions">
-    <button type="button" class="btn-danger danger" [disabled]="!canConfirm()" (click)="confirm()">
+    <button type="button" class="btn-danger" [disabled]="!canConfirm()" (click)="confirm()">
       {{ t('accounts.closeDialog.confirm') }}
     </button>
-    <button type="button" class="btn-text secondary" (click)="cancelled.emit()">{{ t('common.cancel') }}</button>
+    <button type="button" class="btn-text" (click)="cancelled.emit()">{{ t('common.cancel') }}</button>
   </div>
 </section>

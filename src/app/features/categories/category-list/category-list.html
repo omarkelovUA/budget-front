@@ -1,6 +1,6 @@
 <div class="category-list-container" *transloco="let t">
   <app-page-header [title]="t('categories.title')" [subtitle]="t('categories.subtitle')">
-    <button actions type="button" class="btn-tonal add-button" (click)="openCreateForm()">
+    <button actions type="button" class="btn-tonal" (click)="openCreateForm()">
       <span aria-hidden="true">+</span> {{ t('categories.add') }}
     </button>
     <app-categories-art art />

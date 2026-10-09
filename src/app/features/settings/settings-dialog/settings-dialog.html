@@ -8,7 +8,7 @@
     @if (loading()) {
       <p class="muted" role="status">{{ t('common.loading') }}</p>
     } @else {
-      <div class="form-group">
+      <div class="field">
         <label for="settings-language">{{ t('settings.language') }}</label>
         <select id="settings-language" [formField]="form.language">
           @for (language of languages; track language.code) {
@@ -17,7 +17,7 @@
         </select>
       </div>
 
-      <div class="form-group">
+      <div class="field">
         <label for="settings-theme">{{ t('settings.theme') }}</label>
         <select id="settings-theme" [formField]="form.theme">
           @for (theme of themes; track theme) {
@@ -26,9 +26,9 @@
         </select>
       </div>
 
-      <fieldset class="form-group">
+      <fieldset class="field">
         <legend>{{ t('settings.primaryColor') }}</legend>
-        <div class="swatches" role="radiogroup" [attr.aria-label]="t('settings.primaryColor')">
+        <div class="swatches">
           @for (preset of presets; track preset.key) {
             <input
               type="radio"
@@ -47,7 +47,7 @@
         </div>
         <label for="settings-hue" class="hue-label">
           {{ t('settings.customColor') }}
-          @if (isCustom()) {
+          @if (!presetKey()) {
             <span class="hue-dot" aria-hidden="true"></span>
           }
         </label>
@@ -59,11 +59,12 @@
           max="359"
           step="1"
           [value]="hue()"
+          [attr.aria-valuetext]="presetKey() ? t('colors.' + presetKey()) : t('settings.hueValue', { hue: hue() })"
           (input)="pickHue(+$any($event.target).value)"
         />
       </fieldset>
 
-      <fieldset class="form-group">
+      <fieldset class="field">
         <legend>{{ t('settings.usedCurrencies') }}</legend>
         <ul class="currency-chips">
           @for (currency of usedCurrencies(); track currency) {
@@ -102,7 +103,7 @@
         <p class="hint">{{ t('settings.usedCurrenciesHint') }}</p>
       </fieldset>
 
-      <div class="form-group">
+      <div class="field">
         <label for="settings-currency">{{ t('settings.defaultCurrency') }}</label>
         <select id="settings-currency" [formField]="form.defaultCurrency">
           @for (currency of usedCurrencies(); track currency) {
@@ -119,7 +120,7 @@
 
     <div class="actions">
       <button type="submit" class="btn-filled" [disabled]="loading() || pending() || !form().valid()">{{ t('common.save') }}</button>
-      <button type="button" class="btn-text secondary" (click)="close()">{{ t('common.cancel') }}</button>
+      <button type="button" class="btn-text" (click)="close()">{{ t('common.cancel') }}</button>
     </div>
   </form>
 </dialog>

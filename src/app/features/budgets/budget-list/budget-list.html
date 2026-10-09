@@ -1,6 +1,6 @@
 <div class="budget-list-container" *transloco="let t">
   <app-page-header [title]="t('budgets.title')" [subtitle]="t('budgets.subtitle')">
-    <button actions type="button" class="btn-tonal add-button" (click)="openCreateForm()">
+    <button actions type="button" class="btn-tonal" (click)="openCreateForm()">
       <span aria-hidden="true">+</span> {{ t('budgets.add') }}
     </button>
     <app-budgets-art art />

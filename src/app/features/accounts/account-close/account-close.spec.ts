@@ -62,7 +62,7 @@ describe('AccountClose', () => {
   it('needs a target before confirming a non-zero balance', async () => {
     const card = account('card', -40);
     const el = await render(card, [card, account('savings', 0)]);
-    const confirm = el.querySelector('.danger') as HTMLButtonElement;
+    const confirm = el.querySelector('.btn-danger') as HTMLButtonElement;
 
     expect(el.textContent).toMatch(/Борг 40,00\s₴ буде погашено/);
     expect(confirm.disabled).toBe(true);
@@ -80,7 +80,7 @@ describe('AccountClose', () => {
     const empty = account('empty', 0);
     const el = await render(empty, [empty]);
 
-    (el.querySelector('.danger') as HTMLButtonElement).click();
+    (el.querySelector('.btn-danger') as HTMLButtonElement).click();
 
     expect(closeCalls).toEqual([['empty', null]]);
   });
@@ -90,6 +90,6 @@ describe('AccountClose', () => {
     const el = await render(card, [card, account('dollars', 0, { currency: 'USD' })]);
 
     expect(el.querySelector('[role="alert"]')?.textContent).toContain('Немає іншого рахунку у UAH');
-    expect((el.querySelector('.danger') as HTMLButtonElement).disabled).toBe(true);
+    expect((el.querySelector('.btn-danger') as HTMLButtonElement).disabled).toBe(true);
   });
 });

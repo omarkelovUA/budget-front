@@ -25,8 +25,11 @@ description: Design system of the Family Budget SPA (Material 3 look, OKLCH toke
   - tertiary (hue + 60), for the second gradient stop;
   - surface containers, lowest (cards, dialogs) to highest (wells, tracks);
   - status colours, which keep fixed hues.
-- **Text on the primary or a gradient** uses `--color-on-primary`.
+- **Text on the primary or a gradient** uses `--color-on-primary` at full strength: no
+  `opacity`, no light overlays behind it. Hover there uses `--color-state-on-gradient`.
   `palette.spec.ts` keeps it at AA for every hue.
+- **Headings:** one `h1` per screen (the page header, or the sign-in/up title). Panels
+  and sections are `h2`, their parts `h3`; `templates.spec.ts` checks this.
 
 ## Components (global classes in `src/styles.css`)
 - **Buttons:**

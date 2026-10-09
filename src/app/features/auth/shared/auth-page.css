@@ -40,7 +40,7 @@
   padding: 40px 32px;
 }
 
-.auth-body h2 {
+.auth-body h1 {
   margin: 0;
   font: var(--type-headline);
 }

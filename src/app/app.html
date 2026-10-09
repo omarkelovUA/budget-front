@@ -2,7 +2,7 @@
   <header class="app-header">
     <div class="brand">
       <span class="brand-mark" aria-hidden="true"></span>
-      <h1>{{ t('app.title') }}</h1>
+      <span class="app-title">{{ t('app.title') }}</span>
     </div>
     @if (currentUser(); as user) {
       <nav class="app-nav" [attr.aria-label]="t('nav.label')">

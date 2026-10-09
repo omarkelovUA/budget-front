@@ -1,6 +1,6 @@
 <div class="account-list-container" *transloco="let t">
   <app-page-header [title]="t('accounts.title')" [subtitle]="t('accounts.subtitle')">
-    <button actions type="button" class="btn-tonal add-button" (click)="openCreateForm()">
+    <button actions type="button" class="btn-tonal" (click)="openCreateForm()">
       <span aria-hidden="true">+</span> {{ t('accounts.add') }}
     </button>
     <app-accounts-art art />
@@ -27,7 +27,7 @@
     @else {
       @for (group of groups(); track group.key) {
         <section class="account-group" [attr.aria-label]="t('accounts.groups.' + group.key)">
-          <h3>{{ t('accounts.groups.' + group.key) }}</h3>
+          <h2>{{ t('accounts.groups.' + group.key) }}</h2>
           <div class="accounts-grid">
             @for (acc of group.accounts; track acc.id) {
               <div class="account-card card" [class.active]="selectedAccount()?.id === acc.id" [class.readonly]="acc.access !== 'owner'">

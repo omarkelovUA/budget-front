@@ -29,8 +29,7 @@
   background: radial-gradient(circle, color-mix(in oklch, var(--color-on-primary) 45%, transparent) 30%, transparent 32%);
 }
 
-.app-header h1 {
-  margin: 0;
+.app-title {
   font: var(--type-title);
   white-space: nowrap;
 }
@@ -54,8 +53,8 @@
 }
 
 /* Inactive tabs stay full on-primary: any fading drops them below AA on the gradient. */
-.app-nav a:hover {
-  background-color: color-mix(in oklch, var(--color-on-primary) var(--state-hover), transparent);
+.app-nav a:not(.active):hover {
+  background-color: var(--color-state-on-gradient);
 }
 
 /* The active tab is a surface pill, because on-primary text over a translucent on-primary layer would drop
@@ -95,6 +94,11 @@
 
 .user-menu .btn-text {
   color: var(--color-on-primary);
+}
+
+.user-menu .btn-text:hover {
+  background-image: none;
+  background-color: var(--color-state-on-gradient);
 }
 
 .app-main {

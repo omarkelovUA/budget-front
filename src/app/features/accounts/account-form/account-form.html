@@ -1,7 +1,7 @@
 <form novalidate (submit)="$event.preventDefault(); submit()" class="account-form" *transloco="let t">
   <div class="panel-header">
     <app-account-form-art />
-    <h3>{{ account()?.name ?? t('accounts.add') }}</h3>
+    <h2>{{ account()?.name ?? t('accounts.add') }}</h2>
   </div>
 
   <div class="field">

@@ -1,7 +1,7 @@
 <section class="family-transfers card" aria-labelledby="in-transit-title" *transloco="let t">
   <div class="panel-header">
     <app-family-transfers-art />
-    <h3 id="in-transit-title">{{ t('familyTransfers.title') }}</h3>
+    <h2 id="in-transit-title">{{ t('familyTransfers.title') }}</h2>
   </div>
 
   @if (transfersResource.value(); as transfers) {
@@ -10,7 +10,7 @@
       { title: 'outgoing', items: transfers.outgoing, mode: 'takeBack', who: 'to' },
     ]; track group.title) {
       @if (group.items.length > 0) {
-        <h4>{{ t('familyTransfers.' + group.title) }}</h4>
+        <h3>{{ t('familyTransfers.' + group.title) }}</h3>
         @for (transfer of group.items; track transfer.id) {
           <div class="transit-row">
             <span>{{ t('familyTransfers.' + group.who) }}: <strong>{{ transfer.counterpart.displayName }}</strong></span>
@@ -44,7 +44,7 @@
                 </label>
                 <button type="button" class="btn-filled" [disabled]="pending()" (click)="confirmWithdraw()">{{ t('familyTransfers.confirm') }}</button>
               }
-              <button type="button" class="btn-text secondary" (click)="withdrawing.set(null)">{{ t('common.cancel') }}</button>
+              <button type="button" class="btn-text" (click)="withdrawing.set(null)">{{ t('common.cancel') }}</button>
             </div>
           }
         }
@@ -54,7 +54,7 @@
 
   @if (recipients().length > 0) {
     <form novalidate class="send-form" (submit)="$event.preventDefault(); send()">
-      <h4>{{ t('familyTransfers.send.title') }}</h4>
+      <h3>{{ t('familyTransfers.send.title') }}</h3>
       <label>
         {{ t('familyTransfers.send.fromAccount') }}
         <select [formField]="sendForm.fromAccountId">

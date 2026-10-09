@@ -73,8 +73,8 @@ export class ThemeService {
 
   private savedHue(): number | null {
     try {
-      const value = Number(localStorage.getItem(HUE_STORAGE_KEY) || NaN);
-      return isHue(value) ? value : null;
+      const value = localStorage.getItem(HUE_STORAGE_KEY) ?? '';
+      return /^\d{1,3}$/.test(value) && isHue(Number(value)) ? Number(value) : null;
     } catch {
       return null;
     }

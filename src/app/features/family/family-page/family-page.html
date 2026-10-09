@@ -33,12 +33,12 @@
                 <button type="button" class="btn-filled" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">
                   {{ t('family.received.confirmSwitch') }}
                 </button>
-                <button type="button" class="btn-outlined secondary" (click)="confirmingAccept.set(null)">{{ t('common.cancel') }}</button>
+                <button type="button" class="btn-outlined" (click)="confirmingAccept.set(null)">{{ t('common.cancel') }}</button>
               } @else {
                 <button type="button" class="btn-filled" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">{{ t('family.received.accept') }}</button>
                 <button
-                  type="button" class="btn-filled"
-                  class="btn-outlined secondary"
+                  type="button"
+                  class="btn-outlined"
                   [disabled]="pending()"
                   (click)="declineInvitation(invitation.id)"
                 >
@@ -108,8 +108,8 @@
                   </div>
                   @if (isAdmin()) {
                     <button
-                      type="button" class="btn-filled"
-                      class="btn-outlined secondary"
+                      type="button"
+                      class="btn-outlined"
                       [disabled]="pending()"
                       (click)="revokeInvitation(invitation.id)"
                       [attr.aria-label]="t('family.revokeAria', { email: invitation.email })"

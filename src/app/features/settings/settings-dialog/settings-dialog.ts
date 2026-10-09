@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
 import { form, FormField, maxLength, required } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Language, LANGUAGES } from '../../../core/i18n/languages';
@@ -38,7 +38,8 @@ export class SettingsDialog {
   // The primary colour being picked; previewed on the whole app until saved or closed.
   protected readonly hue = signal(DEFAULT_HUE);
   protected readonly presets = PRESETS.map((preset) => ({ ...preset, palette: paletteFor(preset.hue) }));
-  protected readonly isCustom = computed(() => !PRESETS.some((preset) => preset.hue === this.hue()));
+  // The preset the picked hue matches, if any: names it for screen readers.
+  protected readonly presetKey = computed(() => PRESETS.find((preset) => preset.hue === this.hue())?.key);
   protected readonly form = form(this.model, (f) => {
     required(f.language);
     required(f.defaultCurrency);
@@ -60,6 +61,12 @@ export class SettingsDialog {
     return null;
   });
   protected readonly loading = signal(false);
+
+  constructor() {
+    // Signing out with the dialog open removes it without a 'close' event.
+    inject(DestroyRef).onDestroy(() => this.restoreHue());
+  }
+
   protected readonly pending = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
 

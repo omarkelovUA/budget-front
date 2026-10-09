@@ -16,7 +16,7 @@
 
   <div class="dashboard-grid">
     <section class="panel card" aria-labelledby="balances-title">
-      <h3 id="balances-title">{{ t('dashboard.balance') }}</h3>
+      <h2 id="balances-title">{{ t('dashboard.balance') }}</h2>
       @if (accountsResource.isLoading()) {
         <p class="muted" role="status">{{ t('common.loading') }}</p>
       } @else if (accountsResource.error()) {
@@ -45,7 +45,7 @@
     </section>
 
     <section class="panel card" aria-labelledby="month-title">
-      <h3 id="month-title">{{ t('dashboard.month') }}</h3>
+      <h2 id="month-title">{{ t('dashboard.month') }}</h2>
       @if (summaryResource.isLoading()) {
         <p class="muted" role="status">{{ t('common.loading') }}</p>
       } @else if (summaryResource.error()) {
@@ -75,7 +75,7 @@
     </section>
 
     <section class="panel card" aria-labelledby="budgets-title">
-      <h3 id="budgets-title">{{ t('dashboard.budgets') }}</h3>
+      <h2 id="budgets-title">{{ t('dashboard.budgets') }}</h2>
       @if (budgetsResource.isLoading()) {
         <p class="muted" role="status">{{ t('common.loading') }}</p>
       } @else if (budgetsResource.error()) {
@@ -105,7 +105,7 @@
     </section>
 
     <section class="panel card" aria-labelledby="recent-title">
-      <h3 id="recent-title">{{ t('dashboard.recent') }}</h3>
+      <h2 id="recent-title">{{ t('dashboard.recent') }}</h2>
       @if (recentResource.isLoading()) {
         <p class="muted" role="status">{{ t('common.loading') }}</p>
       } @else if (recentResource.error()) {
