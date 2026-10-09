@@ -13,11 +13,12 @@
   box-shadow: var(--elevation-2);
 }
 
-/* A soft light in the corner gives the flat gradient some depth. */
+/* A soft light behind the art gives the flat gradient some depth; it stays away from the
+   text, which it would push below AA. */
 .page-header::before {
   content: '';
   position: absolute;
-  inset: -40% auto auto -10%;
+  inset: -40% -10% auto auto;
   width: 60%;
   aspect-ratio: 1;
   border-radius: 50%;
@@ -41,7 +42,6 @@ h1 {
 .subtitle {
   margin: 0;
   max-width: 48ch;
-  opacity: 0.92;
 }
 
 .page-header-actions {

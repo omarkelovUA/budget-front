@@ -50,19 +50,17 @@
   font: var(--type-label);
   text-decoration: none;
   white-space: nowrap;
-  opacity: 0.85;
-  transition: background-color 0.2s, opacity 0.2s;
+  transition: background-color 0.2s;
 }
 
+/* Inactive tabs stay full on-primary: any fading drops them below AA on the gradient. */
 .app-nav a:hover {
-  opacity: 1;
   background-color: color-mix(in oklch, var(--color-on-primary) var(--state-hover), transparent);
 }
 
 /* The active tab is a surface pill, because on-primary text over a translucent on-primary layer would drop
    below AA on the gradient's lighter stop. */
 .app-nav a.active {
-  opacity: 1;
   background-color: var(--color-surface-container-lowest);
   color: var(--color-primary-text);
 }
@@ -108,17 +106,27 @@
   padding: 24px;
 }
 
-/* Phones: the bar wraps, the nav gets its own row and scrolls sideways. */
-@media (max-width: 720px) {
+/* Until all tabs fit beside the brand and user menu, the nav gets its own row; on phones
+   that row scrolls sideways. */
+@media (max-width: 1200px) {
   .app-header {
     flex-wrap: wrap;
     gap: 8px;
-    padding: 10px 16px;
   }
 
   .app-nav {
     order: 3;
     width: 100%;
+  }
+
+  .user-menu {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .app-header {
+    padding: 10px 16px;
   }
 
   .user-name {
