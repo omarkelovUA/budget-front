@@ -48,6 +48,6 @@
 }
 
 .actions .secondary {
-  background-color: var(--color-surface-muted);
+  background-color: var(--color-surface-container-high);
   color: var(--color-text);
 }

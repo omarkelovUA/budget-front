@@ -24,7 +24,7 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: var(--color-surface-raised);
+  background: var(--color-surface-container-lowest);
   border: 1px solid var(--color-border);
   border-radius: 10px;
 }
@@ -66,7 +66,7 @@ button:disabled {
 }
 
 button.secondary {
-  background-color: var(--color-surface-muted);
+  background-color: var(--color-surface-container-high);
   color: var(--color-text);
 }
 

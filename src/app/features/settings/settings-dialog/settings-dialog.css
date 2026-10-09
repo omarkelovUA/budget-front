@@ -59,7 +59,7 @@
   gap: 4px;
   padding: 4px 10px;
   border-radius: 999px;
-  background-color: var(--color-surface-muted);
+  background-color: var(--color-surface-container-high);
   font-size: 0.9rem;
 }
 
@@ -88,7 +88,7 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  background-color: var(--color-surface-muted);
+  background-color: var(--color-surface-container-high);
   color: var(--color-text);
 }
 
@@ -125,7 +125,7 @@
 }
 
 .actions .secondary {
-  background-color: var(--color-surface-muted);
+  background-color: var(--color-surface-container-high);
   color: var(--color-text);
 }
 

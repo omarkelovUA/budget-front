@@ -44,7 +44,7 @@
 .logout-button {
   padding: 6px 12px;
   cursor: pointer;
-  background: var(--color-surface-raised);
+  background: var(--color-surface-container-lowest);
   color: var(--color-text-secondary);
   border: 1px solid var(--color-border);
   border-radius: 4px;

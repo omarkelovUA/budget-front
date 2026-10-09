@@ -5,7 +5,7 @@
   max-width: 400px;
   margin: 40px auto;
   padding: 24px;
-  background: var(--color-surface);
+  background: var(--color-surface-container-low);
   border-radius: 12px;
 }
 
@@ -52,13 +52,13 @@ button:disabled {
 }
 
 .google-button {
-  background-color: var(--color-surface-raised);
+  background-color: var(--color-surface-container-lowest);
   color: var(--color-text);
   border: 1px solid var(--color-border);
 }
 
 .google-button:disabled {
-  background-color: var(--color-surface-muted);
+  background-color: var(--color-surface-container-high);
 }
 
 .divider {

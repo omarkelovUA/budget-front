@@ -1,11 +1,16 @@
 /*
- * Colour tokens (.docs/theme.md). Components use only the semantic --color-* tokens below,
- * never raw colours, so a redesign or a user-chosen primary colour only changes this file.
+ * Design tokens (.docs/redesign.md, docs/colors.md). Components use only the semantic
+ * --color-*, --gradient-*, --radius-*, --elevation-* and --type-* tokens below, never raw
+ * colours, so a redesign only changes this file.
  *
- * Everything is OKLCH: lightness is perceptually even, so a palette keeps its contrast for
- * any hue. The primary colour is two inputs, --primary-h (hue) and --primary-c (chroma);
- * primary shades and the slightly tinted neutrals are derived from them. Status colours
- * keep fixed hues so their meaning doesn't change with the brand colour.
+ * Colours are OKLCH: lightness is perceptually even, so a palette keeps its contrast for
+ * any hue. The user picks one primary hue; ThemeService runs it through palette.ts and
+ * sets the inputs (--primary-h, --primary-c, --primary-l, --tertiary-c) on <html>. The
+ * defaults here are palette.ts's values for the default "dollar" green (hue 150), so the
+ * first paint already matches. Material 3 roles are derived from those inputs: primary,
+ * secondary (the same hue, muted), tertiary (hue + 60, the second gradient stop) and the
+ * neutrals, slightly tinted. Status colours keep fixed hues so their meaning doesn't
+ * change with the brand colour.
  *
  * Light and dark values sit together in light-dark(); ThemeService only switches
  * color-scheme on <html> (light, dark, or "light dark" to follow the device).
@@ -13,21 +18,27 @@
 :root {
   color-scheme: light dark;
 
-  /* Palette inputs. Phase 2 sets these from the user's chosen primary colour. */
-  --primary-h: 257;
-  --primary-c: 0.217;
+  /* Palette inputs, set by ThemeService from palette.ts. */
+  --primary-h: 150;
+  --primary-c: 0.148;
+  --primary-l: 54%;
+  --tertiary-h: calc(var(--primary-h) + 60);
+  --tertiary-c: 0.093;
   --neutral-c: calc(var(--primary-c) * 0.06);
 
   /* Text */
   --color-text: light-dark(oklch(26% var(--neutral-c) var(--primary-h)), oklch(93% var(--neutral-c) var(--primary-h)));
   --color-text-secondary: light-dark(oklch(43% var(--neutral-c) var(--primary-h)), oklch(82% var(--neutral-c) var(--primary-h)));
-  --color-text-muted: light-dark(oklch(53% var(--neutral-c) var(--primary-h)), oklch(70% var(--neutral-c) var(--primary-h)));
+  --color-text-muted: light-dark(oklch(52% var(--neutral-c) var(--primary-h)), oklch(70% var(--neutral-c) var(--primary-h)));
 
-  /* Surfaces, from the page background up */
-  --color-bg: light-dark(oklch(100% 0 0), oklch(17% var(--neutral-c) var(--primary-h)));
-  --color-surface: light-dark(oklch(98.2% var(--neutral-c) var(--primary-h)), oklch(21% var(--neutral-c) var(--primary-h)));
-  --color-surface-raised: light-dark(oklch(100% 0 0), oklch(25% var(--neutral-c) var(--primary-h)));
-  --color-surface-muted: light-dark(oklch(94.2% var(--neutral-c) var(--primary-h)), oklch(30% var(--neutral-c) var(--primary-h)));
+  /* Surfaces: the page, then Material 3 surface containers from lowest (cards, dialogs)
+     to highest (wells, tracks). */
+  --color-bg: light-dark(oklch(98.5% var(--neutral-c) var(--primary-h)), oklch(15% var(--neutral-c) var(--primary-h)));
+  --color-surface-container-lowest: light-dark(oklch(100% 0 0), oklch(19% var(--neutral-c) var(--primary-h)));
+  --color-surface-container-low: light-dark(oklch(97.5% var(--neutral-c) var(--primary-h)), oklch(22% var(--neutral-c) var(--primary-h)));
+  --color-surface-container: light-dark(oklch(95.5% var(--neutral-c) var(--primary-h)), oklch(25% var(--neutral-c) var(--primary-h)));
+  --color-surface-container-high: light-dark(oklch(93.5% var(--neutral-c) var(--primary-h)), oklch(29% var(--neutral-c) var(--primary-h)));
+  --color-surface-container-highest: light-dark(oklch(91% var(--neutral-c) var(--primary-h)), oklch(33% var(--neutral-c) var(--primary-h)));
 
   /* Lines */
   --color-border: light-dark(oklch(90% var(--neutral-c) var(--primary-h)), oklch(35% var(--neutral-c) var(--primary-h)));
@@ -37,14 +48,29 @@
   --color-disabled: light-dark(oklch(84.5% var(--neutral-c) var(--primary-h)), oklch(38% var(--neutral-c) var(--primary-h)));
   --color-on-disabled: light-dark(oklch(100% 0 0), oklch(65% var(--neutral-c) var(--primary-h)));
 
-  /* Primary */
-  /* Dark enough for white text (--color-on-primary) to pass WCAG AA. */
-  --color-primary: light-dark(oklch(54% var(--primary-c) var(--primary-h)), oklch(55% var(--primary-c) var(--primary-h)));
-  --color-primary-hover: light-dark(oklch(46% calc(var(--primary-c) * 0.8) var(--primary-h)), oklch(48% calc(var(--primary-c) * 0.85) var(--primary-h)));
+  /* Primary. palette.ts picks --primary-l so white text (--color-on-primary) passes WCAG AA. */
+  --color-primary: oklch(var(--primary-l) var(--primary-c) var(--primary-h));
+  --color-primary-hover: oklch(calc(var(--primary-l) - 8%) calc(var(--primary-c) * 0.85) var(--primary-h));
   --color-primary-text: light-dark(oklch(52% var(--primary-c) var(--primary-h)), oklch(75% calc(var(--primary-c) * 0.7) var(--primary-h)));
-  --color-primary-soft: light-dark(oklch(95.5% calc(var(--primary-c) * 0.1) var(--primary-h)), oklch(30% calc(var(--primary-c) * 0.3) var(--primary-h)));
+  --color-primary-soft: light-dark(oklch(95.5% calc(var(--primary-c) * 0.15) var(--primary-h)), oklch(30% calc(var(--primary-c) * 0.35) var(--primary-h)));
   --color-primary-border: light-dark(oklch(86% calc(var(--primary-c) * 0.3) var(--primary-h)), oklch(45% calc(var(--primary-c) * 0.5) var(--primary-h)));
   --color-on-primary: oklch(100% 0 0);
+
+  /* Secondary: the primary hue, muted. Tonal buttons, chips, selected states. */
+  --color-secondary-container: light-dark(oklch(92% calc(var(--primary-c) * 0.3) var(--primary-h)), oklch(32% calc(var(--primary-c) * 0.3) var(--primary-h)));
+  --color-on-secondary-container: light-dark(oklch(28% calc(var(--primary-c) * 0.5) var(--primary-h)), oklch(90% calc(var(--primary-c) * 0.3) var(--primary-h)));
+
+  /* Tertiary: hue + 60. The second gradient stop and accents. */
+  --color-tertiary: oklch(var(--primary-l) var(--tertiary-c) var(--tertiary-h));
+  --color-tertiary-text: light-dark(oklch(50% var(--tertiary-c) var(--tertiary-h)), oklch(78% calc(var(--tertiary-c) * 0.6) var(--tertiary-h)));
+
+  /* Soft coloured light for backgrounds and illustrations. */
+  --color-glow-primary: light-dark(oklch(var(--primary-l) var(--primary-c) var(--primary-h) / 0.16), oklch(var(--primary-l) var(--primary-c) var(--primary-h) / 0.22));
+  --color-glow-tertiary: light-dark(oklch(var(--primary-l) var(--tertiary-c) var(--tertiary-h) / 0.16), oklch(var(--primary-l) var(--tertiary-c) var(--tertiary-h) / 0.22));
+
+  /* Gradient stops: in dark mode a little deeper, so gradients glow rather than glare. */
+  --color-gradient-start: light-dark(var(--color-primary), oklch(calc(var(--primary-l) - 8%) calc(var(--primary-c) * 0.85) var(--primary-h)));
+  --color-gradient-end: light-dark(var(--color-tertiary), oklch(calc(var(--primary-l) - 8%) calc(var(--tertiary-c) * 0.85) var(--tertiary-h)));
 
   /* Status */
   --color-danger: light-dark(oklch(57% 0.19 25), oklch(70% 0.16 22));
@@ -61,4 +87,34 @@
   --color-shadow: light-dark(oklch(0% 0 0 / 0.15), oklch(0% 0 0 / 0.5));
   --color-shadow-soft: light-dark(oklch(0% 0 0 / 0.05), oklch(0% 0 0 / 0.3));
   --color-backdrop: light-dark(oklch(0% 0 0 / 0.3), oklch(0% 0 0 / 0.6));
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--color-gradient-start), var(--color-gradient-end));
+  --gradient-soft:
+    radial-gradient(60rem 40rem at 0% 0%, var(--color-glow-primary), transparent 70%),
+    radial-gradient(50rem 40rem at 100% 0%, var(--color-glow-tertiary), transparent 70%);
+  --gradient-card: linear-gradient(180deg, var(--color-glow-primary), transparent 35%);
+
+  /* Shape */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 28px;
+
+  /* Elevation */
+  --elevation-0: none;
+  --elevation-1: 0 1px 2px var(--color-shadow-soft), 0 1px 3px 1px var(--color-shadow-soft);
+  --elevation-2: 0 1px 2px var(--color-shadow-soft), 0 4px 12px 2px var(--color-shadow-soft);
+  --elevation-3: 0 4px 8px var(--color-shadow-soft), 0 12px 32px 4px var(--color-shadow);
+
+  /* State layers: how much of the content colour covers a hovered or pressed control. */
+  --state-hover: 8%;
+  --state-press: 12%;
+
+  /* Type scale */
+  --font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --type-headline: 600 1.75rem/1.25 var(--font-family);
+  --type-title: 600 1.25rem/1.3 var(--font-family);
+  --type-body: 400 1rem/1.5 var(--font-family);
+  --type-label: 500 0.875rem/1.25 var(--font-family);
 }

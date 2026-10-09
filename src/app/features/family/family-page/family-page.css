@@ -3,7 +3,7 @@
   flex-direction: column;
   gap: 20px;
   padding: 24px;
-  background: var(--color-surface);
+  background: var(--color-surface-container-low);
   border-radius: 12px;
 }
 
@@ -77,7 +77,7 @@ button:disabled {
   justify-content: space-between;
   gap: 16px;
   padding: 12px 16px;
-  background: var(--color-surface-raised);
+  background: var(--color-surface-container-lowest);
   border: 1px solid var(--color-border);
   border-radius: 10px;
 }
@@ -162,7 +162,7 @@ button:disabled {
   justify-content: space-between;
   gap: 12px;
   padding: 12px 16px;
-  background: var(--color-surface-raised);
+  background: var(--color-surface-container-lowest);
   border: 1px solid var(--color-primary-border);
   border-radius: 10px;
 }
@@ -180,6 +180,6 @@ button:disabled {
 }
 
 button.secondary {
-  background-color: var(--color-surface-muted);
+  background-color: var(--color-surface-container-high);
   color: var(--color-text);
 }
