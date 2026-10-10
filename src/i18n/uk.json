@@ -103,7 +103,7 @@
     "sales": "Продаж речей",
     "refund": "Повернення й кешбек",
     "winnings": "Виграші",
-    "other-income": "Інші доходи"
+    "other": "Інше"
   },
   "auth": {
     "email": "Email",

@@ -279,9 +279,9 @@ workspace's `.docs/redesign.md` (M17).
   removing it closes it, so focus goes back to the opener. Each form emits `cancelled`
   from its *Cancel* button; the buttons sit in `.dialog-actions` (main action rightmost).
 - **Icon lists** (`shared/ui/icon-picker/icons.ts`): accounts have one; categories have
-  one per type (`EXPENSE_CATEGORY_ICONS`, `INCOME_CATEGORY_ICONS`; `gift` and `lend` are
-  in both). The category form offers the chosen type's list and moves a new category's
-  icon onto it; editing still shows a stored icon from the other list.
+  one per type (`EXPENSE_CATEGORY_ICONS`, `INCOME_CATEGORY_ICONS`; `gift`, `lend` and
+  `other` are in both). The category form offers the chosen type's list and moves a new
+  category's icon onto it; editing still shows a stored icon from the other list.
   The picker's `slots` input reserves the longer list's cells, so switching the type
   doesn't change the dialog's height.
 - **Icons** are drawn by `app-icon` as a CSS mask filled with `currentColor`, so they

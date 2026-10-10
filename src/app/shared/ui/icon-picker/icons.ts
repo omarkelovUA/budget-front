@@ -33,7 +33,7 @@ export const ACCOUNT_ICONS = [
   'dollar',
 ] as const;
 
-// Each category type has its own list; gift and lend go either way, so they're in both.
+// Each category type has its own list; gift, lend and other go either way, so they're in both.
 export const EXPENSE_CATEGORY_ICONS = [
   'food',
   'restaurant',
@@ -64,6 +64,7 @@ export const EXPENSE_CATEGORY_ICONS = [
   'taxes',
   'charity',
   'lend',
+  'other',
 ] as const;
 
 export const INCOME_CATEGORY_ICONS = [
@@ -85,7 +86,7 @@ export const INCOME_CATEGORY_ICONS = [
   'cash',
   'wallet',
   'card',
-  'other-income',
+  'other',
 ] as const;
 
 // The longer list's length: the category form's picker keeps that height for both types.

@@ -103,7 +103,7 @@
     "sales": "Sales",
     "refund": "Refunds and cashback",
     "winnings": "Winnings",
-    "other-income": "Other income"
+    "other": "Other"
   },
   "auth": {
     "email": "Email",
