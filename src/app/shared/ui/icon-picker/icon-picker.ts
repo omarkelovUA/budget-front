@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, model } from '@angular/core';
 import { FormValueControl } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Icon } from '../icon/icon';
@@ -20,6 +20,13 @@ export class IconPicker implements FormValueControl<string> {
   readonly disabled = input(false);
   readonly icons = input.required<readonly string[]>();
   readonly label = input.required<string>();
+  // Cells to reserve: a picker whose list changes (e.g. with the category type) keeps the
+  // height of the longest one instead of jumping.
+  readonly slots = input(0);
+
+  protected readonly spareSlots = computed(() =>
+    Array.from({ length: Math.max(0, this.slots() - this.icons().length) }, (_, i) => i),
+  );
 
   protected readonly groupName = `icon-picker-${nextId++}`;
   protected readonly path = iconPath;

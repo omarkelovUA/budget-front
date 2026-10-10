@@ -282,6 +282,8 @@ workspace's `.docs/redesign.md` (M17).
   one per type (`EXPENSE_CATEGORY_ICONS`, `INCOME_CATEGORY_ICONS`; `gift` and `lend` are
   in both). The category form offers the chosen type's list and moves a new category's
   icon onto it; editing still shows a stored icon from the other list.
+  The picker's `slots` input reserves the longer list's cells, so switching the type
+  doesn't change the dialog's height.
 - **Icons** are drawn by `app-icon` as a CSS mask filled with `currentColor`, so they
   follow the theme. Don't use `<img>` for them.
 - **Contrast:** `palette.spec.ts` checks every hue (white text on both gradient stops,

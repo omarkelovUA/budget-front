@@ -13,6 +13,16 @@ class Host {
   readonly form = form(this.model);
 }
 
+@Component({
+  imports: [IconPicker, FormField],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `<app-icon-picker [formField]="form.icon" [icons]="['card', 'cash']" [slots]="5" label="Icon" />`,
+})
+class SlotsHost {
+  readonly model = signal({ icon: 'assets/cash.svg' });
+  readonly form = form(this.model);
+}
+
 describe('IconPicker', () => {
   async function render() {
     const fixture = TestBed.createComponent(Host);
@@ -38,5 +48,18 @@ describe('IconPicker', () => {
     await fixture.whenStable();
 
     expect(fixture.componentInstance.model().icon).toBe('assets/bank.svg');
+  });
+
+  it('pads the grid with hidden cells up to the reserved slots', async () => {
+    const fixture = TestBed.createComponent(SlotsHost);
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+
+    expect(el.querySelectorAll('input[type="radio"]').length).toBe(2);
+    expect(Array.from(el.querySelectorAll('.icon-slot')).map((s) => s.getAttribute('aria-hidden'))).toEqual([
+      'true',
+      'true',
+      'true',
+    ]);
   });
 });

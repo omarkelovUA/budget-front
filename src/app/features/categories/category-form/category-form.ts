@@ -4,7 +4,7 @@ import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
-import { categoryIcons, iconName, iconPath } from '../../../shared/ui/icon-picker/icons';
+import { CATEGORY_ICON_SLOTS, categoryIcons, iconName, iconPath } from '../../../shared/ui/icon-picker/icons';
 import { CategoryFormArt } from '../../../shared/ui/illustrations/category-form-art';
 
 type CategoryFormModel = Omit<ICategory, 'id'>;
@@ -28,6 +28,7 @@ export class CategoryForm {
   private readonly categoryRepository = inject(CategoryRepository);
 
   protected readonly types: ICategory['type'][] = ['income', 'expense'];
+  protected readonly iconSlots = CATEGORY_ICON_SLOTS;
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
   protected readonly visibilities: ICategory['visibility'][] = ['private', 'shared'];
 

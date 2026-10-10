@@ -9,6 +9,11 @@
   cursor: pointer;
 }
 
+/* An empty cell, as tall as an icon, that only keeps the grid's height. */
+.icon-slot {
+  aspect-ratio: 1;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

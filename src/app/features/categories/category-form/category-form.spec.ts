@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
+import { CATEGORY_ICON_SLOTS } from '../../../shared/ui/icon-picker/icons';
 import { CategoryForm } from './category-form';
 
 describe('CategoryForm', () => {
@@ -57,6 +58,8 @@ describe('CategoryForm', () => {
 
     expect(offered()).toContain('assets/pension.svg');
     expect(offered()).not.toContain('assets/food.svg');
+    // Both types take the same number of grid cells, so the dialog doesn't jump.
+    expect(offered().length + el().querySelectorAll('.icon-slot').length).toBe(CATEGORY_ICON_SLOTS);
     expect(picked()).toBe('assets/salary.svg');
 
     (el().querySelector('#category-name') as HTMLInputElement).value = 'Pension';

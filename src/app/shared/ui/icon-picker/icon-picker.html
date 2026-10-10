@@ -14,4 +14,7 @@
       <span class="icon-swatch"><app-icon [src]="path(icon)" /></span>
     </label>
   }
+  @for (slot of spareSlots(); track slot) {
+    <span class="icon-slot" aria-hidden="true"></span>
+  }
 </div>

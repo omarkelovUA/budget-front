@@ -88,6 +88,9 @@ export const INCOME_CATEGORY_ICONS = [
   'other-income',
 ] as const;
 
+// The longer list's length: the category form's picker keeps that height for both types.
+export const CATEGORY_ICON_SLOTS = Math.max(EXPENSE_CATEGORY_ICONS.length, INCOME_CATEGORY_ICONS.length);
+
 export function categoryIcons(type: 'income' | 'expense'): readonly string[] {
   return type === 'income' ? INCOME_CATEGORY_ICONS : EXPENSE_CATEGORY_ICONS;
 }
