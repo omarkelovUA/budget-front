@@ -33,7 +33,8 @@ export const ACCOUNT_ICONS = [
   'dollar',
 ] as const;
 
-export const CATEGORY_ICONS = [
+// Each category type has its own list; gift and lend go either way, so they're in both.
+export const EXPENSE_CATEGORY_ICONS = [
   'food',
   'restaurant',
   'coffee',
@@ -61,13 +62,41 @@ export const CATEGORY_ICONS = [
   'repairs',
   'insurance',
   'taxes',
+  'charity',
+  'lend',
+] as const;
+
+export const INCOME_CATEGORY_ICONS = [
   'salary',
+  'bonus',
+  'freelance',
+  'business',
   'investments',
+  'interest',
+  'rental',
+  'pension',
+  'benefits',
+  'scholarship',
+  'sales',
+  'refund',
+  'winnings',
+  'gift',
+  'lend',
   'cash',
   'wallet',
   'card',
+  'other-income',
 ] as const;
+
+export function categoryIcons(type: 'income' | 'expense'): readonly string[] {
+  return type === 'income' ? INCOME_CATEGORY_ICONS : EXPENSE_CATEGORY_ICONS;
+}
 
 export function iconPath(name: string): string {
   return `assets/${name}.svg`;
+}
+
+// The reverse of iconPath.
+export function iconName(path: string): string {
+  return path.replace(/^assets\/(.*)\.svg$/, '$1');
 }

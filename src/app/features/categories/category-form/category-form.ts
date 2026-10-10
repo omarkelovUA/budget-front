@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
-import { CATEGORY_ICONS } from '../../../shared/ui/icon-picker/icons';
+import { categoryIcons, iconName, iconPath } from '../../../shared/ui/icon-picker/icons';
 import { CategoryFormArt } from '../../../shared/ui/illustrations/category-form-art';
 
 type CategoryFormModel = Omit<ICategory, 'id'>;
@@ -12,7 +12,7 @@ type CategoryFormModel = Omit<ICategory, 'id'>;
 const DEFAULT_MODEL: CategoryFormModel = {
   name: '',
   type: 'expense',
-  icon: 'assets/wallet.svg',
+  icon: iconPath(categoryIcons('expense')[0]),
   color: 'green',
   visibility: 'private',
 };
@@ -28,7 +28,6 @@ export class CategoryForm {
   private readonly categoryRepository = inject(CategoryRepository);
 
   protected readonly types: ICategory['type'][] = ['income', 'expense'];
-  protected readonly icons = CATEGORY_ICONS;
   protected readonly colors = ['green', 'yellow', 'blue', 'red'];
   protected readonly visibilities: ICategory['visibility'][] = ['private', 'shared'];
 
@@ -42,6 +41,14 @@ export class CategoryForm {
   });
 
   readonly category = input<ICategory>();
+
+  // The chosen type's icons. A category saved with an icon from the other list (before
+  // the lists were split) still shows it, so editing doesn't lose the selection.
+  protected readonly icons = computed(() => {
+    const icons = categoryIcons(this.model().type);
+    const stored = this.category() && iconName(this.model().icon);
+    return stored && !icons.includes(stored) ? [...icons, stored] : icons;
+  });
   readonly edited = output();
   readonly cancelled = output();
 
@@ -53,6 +60,13 @@ export class CategoryForm {
           ? { name: data.name, type: data.type, icon: data.icon, color: data.color, visibility: data.visibility }
           : { ...DEFAULT_MODEL },
       );
+    });
+    // A new category's icon follows its type, unless the picked one fits both.
+    effect(() => {
+      const { type, icon } = this.model();
+      if (this.category()) return;
+      const icons = categoryIcons(type);
+      if (!icons.includes(iconName(icon))) this.model.update((m) => ({ ...m, icon: iconPath(icons[0]) }));
     });
   }
 

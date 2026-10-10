@@ -92,7 +92,18 @@
     "repairs": "Ремонт",
     "insurance": "Страхування",
     "taxes": "Податки й рахунки",
-    "salary": "Зарплата"
+    "salary": "Зарплата",
+    "bonus": "Премії",
+    "freelance": "Фриланс",
+    "interest": "Відсотки",
+    "rental": "Оренда",
+    "pension": "Пенсія",
+    "benefits": "Допомога",
+    "scholarship": "Стипендія",
+    "sales": "Продаж речей",
+    "refund": "Повернення й кешбек",
+    "winnings": "Виграші",
+    "other-income": "Інші доходи"
   },
   "auth": {
     "email": "Email",

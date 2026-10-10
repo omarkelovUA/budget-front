@@ -92,7 +92,18 @@
     "repairs": "Repairs",
     "insurance": "Insurance",
     "taxes": "Taxes and bills",
-    "salary": "Salary"
+    "salary": "Salary",
+    "bonus": "Bonuses",
+    "freelance": "Freelance",
+    "interest": "Interest",
+    "rental": "Rental income",
+    "pension": "Pension",
+    "benefits": "Benefits",
+    "scholarship": "Scholarship",
+    "sales": "Sales",
+    "refund": "Refunds and cashback",
+    "winnings": "Winnings",
+    "other-income": "Other income"
   },
   "auth": {
     "email": "Email",

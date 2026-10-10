@@ -278,6 +278,10 @@ workspace's `.docs/redesign.md` (M17).
   `@if`. It's a native modal `<dialog>`: it opens when rendered, Esc emits `(closed)`, and
   removing it closes it, so focus goes back to the opener. Each form emits `cancelled`
   from its *Cancel* button; the buttons sit in `.dialog-actions` (main action rightmost).
+- **Icon lists** (`shared/ui/icon-picker/icons.ts`): accounts have one; categories have
+  one per type (`EXPENSE_CATEGORY_ICONS`, `INCOME_CATEGORY_ICONS`; `gift` and `lend` are
+  in both). The category form offers the chosen type's list and moves a new category's
+  icon onto it; editing still shows a stored icon from the other list.
 - **Icons** are drawn by `app-icon` as a CSS mask filled with `currentColor`, so they
   follow the theme. Don't use `<img>` for them.
 - **Contrast:** `palette.spec.ts` checks every hue (white text on both gradient stops,

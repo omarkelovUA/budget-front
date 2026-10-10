@@ -1,5 +1,5 @@
 import { KNOWN_PROBLEMS } from '../http/problem';
-import { ACCOUNT_ICONS, CATEGORY_ICONS } from '../../shared/ui/icon-picker/icons';
+import { ACCOUNT_ICONS, EXPENSE_CATEGORY_ICONS, INCOME_CATEGORY_ICONS } from '../../shared/ui/icon-picker/icons';
 import en from '../../../i18n/en.json';
 import uk from '../../../i18n/uk.json';
 
@@ -23,6 +23,7 @@ describe('translation files', () => {
 
   it('have a name for every icon the pickers offer', () => {
     const iconKeys = keys(en.icons);
-    expect([...ACCOUNT_ICONS, ...CATEGORY_ICONS].filter((icon) => !iconKeys.includes(icon))).toEqual([]);
+    const offered = [...ACCOUNT_ICONS, ...EXPENSE_CATEGORY_ICONS, ...INCOME_CATEGORY_ICONS];
+    expect(offered.filter((icon) => !iconKeys.includes(icon))).toEqual([]);
   });
 });
