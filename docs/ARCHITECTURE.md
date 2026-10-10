@@ -54,6 +54,8 @@ handled inside the `Http*Repository` classes (§4.3).
 
 The backend enforces these; the UI only has to present them correctly:
 
+- Sign-up gives a user a starting set to edit or delete: two accounts (Cash, Card) and
+  eight common income and expense categories, named in their language (backend M21).
 - Every user belongs to exactly one family in v1: sign-up creates their own ("Family" /
   "Родина"), which admins can rename. The family page has three states:
   - **Alone:** *Invite* (header) and *Ask to join* another family by naming someone in it
