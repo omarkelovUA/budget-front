@@ -37,6 +37,8 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'insufficient-in-transit',
   'invalid-currency',
   'category-in-use',
+  'category-exists',
+  'category-used-by-family',
   'currency-mismatch',
   'transaction-not-editable',
   'category-not-shared',

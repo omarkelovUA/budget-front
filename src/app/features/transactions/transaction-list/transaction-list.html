@@ -36,7 +36,7 @@
               @if (isTransfer(tx)) {
                 <span>{{ t('transactions.transfer', { from: tx.fromAccount.name, to: tx.toAccount.name }) }}</span>
               } @else {
-                <span>{{ tx.category.name }} · {{ tx.account.name }}</span>
+                <span>{{ tx.category.unknown ? t('categories.unknown') : tx.category.name }} · {{ tx.account.name }}</span>
               }
             </div>
 

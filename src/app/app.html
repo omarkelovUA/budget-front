@@ -25,5 +25,14 @@
 </ng-container>
 
 <main class="app-main">
+  @if (addedSummary(); as summary) {
+    <aside class="app-notice card" role="status" *transloco="let t">
+      <p>{{ t('categories.added.notice', { categories: summary }) }}</p>
+      <div class="notice-actions">
+        <a routerLink="/categories" class="btn-tonal">{{ t('categories.added.review') }}</a>
+        <button type="button" class="btn-text" (click)="dismissAdded()">{{ t('categories.added.gotIt') }}</button>
+      </div>
+    </aside>
+  }
   <router-outlet></router-outlet>
 </main>

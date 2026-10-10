@@ -1,36 +1,59 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { ICategory } from '../../../model/types';
+import { FamilyRole, ICategory, IFamily } from '../../../model/types';
+import { AuthState } from '../../../core/auth/auth-state';
+import { AuthRepository } from '../../../core/auth/data/auth-repository';
+import { FamilyRepository } from '../../family/data/family-repository';
 import { pressEscape, stubDialogs } from '../../../shared/ui/modal/modal.testing';
 import { CategoryRepository } from '../data/category-repository';
 import { CategoryList } from './category-list';
 
 const FOOD: ICategory = { id: 'c1', name: 'Food', type: 'expense', icon: '', color: 'green', visibility: 'private' };
+const RENT: ICategory = { id: 'c2', name: 'Rent', type: 'expense', icon: '', color: 'blue', visibility: 'shared' };
+
+const familyWithMe = (role: FamilyRole): IFamily => ({
+  id: 'f',
+  name: 'Family',
+  categoriesReviewed: true,
+  members: [{ user: { id: 'me', email: 'me@x.com', displayName: 'Me', familyId: 'f' }, role, joinedAt: new Date() }],
+});
 
 describe('CategoryList', () => {
   let updated: ICategory[];
+  let calls: string[];
+  let role: FamilyRole;
 
   beforeEach(() => {
     stubDialogs();
     updated = [];
+    calls = [];
+    role = 'admin';
     TestBed.configureTestingModule({
       imports: [CategoryList],
       providers: [
         {
           provide: CategoryRepository,
           useValue: {
-            getCategories: () => of([FOOD]),
+            getCategories: () => of([FOOD, RENT]),
+            shareCategory: (id: string) => (calls.push(`share ${id}`), of(FOOD)),
+            hideCategory: (id: string) => (calls.push(`hide ${id}`), of(RENT)),
             updateCategory: (category: ICategory) => {
               updated.push(category);
               return of(category);
             },
           },
         },
+        {
+          provide: AuthRepository,
+          useValue: { login: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
+        },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(familyWithMe(role)) } },
       ],
     });
   });
 
   async function render() {
+    TestBed.inject(AuthState).login('me@x.com', 'x').subscribe();
     const fixture = TestBed.createComponent(CategoryList);
     await fixture.whenStable();
     const el = fixture.nativeElement as HTMLElement;
@@ -71,5 +94,30 @@ describe('CategoryList', () => {
     await fixture.whenStable();
 
     expect(el.querySelector('dialog')).toBeNull();
+  });
+
+  const cards = (el: HTMLElement) => Array.from(el.querySelectorAll('.category-card'));
+
+  it('lets a member use family categories but only manage their own', async () => {
+    role = 'member';
+    const { el, click } = await render();
+    const [food, rent] = cards(el);
+
+    expect(food.querySelector('button.card-select')).not.toBeNull();
+    expect(rent.querySelector('button')).toBeNull();
+    expect(rent.classList).toContain('readonly');
+
+    await click('.category-card .text-button');
+    expect(calls).toEqual(['share c1']);
+  });
+
+  it('lets the admin hide a family category', async () => {
+    const { el } = await render();
+    const rent = cards(el)[1];
+
+    expect(rent.querySelector('.text-button')?.textContent?.trim()).toBe("Приховати від сім'ї");
+    (rent.querySelector('.text-button') as HTMLButtonElement).click();
+
+    expect(calls).toEqual(['hide c2']);
   });
 });

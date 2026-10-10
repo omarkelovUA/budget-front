@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
-import { AccountAccess, Transaction } from '../../../model/types';
+import { AccountAccess, ICategory, Transaction } from '../../../model/types';
 import { TransactionPage, TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
@@ -100,5 +100,18 @@ describe('TransactionList', () => {
     await pressEscape(el.querySelector('dialog') as HTMLDialogElement);
     await fixture.whenStable();
     expect(el.querySelector('dialog')).toBeNull();
+  });
+
+  it("shows someone else's personal category as unknown", async () => {
+    const unknown: ICategory = { id: 'x', type: 'expense', name: '', icon: '', color: '', visibility: 'private', unknown: true };
+    const firstPage = pages[0];
+    pages[0] = { items: [{ ...tx('9'), category: unknown } as Transaction], hasMore: false };
+    const fixture = TestBed.createComponent(TransactionList);
+    await fixture.whenStable();
+    pages[0] = firstPage;
+
+    expect((fixture.nativeElement as HTMLElement).querySelector('.tx-description')?.textContent).toContain(
+      'Невідома категорія',
+    );
   });
 });

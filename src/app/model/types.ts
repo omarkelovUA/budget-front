@@ -75,9 +75,14 @@ export interface IFamily {
   id: string;
   name: string;
   members: IFamilyMember[];
+  // Whether the admin has chosen which categories the family sees: asked once, on the
+  // first other member.
+  categoriesReviewed: boolean;
 }
 
 //TODO add Map monthYear is key and amount is value - plan and fact (fact for caching)
+// Family ('shared') categories are the family's: every member uses them, only the admin
+// changes them.
 export interface ICategory {
   id: string;
   type: 'income' | 'expense';
@@ -85,6 +90,15 @@ export interface ICategory {
   icon: string;
   color: string;
   visibility: Visibility;
+  // Someone else's personal category, seen through a payment on a shared account: only
+  // id and type are given, and the UI shows "Unknown category".
+  unknown?: boolean;
+}
+
+// A family category a member other than the admin added, as the admin is told about it.
+export interface IAddedCategory {
+  category: ICategory;
+  addedBy: string;
 }
 
 // Every account has one owner, who gives family members access per person:

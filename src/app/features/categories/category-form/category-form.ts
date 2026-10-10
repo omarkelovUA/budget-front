@@ -6,6 +6,7 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
 import { CATEGORY_ICON_SLOTS, categoryIcons, iconName, iconPath } from '../../../shared/ui/icon-picker/icons';
 import { CategoryFormArt } from '../../../shared/ui/illustrations/category-form-art';
+import { Modal } from '../../../shared/ui/modal/modal';
 
 type CategoryFormModel = Omit<ICategory, 'id'>;
 
@@ -19,7 +20,7 @@ const DEFAULT_MODEL: CategoryFormModel = {
 
 @Component({
   selector: 'app-category-form',
-  imports: [FormField, TranslocoDirective, IconPicker, CategoryFormArt],
+  imports: [FormField, TranslocoDirective, IconPicker, CategoryFormArt, Modal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './category-form.html',
   styleUrl: './category-form.css',
@@ -42,6 +43,12 @@ export class CategoryForm {
   });
 
   readonly category = input<ICategory>();
+  readonly isAdmin = input(false);
+
+  // The admin's new category: instead of a picker, Save asks whether the family sees it.
+  // Other members pick in the form, personal by default.
+  protected readonly asksVisibility = computed(() => this.isAdmin() && !this.category());
+  protected readonly choosingVisibility = signal(false);
 
   // The chosen type's icons. A category saved with an icon from the other list (before
   // the lists were split) still shows it, so editing doesn't lose the selection.
@@ -73,9 +80,20 @@ export class CategoryForm {
 
   submit() {
     if (!this.form().valid()) return;
-    this.errorMessage.set(null);
+    if (this.asksVisibility()) {
+      this.choosingVisibility.set(true);
+      return;
+    }
+    this.save(this.form().value());
+  }
 
-    const value = this.form().value();
+  chooseVisibility(visibility: ICategory['visibility']) {
+    this.choosingVisibility.set(false);
+    this.save({ ...this.form().value(), visibility });
+  }
+
+  private save(value: CategoryFormModel) {
+    this.errorMessage.set(null);
     const categoryId = this.category()?.id;
     const request$ =
       categoryId

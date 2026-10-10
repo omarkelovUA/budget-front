@@ -27,24 +27,29 @@
     @else {
       <div class="categories-grid">
         @for (cat of categoriesResource.value(); track cat.id) {
-          <div class="category-card card" [class.active]="selectedCategory()?.id === cat.id">
-            <button type="button" class="card-select" (click)="selectCategory(cat)"
-                    [attr.aria-label]="t('categories.editAria', { name: cat.name })">
-              <span class="icon-box" [style.background-color]="cat.color">
-                <app-icon [src]="cat.icon" />
-              </span>
-
-              <span class="category-info">
-                <span class="category-name">{{ cat.name }}</span>
-                <span class="category-type" [class.income]="cat.type === 'income'">
-                  {{ t('common.categoryType.' + cat.type) }}
-                </span>
-                <app-visibility-badge [visibility]="cat.visibility" />
-              </span>
-            </button>
-
-            <button type="button" class="delete-button" (click)="deleteCategory(cat)"
-                    [attr.aria-label]="t('categories.deleteAria', { name: cat.name })">×</button>
+          <div class="category-card card" [class.active]="selectedCategory()?.id === cat.id"
+               [class.readonly]="!canManage(cat)">
+            @if (canManage(cat)) {
+              <button type="button" class="card-select" (click)="selectCategory(cat)"
+                      [attr.aria-label]="t('categories.editAria', { name: cat.name })">
+                <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: cat }" />
+              </button>
+              <div class="card-actions">
+                @if (cat.visibility === 'private') {
+                  <button type="button" class="text-button" (click)="shareCategory(cat)"
+                          [attr.aria-label]="t('categories.shareAria', { name: cat.name })">{{ t('categories.share') }}</button>
+                } @else {
+                  <button type="button" class="text-button" (click)="hideCategory(cat)"
+                          [attr.aria-label]="t('categories.hideAria', { name: cat.name })">{{ t('categories.hide') }}</button>
+                }
+                <button type="button" class="delete-button" (click)="deleteCategory(cat)"
+                        [attr.aria-label]="t('categories.deleteAria', { name: cat.name })">×</button>
+              </div>
+            } @else {
+              <div class="card-select">
+                <ng-container *ngTemplateOutlet="cardBody; context: { $implicit: cat }" />
+              </div>
+            }
           </div>
         } @empty {
           <div class="empty-state">
@@ -56,9 +61,27 @@
     }
   </div>
 
+  <ng-template #cardBody let-cat>
+    <span class="icon-box" [style.background-color]="cat.color">
+      <app-icon [src]="cat.icon" />
+    </span>
+    <span class="category-info">
+      <span class="category-name">{{ cat.name }}</span>
+      <span class="category-type" [class.income]="cat.type === 'income'">
+        {{ t('common.categoryType.' + cat.type) }}
+      </span>
+      <app-visibility-badge [visibility]="cat.visibility" />
+    </span>
+  </ng-template>
+
   @if (isFormOpen()) {
     <app-modal labelledBy="category-form-title" (closed)="closeForm()">
-      <app-category-form [category]="selectedCategory() ?? undefined" (edited)="onEdited()" (cancelled)="closeForm()" />
+      <app-category-form
+        [category]="selectedCategory() ?? undefined"
+        [isAdmin]="isAdmin()"
+        (edited)="onEdited()"
+        (cancelled)="closeForm()"
+      />
     </app-modal>
   }
 </div>

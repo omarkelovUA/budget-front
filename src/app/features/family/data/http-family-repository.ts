@@ -16,6 +16,7 @@ import { FamilyRepository } from './family-repository';
 interface FamilyDto {
   id: string;
   name: string;
+  categoriesReviewed: boolean;
   members: {
     userId: string;
     email: string;
@@ -68,6 +69,7 @@ function toFamily(dto: FamilyDto): IFamily {
   return {
     id: dto.id,
     name: dto.name,
+    categoriesReviewed: dto.categoriesReviewed,
     members: dto.members.map((m) => ({
       user: { id: m.userId, email: m.email, displayName: m.displayName, familyId: dto.id },
       role: m.role,
@@ -96,6 +98,13 @@ export class HttpFamilyRepository extends FamilyRepository {
 
   getCurrentFamily(): Observable<IFamily> {
     return this.http.get<FamilyDto>(FAMILY).pipe(map(toFamily), withUserErrors());
+  }
+
+  markCategoriesReviewed(): Observable<void> {
+    return this.http.post<null>(`${FAMILY}/categories-reviewed`, null).pipe(
+      map(() => undefined),
+      withUserErrors(),
+    );
   }
 
   renameFamily(name: string): Observable<IFamily> {

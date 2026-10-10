@@ -94,8 +94,17 @@ The backend enforces these; the UI only has to present them correctly:
   sign-in instead of the list. Accepting moves the user out of their family, so with
   others in it the page asks for confirmation first. A family holds at most 10 people, pending
   invitations included.
-- A category's or budget's visibility is fixed at creation, and so is a category's
-  income/expense type — edit forms don't offer to change them.
+- A category's or budget's visibility is fixed in the edit form, and so is a category's
+  income/expense type.
+- **Family categories** (M22) are the family's: every member uses them, only the admin
+  edits, deletes or hides them (other members see them read-only on the categories
+  page). Anyone can *Share with family* their own category. Creating one, the admin
+  answers *Family* or *Private* in a dialog on Save; other members pick in the form,
+  personal by default. The app shell tells the admin about family categories other
+  members added (`getAddedByMembers`, dismissed with `markAddedSeen`). On the family's
+  first other member, the family page asks the admin once which categories stay
+  personal (`IFamily.categoriesReviewed`). Someone else's personal category in a visible
+  payment shows as "Unknown category" (`ICategory.unknown`).
 - A transaction shows the accounts it touches as `IAccountRef` (no `balance`): a family
   member can see a transfer from someone's private account without seeing that account.
 - Transactions are create/delete only; deleting can fail with `transaction-not-editable`

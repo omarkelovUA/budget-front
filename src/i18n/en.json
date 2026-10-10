@@ -179,9 +179,26 @@
     "editAria": "Edit category {{name}}",
     "deleteAria": "Delete category {{name}}",
     "form": {
-      "namePlaceholder": "e.g. Groceries"
+      "namePlaceholder": "e.g. Groceries",
+      "memberSharesHint": "Everyone in your family will see it, and the admin will be told."
     },
-    "subtitle": "Sort income and spending the way your family thinks about money."
+    "subtitle": "Sort income and spending the way your family thinks about money.",
+    "share": "Share with family",
+    "shareAria": "Share {{name}} with the family",
+    "hide": "Hide from family",
+    "hideAria": "Hide {{name}} from the family",
+    "unknown": "Unknown category",
+    "visibilityChoice": {
+      "title": "Who sees this category?",
+      "text": "Everyone in your family sees and uses a family category. A private one is only yours.",
+      "family": "Family",
+      "private": "Private"
+    },
+    "added": {
+      "notice": "Family members added categories: {{categories}}.",
+      "review": "Review",
+      "gotIt": "Got it"
+    }
   },
   "budgets": {
     "title": "Budgets",
@@ -302,7 +319,12 @@
     "leaveConfirm": "You'll get a family of your own. This family's shared data will no longer be available to you.",
     "leaveYes": "Yes, leave",
     "leave": "Leave family",
-    "subtitle": "The people you share accounts, categories and budgets with."
+    "subtitle": "The people you share accounts, categories and budgets with.",
+    "categoryReview": {
+      "title": "Which categories does the family see?",
+      "text": "Someone is about to join your family. Untick the categories that should stay yours only.",
+      "done": "Done"
+    }
   },
   "familyTransfers": {
     "title": "Family transfers",
@@ -389,7 +411,9 @@
     "not-alone": "Only someone alone in their family can ask to join another one",
     "user-not-found": "Nobody has signed up with this email",
     "already-requested": "You've already asked to join a family. Cancel that request first.",
-    "invalid-join-request": "The request is invalid, expired or already answered"
+    "invalid-join-request": "The request is invalid, expired or already answered",
+    "category-exists": "There's already a category with this name and type",
+    "category-used-by-family": "Others in the family already use this category, so it can't be hidden"
   },
   "colors": {
     "dollar": "Dollar green",

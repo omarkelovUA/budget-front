@@ -13,6 +13,7 @@ const user = (id: string, displayName: string) => ({ id, email: `${id}@x.com`, d
 const FAMILY: IFamily = {
   id: 'f',
   name: 'Smiths',
+  categoriesReviewed: true,
   members: [
     { user: user('me', 'Me'), role: 'admin', joinedAt: new Date() },
     { user: user('bob', 'Bob'), role: 'member', joinedAt: new Date() },

@@ -3,6 +3,7 @@ import { of } from 'rxjs';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
 import { CATEGORY_ICON_SLOTS } from '../../../shared/ui/icon-picker/icons';
+import { stubDialogs } from '../../../shared/ui/modal/modal.testing';
 import { CategoryForm } from './category-form';
 
 describe('CategoryForm', () => {
@@ -91,5 +92,36 @@ describe('CategoryForm', () => {
 
     expect(offered().at(-1)).toBe('assets/salary.svg');
     expect(picked()).toBe('assets/salary.svg');
+  });
+
+  describe('for the admin', () => {
+    beforeEach(() => {
+      stubDialogs();
+      fixture.componentRef.setInput('isAdmin', true);
+    });
+
+    it('asks on Save whether the family sees a new category', async () => {
+      await fixture.whenStable();
+      expect(el().querySelector('.visibility-picker')).toBeNull();
+
+      (el().querySelector('#category-name') as HTMLInputElement).value = 'Garden';
+      el().querySelector('#category-name')!.dispatchEvent(new Event('input'));
+      (el().querySelector('form') as HTMLFormElement).requestSubmit();
+      await fixture.whenStable();
+      expect(created).toEqual([]);
+      expect(el().querySelector('#category-visibility-title')?.textContent).toBe('Хто бачитиме цю категорію?');
+
+      (el().querySelector('.visibility-choice .btn-tonal') as HTMLButtonElement).click();
+      await fixture.whenStable();
+
+      expect(created).toEqual([expect.objectContaining({ name: 'Garden', visibility: 'private' })]);
+    });
+  });
+
+  it('lets other members pick, personal by default', async () => {
+    await fixture.whenStable();
+
+    const picked = el().querySelector<HTMLInputElement>('.visibility-picker input:checked');
+    expect(picked?.value).toBe('private');
   });
 });

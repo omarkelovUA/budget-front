@@ -3,9 +3,10 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoDatePipe } from '@jsverse/transloco-locale';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { email, form, FormField, required } from '@angular/forms/signals';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable, of, switchMap } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
-import { IFamily, IReceivedInvitation, IUser } from '../../../model/types';
+import { ICategory, IFamily, IReceivedInvitation, IUser } from '../../../model/types';
+import { CategoryRepository } from '../../categories/data/category-repository';
 import { FamilyRepository } from '../data/family-repository';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { FamilyArt } from '../../../shared/ui/illustrations/family-art';
@@ -29,6 +30,7 @@ type FamilyDialog = 'rename' | 'invite' | 'join' | 'leave';
 export class FamilyPage {
   private readonly authState = inject(AuthState);
   private readonly familyRepository = inject(FamilyRepository);
+  private readonly categoryRepository = inject(CategoryRepository);
 
   protected readonly currentUser = this.authState.currentUser;
   protected readonly maxFamilySize = MAX_FAMILY_SIZE;
@@ -97,7 +99,14 @@ export class FamilyPage {
   protected readonly switchTo = signal<IReceivedInvitation | null>(null);
   // The member an admin is asked to confirm removing.
   protected readonly removing = signal<IUser | null>(null);
-  protected readonly anyDialog = computed(() => !!(this.dialog() || this.switchTo() || this.removing()));
+  // The one-time review of which categories the family sees, when its first other member
+  // arrives (the admin's first invitation or approved join request): the family's
+  // categories, and the ids the admin unticked to keep personal.
+  protected readonly reviewing = signal<ICategory[] | null>(null);
+  protected readonly keepPersonal = signal<ReadonlySet<string>>(new Set());
+  protected readonly anyDialog = computed(
+    () => !!(this.dialog() || this.switchTo() || this.removing() || this.reviewing()),
+  );
 
   openDialog(dialog: FamilyDialog) {
     if (dialog === 'rename') this.renameModel.set({ name: this.familyResource.value()?.name ?? '' });
@@ -123,10 +132,12 @@ export class FamilyPage {
 
   invite() {
     if (!this.inviteForm().valid()) return;
+    const first = this.needsCategoryReview();
     this.run(this.familyRepository.invite(this.inviteForm().value().email), () => {
       this.inviteModel.set({ email: '' });
       this.closeDialog();
       this.invitationsResource.reload();
+      if (first) this.startCategoryReview();
     });
   }
 
@@ -148,9 +159,49 @@ export class FamilyPage {
   }
 
   approveJoinRequest(id: string) {
+    const first = this.needsCategoryReview();
     this.run(this.familyRepository.approveJoinRequest(id), () => {
       this.familyResource.reload();
       this.incomingResource.reload();
+      if (first) this.startCategoryReview();
+    });
+  }
+
+  toggleKeepPersonal(id: string) {
+    this.keepPersonal.update((ids) => {
+      const next = new Set(ids);
+      if (!next.delete(id)) next.add(id);
+      return next;
+    });
+  }
+
+  // Hides the unticked categories, then marks the review done so it isn't offered again.
+  finishCategoryReview() {
+    const hides = [...this.keepPersonal()].map((id) => this.categoryRepository.hideCategory(id));
+    const request$ = (hides.length ? forkJoin(hides) : of([])).pipe(
+      switchMap(() => this.familyRepository.markCategoriesReviewed()),
+    );
+    this.run(request$, () => {
+      this.reviewing.set(null);
+      this.familyResource.reload();
+    });
+  }
+
+  // Closing without choosing keeps every category in the family; it isn't asked again.
+  skipCategoryReview() {
+    this.reviewing.set(null);
+    this.familyRepository.markCategoriesReviewed().subscribe(() => this.familyResource.reload());
+  }
+
+  private needsCategoryReview(): boolean {
+    return this.familyResource.value()?.categoriesReviewed === false;
+  }
+
+  private startCategoryReview() {
+    this.categoryRepository.getCategories().subscribe((categories) => {
+      this.keepPersonal.set(new Set());
+      this.errorMessage.set(null);
+      this.reviewing.set(categories.filter((c) => c.visibility === 'shared'));
     });
   }
 

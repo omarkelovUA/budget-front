@@ -51,3 +51,20 @@ input[type="radio"] {
 input[type="radio"]:checked + .color-swatch {
   border-color: var(--color-text);
 }
+
+.hint {
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.visibility-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.visibility-choice h2,
+.visibility-choice p {
+  margin: 0;
+}

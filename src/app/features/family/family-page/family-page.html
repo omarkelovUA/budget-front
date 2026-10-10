@@ -274,6 +274,40 @@
     </app-modal>
   }
 
+  @if (reviewing(); as categories) {
+    <app-modal labelledBy="family-review-title" (closed)="skipCategoryReview()">
+      <div class="dialog-form">
+        <div class="panel-header">
+          <app-family-art />
+          <h2 id="family-review-title">{{ t('family.categoryReview.title') }}</h2>
+        </div>
+        <p>{{ t('family.categoryReview.text') }}</p>
+        <fieldset class="review-list">
+          <legend class="visually-hidden">{{ t('family.categoryReview.title') }}</legend>
+          @for (category of categories; track category.id) {
+            <label class="review-item">
+              <input
+                type="checkbox"
+                [checked]="!keepPersonal().has(category.id)"
+                (change)="toggleKeepPersonal(category.id)"
+              />
+              {{ category.name }}
+              <span class="muted">· {{ t('common.categoryType.' + category.type) }}</span>
+            </label>
+          }
+        </fieldset>
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          <button type="button" class="btn-filled" [disabled]="pending()" (click)="finishCategoryReview()">
+            {{ t('family.categoryReview.done') }}
+          </button>
+        </div>
+      </div>
+    </app-modal>
+  }
+
   @if (switchTo(); as invitation) {
     <app-modal labelledBy="family-switch-title" (closed)="closeDialog()">
       <div class="dialog-form">

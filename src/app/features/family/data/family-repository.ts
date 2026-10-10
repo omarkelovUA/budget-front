@@ -9,6 +9,9 @@ export abstract class FamilyRepository {
   // Admin only.
   abstract renameFamily(name: string): Observable<IFamily>;
 
+  // Admin only: the one-time category review on the first other member is done.
+  abstract markCategoriesReviewed(): Observable<void>;
+
   // Admin only. Invites an email; at most 10 people per family, pending invitations included.
   abstract invite(email: string): Observable<IInvitation>;
 

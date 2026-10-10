@@ -119,7 +119,7 @@
                 @if (isTransfer(tx)) {
                   {{ tx.fromAccount.name }} → {{ tx.toAccount.name }}
                 } @else {
-                  {{ tx.category.name }}
+                  {{ tx.category.unknown ? t('categories.unknown') : tx.category.name }}
                 }
               </span>
               <span [class.income]="!isTransfer(tx) && tx.category.type === 'income'"

@@ -5,16 +5,17 @@ import { AuthRepository } from '../../../core/auth/data/auth-repository';
 import { FamilyRole, IFamily, IIncomingJoinRequest, IJoinRequest, IReceivedInvitation } from '../../../model/types';
 import { pressEscape, stubDialogs } from '../../../shared/ui/modal/modal.testing';
 import { FamilyRepository } from '../data/family-repository';
+import { CategoryRepository } from '../../categories/data/category-repository';
 import { FamilyPage } from './family-page';
 
 const user = (id: string, displayName: string) => ({ id, email: `${id}@x.com`, displayName, familyId: 'f' });
 const member = (id: string, role: FamilyRole) => ({ user: user(id, id), role, joinedAt: new Date() });
 
 // The signed-in user is 'me'.
-const ALONE: IFamily = { id: 'own', name: 'Family', members: [member('me', 'admin')] };
-const AS_ADMIN: IFamily = { id: 'f', name: 'Smiths', members: [member('me', 'admin'), member('carol', 'member')] };
-const AS_MEMBER: IFamily = { id: 'f', name: 'Smiths', members: [member('alice', 'admin'), member('me', 'member')] };
-const NEW_OWN: IFamily = { id: 'new-own', name: 'Family', members: [member('me', 'admin')] };
+const ALONE: IFamily = { id: 'own', name: 'Family', members: [member('me', 'admin')], categoriesReviewed: false };
+const AS_ADMIN: IFamily = { id: 'f', name: 'Smiths', members: [member('me', 'admin'), member('carol', 'member')], categoriesReviewed: true };
+const AS_MEMBER: IFamily = { id: 'f', name: 'Smiths', members: [member('alice', 'admin'), member('me', 'member')], categoriesReviewed: true };
+const NEW_OWN: IFamily = { id: 'new-own', name: 'Family', members: [member('me', 'admin')], categoriesReviewed: false };
 
 const INVITATION: IReceivedInvitation = {
   id: 'inv-1',
@@ -76,7 +77,8 @@ describe('FamilyPage', () => {
             getOwnJoinRequest: () => of(ownRequest),
             getIncomingJoinRequests: () => of([INCOMING]),
             renameFamily: call('rename', () => of({ ...family, name: 'Renamed' })),
-            invite: call('invite', () => throwError(() => new Error('Already invited'))),
+            invite: call('invite', () => (family === AS_ADMIN ? throwError(() => new Error('Already invited')) : of({}))),
+            markCategoriesReviewed: call('reviewed', () => of(undefined)),
             requestToJoin: call('requestToJoin', () => {
               ownRequest = OWN_REQUEST;
               return of(OWN_REQUEST);
@@ -90,6 +92,18 @@ describe('FamilyPage', () => {
             acceptInvitation: call('accept', () => of({ ...AS_MEMBER, id: 'joneses' })),
             removeMember: call('remove', () => of(undefined)),
             leaveFamily: call('leave', () => (family === AS_ADMIN ? throwError(() => new Error('Busy')) : of(NEW_OWN))),
+          },
+        },
+        {
+          provide: CategoryRepository,
+          useValue: {
+            getCategories: () =>
+              of([
+                { id: 'food', type: 'expense', name: 'Groceries', icon: '', color: 'green', visibility: 'shared' },
+                { id: 'hobby', type: 'expense', name: 'Hobby', icon: '', color: 'red', visibility: 'private' },
+                { id: 'salary', type: 'income', name: 'Salary', icon: '', color: 'green', visibility: 'shared' },
+              ]),
+            hideCategory: call('hide', () => of({})),
           },
         },
       ],
@@ -169,6 +183,48 @@ describe('FamilyPage', () => {
 
       expect(calls).toEqual([['rename', 'Shevchenkos']]);
       expect(el().querySelector('app-modal')).toBeNull();
+    });
+  });
+
+  describe('on the first new member', () => {
+    it('asks once which family categories to keep personal', async () => {
+      await render({ family: ALONE });
+
+      await click('app-page-header .btn-tonal');
+      await type('#family-invite-email', 'carol@x.com');
+      await click('app-modal .btn-filled');
+
+      expect(el().querySelector('#family-review-title')?.textContent).toBe("Які категорії бачитиме сім'я?");
+      const boxes = Array.from(el().querySelectorAll<HTMLInputElement>('.review-item input'));
+      expect(boxes.map((b) => b.parentElement?.textContent?.trim().split(' ')[0])).toEqual(['Groceries', 'Salary']);
+      expect(boxes.every((b) => b.checked)).toBe(true);
+
+      boxes[1].click();
+      await fixture.whenStable();
+      await click('app-modal .btn-filled');
+
+      expect(calls).toEqual([['invite', 'carol@x.com'], ['hide', 'salary'], ['reviewed']]);
+      expect(el().querySelector('app-modal')).toBeNull();
+    });
+
+    it('keeps every category in the family when closed without choosing', async () => {
+      await render({ family: ALONE });
+      await click('app-page-header .btn-tonal');
+      await type('#family-invite-email', 'carol@x.com');
+      await click('app-modal .btn-filled');
+
+      await pressEscape(el().querySelector('dialog') as HTMLDialogElement);
+      await fixture.whenStable();
+
+      expect(calls).toEqual([['invite', 'carol@x.com'], ['reviewed']]);
+    });
+
+    it('is not asked again once reviewed', async () => {
+      await render({ family: AS_ADMIN });
+
+      await click('.invitation-row .btn-filled');
+
+      expect(el().querySelector('#family-review-title')).toBeNull();
     });
   });
 

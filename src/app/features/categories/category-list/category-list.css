@@ -66,8 +66,34 @@
   color: var(--color-success);
 }
 
-.delete-button {
+.category-card.readonly {
+  cursor: default;
+}
+
+.category-card.readonly:hover {
+  transform: none;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   margin-left: auto;
+}
+
+.text-button {
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.text-button:hover {
+  color: var(--color-primary-text);
+}
+
+.delete-button {
   background: none;
   border: none;
   font-size: 1.25rem;
