@@ -74,12 +74,12 @@ export class AuthState {
     this.settingsState.clear();
   }
 
-  setFamilyId(familyId: string | null): void {
+  setFamilyId(familyId: string): void {
     this.user.update((u) => (u ? { ...u, familyId } : u));
   }
 
-  // The backend's user has no familyId (the membership is the source of truth),
-  // so it's looked up right after the session starts, along with the settings that
+  // The backend's user has no familyId (the membership is the source of truth; every
+  // user has a family), so it's looked up right after the session starts, along with the settings that
   // switch the UI to the account's language. Without settings the session still
   // starts, in the device's language.
   private start(session: AuthSession): Observable<IUser> {
@@ -89,7 +89,7 @@ export class AuthState {
       this.familyRepository.getCurrentFamily(),
       this.settingsState.load().pipe(catchError(() => of(null))),
     ]).pipe(
-      tap(([family]) => this.setFamilyId(family?.id ?? null)),
+      tap(([family]) => this.setFamilyId(family.id)),
       map(() => this.user()!),
     );
   }

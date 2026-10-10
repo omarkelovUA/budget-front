@@ -8,9 +8,9 @@
     <app-dashboard-art art />
   </app-page-header>
 
-  @if (!currentUser()?.familyId) {
+  @if (alone()) {
     <p class="hint">
-      {{ t('dashboard.personalOnly') }} <a routerLink="/family">{{ t('dashboard.createFamilyLink') }}</a>{{ t('dashboard.personalOnlyEnd') }}
+      {{ t('dashboard.alone') }} <a routerLink="/family">{{ t('dashboard.inviteLink') }}</a>{{ t('dashboard.aloneEnd') }}
     </p>
   }
 

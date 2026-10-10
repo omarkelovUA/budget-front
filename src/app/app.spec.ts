@@ -27,7 +27,7 @@ describe('App', () => {
       providers: [
         provideRouter(routes),
         { provide: AuthRepository, useValue: { login: () => of(SESSION) } },
-        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(null) } },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of({ id: 'f', name: 'Family', members: [] }) } },
         { provide: SettingsRepository, useValue: { getSettings: () => of(settings) } },
       ],
     }).compileComponents();

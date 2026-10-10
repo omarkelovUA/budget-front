@@ -13,6 +13,7 @@ import {
   Transaction,
   transactionCurrency,
 } from '../../model/types';
+import { FamilyRepository } from '../family/data/family-repository';
 import { FamilyTransferRepository } from '../family-transfers/data/family-transfer-repository';
 import { AccountRepository } from '../accounts/data/account-repository';
 import { BudgetRepository } from '../budgets/data/budget-repository';
@@ -83,6 +84,7 @@ export class Dashboard {
   private readonly budgetRepository = inject(BudgetRepository);
   private readonly transactionRepository = inject(TransactionRepository);
   private readonly familyTransferRepository = inject(FamilyTransferRepository);
+  private readonly familyRepository = inject(FamilyRepository);
 
   protected readonly currentUser = inject(AuthState).currentUser;
   protected readonly isTransfer = isTransferTransaction;
@@ -100,6 +102,12 @@ export class Dashboard {
   protected readonly accountsResource = rxResource({
     stream: () => this.accountRepository.getAccounts(),
   });
+  private readonly familyResource = rxResource({
+    params: () => this.currentUser()?.familyId ?? undefined,
+    stream: () => this.familyRepository.getCurrentFamily(),
+  });
+  // Only the user's own data so far: worth pointing them to the family page.
+  protected readonly alone = computed(() => this.familyResource.value()?.members.length === 1);
   private readonly transfersResource = rxResource({
     params: () => this.currentUser()?.familyId ?? undefined,
     stream: () => this.familyTransferRepository.getInTransit(),

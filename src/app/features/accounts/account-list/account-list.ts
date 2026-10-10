@@ -9,7 +9,6 @@ import { AccountRepository } from '../data/account-repository';
 import { AccountClose } from '../account-close/account-close';
 import { AccountForm } from '../account-form/account-form';
 import { FamilyTransfers } from '../../family-transfers/family-transfers/family-transfers';
-import { AuthState } from '../../../core/auth/auth-state';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Modal } from '../../../shared/ui/modal/modal';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
@@ -38,7 +37,6 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 })
 export class AccountList {
   private readonly accountRepository = inject(AccountRepository);
-  protected readonly currentUser = inject(AuthState).currentUser;
   protected readonly selectedAccount = signal<IAccount | null>(null);
   protected readonly closingAccount = signal<IAccount | null>(null);
   protected readonly isFormOpen = signal(false);

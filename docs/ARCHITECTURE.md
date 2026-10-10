@@ -54,8 +54,17 @@ handled inside the `Http*Repository` classes (§4.3).
 
 The backend enforces these; the UI only has to present them correctly:
 
-- A user belongs to at most one family in v1. Without a family, only private data exists
-  and creating anything `shared` fails (`no-family`).
+- Every user belongs to exactly one family in v1: sign-up creates their own ("Family" /
+  "Родина"), which admins can rename. The family page has three states:
+  - **Alone:** *Invite* (header) and *Ask to join* another family by naming someone in it
+    by email (a join request its admins answer; needs a verified email). An open request
+    shows as "waiting" with *Cancel*. There's nothing to leave.
+  - **Admin with others:** *Invite*, *Remove* per member, incoming join requests to
+    accept or decline, and *Leave*.
+  - **Member:** only *Leave*.
+  Leaving or being removed gives the user a new family of their own; leaving returns it
+  and `AuthState.setFamilyId` switches to it. The dashboard points users who are still
+  alone to the family page, and family transfers only show with others in the family.
 - Accounts have one owner, who sets each family member to hidden / visible / shared
   (`IAccount.access` is the current user's level; `grants` only reaches the owner). The
   account form shows that per-member editor, and only the owner can edit, close or delete
@@ -80,8 +89,8 @@ The backend enforces these; the UI only has to present them correctly:
   (*у дорозі*).
 - Family invitations are addressed to an email and only usable once that email is
   verified, i.e. the user signed in with Google. Otherwise the family page offers Google
-  sign-in instead of the list. Accepting while already in a family moves the user out of
-  it, so the page asks for confirmation first. A family holds at most 10 people, pending
+  sign-in instead of the list. Accepting moves the user out of their family, so with
+  others in it the page asks for confirmation first. A family holds at most 10 people, pending
   invitations included.
 - A category's or budget's visibility is fixed at creation, and so is a category's
   income/expense type — edit forms don't offer to change them.
@@ -126,7 +135,7 @@ src/app/
     categories/
     transactions/
     budgets/
-    family/                 # family creation, email invitations, member list
+    family/                 # own family, email invitations, join requests, member list
     auth/                   # login and register pages
     dashboard/              # aggregated overview (balances, month summary)
   app.routes.ts             # lazy-loaded per feature
@@ -167,7 +176,7 @@ the backend doc §6. On the client:
 
 - `core/auth/AuthState` holds the current user and the access token in signals —
   memory only, never localStorage. The user's `familyId` is looked up via
-  `GET /families/current` right after a session starts.
+  `GET /families/current` right after a session starts (every user has a family).
 - `provideAppInitializer` calls `restoreSession()` before the first route guard runs:
   a `POST /auth/refresh` with the httpOnly cookie, so a reload keeps the user logged in.
 - `authInterceptor` adds the bearer token to `/api` calls (not `/api/v1/auth/*`). On a
@@ -262,9 +271,9 @@ workspace's `.docs/redesign.md` (M17).
     follows the hue and the theme.
   - **Forms and lists:** form dialogs and the settings dialog show a small art in their
     header, and empty lists show `app-empty-art`. `screens.spec.ts` checks every screen.
-- **Form dialogs:** create and edit forms (closing an account, creating a family and
-  inviting to it too), the family transfers (send, collect, take back) and the
-  leave / switch family confirmations open in
+- **Form dialogs:** create and edit forms (closing an account, renaming the family,
+  inviting to it and asking to join one too), the family transfers (send, collect, take
+  back) and the leave / switch family / remove member confirmations open in
   `<app-modal labelledBy="<heading id>">` (`shared/ui/modal`), rendered by the list with
   `@if`. It's a native modal `<dialog>`: it opens when rendered, Esc emits `(closed)`, and
   removing it closes it, so focus goes back to the opener. Each form emits `cancelled`

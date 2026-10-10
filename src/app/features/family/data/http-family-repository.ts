@@ -1,9 +1,16 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, map, Observable, of, throwError } from 'rxjs';
 import { API_BASE } from '../../../core/config/api';
 import { problemType, withUserErrors } from '../../../core/http/problem';
-import { FamilyRole, IFamily, IInvitation, IReceivedInvitation } from '../../../model/types';
+import {
+  FamilyRole,
+  IFamily,
+  IIncomingJoinRequest,
+  IInvitation,
+  IJoinRequest,
+  IReceivedInvitation,
+} from '../../../model/types';
 import { FamilyRepository } from './family-repository';
 
 interface FamilyDto {
@@ -34,9 +41,28 @@ interface ReceivedInvitationDto {
   expiresAt: string;
 }
 
-const FAMILIES = `${API_BASE}/families`;
-const FAMILY_INVITATIONS = `${FAMILIES}/current/invitations`;
+interface JoinRequestDto {
+  id: string;
+  email: string;
+  familyName: string;
+  createdAt: string;
+  expiresAt: string;
+}
+
+interface IncomingJoinRequestDto {
+  id: string;
+  requesterId: string;
+  displayName: string;
+  email: string;
+  createdAt: string;
+  expiresAt: string;
+}
+
+const FAMILY = `${API_BASE}/families/current`;
+const FAMILY_INVITATIONS = `${FAMILY}/invitations`;
+const FAMILY_JOIN_REQUESTS = `${FAMILY}/join-requests`;
 const INVITATIONS = `${API_BASE}/invitations`;
+const OWN_JOIN_REQUEST = `${API_BASE}/join-requests/mine`;
 
 function toFamily(dto: FamilyDto): IFamily {
   return {
@@ -51,6 +77,12 @@ function toFamily(dto: FamilyDto): IFamily {
 }
 
 function toInvitation(dto: InvitationDto): IInvitation {
+  return withDates(dto);
+}
+
+function withDates<T extends { createdAt: string; expiresAt: string }>(
+  dto: T,
+): Omit<T, 'createdAt' | 'expiresAt'> & { createdAt: Date; expiresAt: Date } {
   return { ...dto, createdAt: new Date(dto.createdAt), expiresAt: new Date(dto.expiresAt) };
 }
 
@@ -62,18 +94,12 @@ function toReceivedInvitation(dto: ReceivedInvitationDto): IReceivedInvitation {
 export class HttpFamilyRepository extends FamilyRepository {
   private readonly http = inject(HttpClient);
 
-  getCurrentFamily(): Observable<IFamily | null> {
-    return this.http.get<FamilyDto>(`${FAMILIES}/current`).pipe(
-      map(toFamily),
-      catchError((err) =>
-        err instanceof HttpErrorResponse && err.status === 404 ? of(null) : throwError(() => err),
-      ),
-      withUserErrors(),
-    );
+  getCurrentFamily(): Observable<IFamily> {
+    return this.http.get<FamilyDto>(FAMILY).pipe(map(toFamily), withUserErrors());
   }
 
-  createFamily(name: string): Observable<IFamily> {
-    return this.http.post<FamilyDto>(FAMILIES, { name }).pipe(map(toFamily), withUserErrors());
+  renameFamily(name: string): Observable<IFamily> {
+    return this.http.patch<FamilyDto>(FAMILY, { name }).pipe(map(toFamily), withUserErrors());
   }
 
   invite(email: string): Observable<IInvitation> {
@@ -112,8 +138,51 @@ export class HttpFamilyRepository extends FamilyRepository {
     );
   }
 
-  leaveFamily(): Observable<void> {
-    return this.http.post<null>(`${FAMILIES}/current/leave`, null).pipe(
+  leaveFamily(): Observable<IFamily> {
+    return this.http.post<FamilyDto>(`${FAMILY}/leave`, null).pipe(map(toFamily), withUserErrors());
+  }
+
+  removeMember(userId: string): Observable<void> {
+    return this.http.delete<null>(`${FAMILY}/members/${userId}`).pipe(
+      map(() => undefined),
+      withUserErrors(),
+    );
+  }
+
+  requestToJoin(email: string): Observable<IJoinRequest> {
+    return this.http
+      .post<JoinRequestDto>(`${API_BASE}/join-requests`, { email })
+      .pipe(map(withDates), withUserErrors());
+  }
+
+  // 204 (no body) when there is none.
+  getOwnJoinRequest(): Observable<IJoinRequest | null> {
+    return this.http
+      .get<JoinRequestDto | null>(OWN_JOIN_REQUEST)
+      .pipe(map((dto) => (dto ? withDates(dto) : null)), withUserErrors());
+  }
+
+  cancelJoinRequest(): Observable<void> {
+    return this.http.delete<null>(OWN_JOIN_REQUEST).pipe(
+      map(() => undefined),
+      withUserErrors(),
+    );
+  }
+
+  getIncomingJoinRequests(): Observable<IIncomingJoinRequest[]> {
+    return this.http
+      .get<IncomingJoinRequestDto[]>(FAMILY_JOIN_REQUESTS)
+      .pipe(map((dtos) => dtos.map(withDates)), withUserErrors());
+  }
+
+  approveJoinRequest(id: string): Observable<IFamily> {
+    return this.http
+      .post<FamilyDto>(`${FAMILY_JOIN_REQUESTS}/${id}/approve`, null)
+      .pipe(map(toFamily), withUserErrors());
+  }
+
+  declineJoinRequest(id: string): Observable<void> {
+    return this.http.post<null>(`${FAMILY_JOIN_REQUESTS}/${id}/decline`, null).pipe(
       map(() => undefined),
       withUserErrors(),
     );

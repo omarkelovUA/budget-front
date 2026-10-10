@@ -38,7 +38,7 @@ describe('authInterceptor', () => {
             },
           },
         },
-        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(null) } },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of({ id: 'f', name: 'Family', members: [] }) } },
       ],
     });
     http = TestBed.inject(HttpClient);

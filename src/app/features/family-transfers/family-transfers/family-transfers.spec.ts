@@ -146,4 +146,11 @@ describe('FamilyTransfers', () => {
     expect(calls).toEqual([['send', 'uah-card', 'bob', 50]]);
     expect(el().querySelector('app-modal')).toBeNull();
   });
+
+  it('shows nothing while the user is alone in their family', async () => {
+    (fixture.componentInstance as any).familyResource.set({ ...FAMILY, members: [FAMILY.members[0]] });
+    await fixture.whenStable();
+
+    expect(el().querySelector('section')).toBeNull();
+  });
 });

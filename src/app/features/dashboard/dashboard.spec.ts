@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
-import { IAccount, IBudget, ICategory } from '../../model/types';
+import { IAccount, IBudget, ICategory, IFamily, IFamilyMember } from '../../model/types';
+import { AuthState } from '../../core/auth/auth-state';
 import { AccountRepository } from '../accounts/data/account-repository';
 import { BudgetRepository } from '../budgets/data/budget-repository';
 import { TransactionRepository } from '../transactions/data/transaction-repository';
@@ -20,6 +21,12 @@ const account = (currency: string, balance: number, access: IAccount['access']):
   owner: { id: 'o', displayName: 'Owner' },
   access,
   closed: false,
+});
+
+const member = (id: string): IFamilyMember => ({
+  user: { id, email: `${id}@x.com`, displayName: id, familyId: 'f' },
+  role: 'member',
+  joinedAt: new Date(),
 });
 
 const food: ICategory = { id: 'c', type: 'expense', name: 'Food', icon: '', color: 'red', visibility: 'shared' };
@@ -59,9 +66,11 @@ describe('balancesByCurrency', () => {
 
 describe('Dashboard', () => {
   let requestedPeriods: (string | undefined)[];
+  let family: IFamily;
 
   beforeEach(() => {
     requestedPeriods = [];
+    family = { id: 'f', name: 'Family', members: [member('me')] };
     TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [
@@ -83,9 +92,12 @@ describe('Dashboard', () => {
             getMonthSummary: () => of([{ currency: 'UAH', income: 500, expense: 120 }]),
           },
         },
-        { provide: AuthRepository, useValue: {} },
-        { provide: FamilyRepository, useValue: {} },
-        { provide: FamilyTransferRepository, useValue: {} },
+        {
+          provide: AuthRepository,
+          useValue: { login: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
+        },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(family) } },
+        { provide: FamilyTransferRepository, useValue: { getInTransit: () => of({ incoming: [], outgoing: [] }) } },
       ],
     });
   });
@@ -114,10 +126,23 @@ describe('Dashboard', () => {
     );
   });
 
-  it('points users without a family to the family page', async () => {
+  async function signedIn() {
+    TestBed.inject(AuthState).login('me@x.com', 'x').subscribe();
     const fixture = TestBed.createComponent(Dashboard);
     await fixture.whenStable();
+    return fixture.nativeElement as HTMLElement;
+  }
 
-    expect((fixture.nativeElement as HTMLElement).querySelector('.hint a')?.getAttribute('href')).toBe('/family');
+  it('points users alone in their family to the family page', async () => {
+    const el = await signedIn();
+
+    expect(el.querySelector('.hint a')?.getAttribute('href')).toBe('/family');
+  });
+
+  it('drops the hint once others are in the family', async () => {
+    family.members.push(member('bob'));
+    const el = await signedIn();
+
+    expect(el.querySelector('.hint a')).toBeNull();
   });
 });

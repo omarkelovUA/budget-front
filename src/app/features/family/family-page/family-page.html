@@ -1,12 +1,13 @@
 <div class="family-page" *transloco="let t">
   <app-page-header [title]="t('nav.family')" [subtitle]="t('family.subtitle')">
-    @if (!currentUser()?.familyId) {
-      <button actions type="button" class="btn-tonal" (click)="openDialog('create')">
-        <span aria-hidden="true">+</span> {{ t('family.create.submit') }}
-      </button>
-    } @else if (isAdmin()) {
+    @if (isAdmin()) {
       <button actions type="button" class="btn-tonal" [disabled]="seatsTaken() >= maxFamilySize" (click)="openDialog('invite')">
         <span aria-hidden="true">+</span> {{ t('family.invite') }}
+      </button>
+    }
+    @if (canAskToJoin()) {
+      <button actions type="button" class="btn-tonal" (click)="openDialog('join')">
+        {{ t('family.askToJoin') }}
       </button>
     }
     <app-family-art art />
@@ -53,96 +54,136 @@
     }
   }
 
-  @if (!currentUser()?.familyId) {
-    <section class="create-family card">
-      <h2>{{ t('family.create.title') }}</h2>
-      <p>{{ t('family.create.intro') }}</p>
+  @if (ownRequestResource.value(); as request) {
+    <section class="own-request card">
+      <p>{{ t('family.ownRequest', { family: request.familyName, email: request.email }) }}</p>
+      <button type="button" class="btn-outlined" [disabled]="pending()" (click)="cancelJoinRequest()">
+        {{ t('family.cancelRequest') }}
+      </button>
     </section>
-  } @else {
-    @if (familyResource.isLoading()) {
-      <div class="status-message" role="status">
-        <div class="spinner" aria-hidden="true"></div>
-        <p>{{ t('family.loading') }}</p>
-      </div>
-    } @else if (familyResource.error()) {
-      <div class="status-message error" role="alert">
-        <p>{{ t('common.loadFailed') }}</p>
-      </div>
-    } @else {
-      @if (familyResource.value(); as family) {
-        <section class="family-details card">
-          <h2>{{ family.name }}</h2>
-          <p class="hint">{{ t('family.seats', { taken: seatsTaken(), max: maxFamilySize }) }}</p>
+  }
 
-          <div class="members-list">
-            @for (member of family.members; track member.user.id) {
-              <div class="member-row">
-                <div class="member-info">
-                  <span class="member-name">{{ member.user.displayName }}</span>
-                  <span class="member-email">{{ member.user.email }}</span>
-                </div>
-                <span class="role-badge" [class.admin]="member.role === 'admin'">
-                  {{ t('family.roles.' + member.role) }}
-                </span>
-              </div>
+  @if (incomingResource.value()?.length) {
+    <section class="received-invitations card">
+      <h2>{{ t('family.incoming.title') }}</h2>
+      @for (request of incomingResource.value(); track request.id) {
+        <div class="invitation-row">
+          <div class="member-info">
+            <span class="member-name">{{ request.displayName }}</span>
+            <span class="member-email">{{ request.email }}</span>
+          </div>
+          <div class="row-actions">
+            <button type="button" class="btn-filled" [disabled]="pending()" (click)="approveJoinRequest(request.id)">
+              {{ t('family.incoming.approve') }}
+            </button>
+            <button type="button" class="btn-outlined" [disabled]="pending()" (click)="declineJoinRequest(request.id)">
+              {{ t('family.incoming.decline') }}
+            </button>
+          </div>
+        </div>
+      }
+    </section>
+  }
+
+  @if (familyResource.isLoading()) {
+    <div class="status-message" role="status">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>{{ t('family.loading') }}</p>
+    </div>
+  } @else if (familyResource.error()) {
+    <div class="status-message error" role="alert">
+      <p>{{ t('common.loadFailed') }}</p>
+    </div>
+  } @else if (familyResource.value(); as family) {
+    <section class="family-details card">
+      <div class="family-title">
+        <h2>{{ family.name }}</h2>
+        @if (isAdmin()) {
+          <button type="button" class="btn-text" (click)="openDialog('rename')">{{ t('family.rename') }}</button>
+        }
+      </div>
+      <p class="hint">{{ t('family.seats', { taken: seatsTaken(), max: maxFamilySize }) }}</p>
+
+      <div class="members-list">
+        @for (member of family.members; track member.user.id) {
+          <div class="member-row">
+            <div class="member-info">
+              <span class="member-name">{{ member.user.displayName }}</span>
+              <span class="member-email">{{ member.user.email }}</span>
+            </div>
+            <span class="role-badge" [class.admin]="member.role === 'admin'">
+              {{ t('family.roles.' + member.role) }}
+            </span>
+            @if (isAdmin() && member.user.id !== currentUser()?.id) {
+              <button
+                type="button"
+                class="btn-text"
+                [disabled]="pending()"
+                (click)="confirmRemove(member.user)"
+                [attr.aria-label]="t('family.removeAria', { name: member.user.displayName })"
+              >
+                {{ t('family.remove') }}
+              </button>
             }
           </div>
+        }
+      </div>
 
-          @if (invitationsResource.value()?.length) {
-            <h3>{{ t('family.pendingInvitations') }}</h3>
-            <div class="members-list">
-              @for (invitation of invitationsResource.value(); track invitation.id) {
-                <div class="member-row">
-                  <div class="member-info">
-                    <span class="member-name">{{ invitation.email }}</span>
-                    <span class="member-email">{{
-                      t('family.validUntil', { date: (invitation.expiresAt | translocoDate: { dateStyle: 'short' }) })
-                    }}</span>
-                  </div>
-                  @if (isAdmin()) {
-                    <button
-                      type="button"
-                      class="btn-outlined"
-                      [disabled]="pending()"
-                      (click)="revokeInvitation(invitation.id)"
-                      [attr.aria-label]="t('family.revokeAria', { email: invitation.email })"
-                    >
-                      {{ t('common.cancel') }}
-                    </button>
-                  }
-                </div>
+      @if (invitationsResource.value()?.length) {
+        <h3>{{ t('family.pendingInvitations') }}</h3>
+        <div class="members-list">
+          @for (invitation of invitationsResource.value(); track invitation.id) {
+            <div class="member-row">
+              <div class="member-info">
+                <span class="member-name">{{ invitation.email }}</span>
+                <span class="member-email">{{
+                  t('family.validUntil', { date: (invitation.expiresAt | translocoDate: { dateStyle: 'short' }) })
+                }}</span>
+              </div>
+              @if (isAdmin()) {
+                <button
+                  type="button"
+                  class="btn-outlined"
+                  [disabled]="pending()"
+                  (click)="revokeInvitation(invitation.id)"
+                  [attr.aria-label]="t('family.revokeAria', { email: invitation.email })"
+                >
+                  {{ t('common.cancel') }}
+                </button>
               }
             </div>
           }
-
-          <div class="leave-row">
-            <button type="button" class="btn-outlined" (click)="openDialog('leave')">{{ t('family.leave') }}</button>
-          </div>
-        </section>
+        </div>
       }
-    }
+
+      @if (!alone()) {
+        <div class="leave-row">
+          <button type="button" class="btn-outlined" (click)="openDialog('leave')">{{ t('family.leave') }}</button>
+        </div>
+      }
+    </section>
   }
 
-  @if (!dialog() && !switchTo() && errorMessage(); as message) {
+  @if (!anyDialog() && errorMessage(); as message) {
     <p class="form-error" role="alert">{{ message }}</p>
   }
 
-  @if (dialog() === 'create') {
-    <app-modal labelledBy="family-create-title" (closed)="closeDialog()">
-      <form novalidate (submit)="$event.preventDefault(); createFamily()" class="dialog-form">
+  @if (dialog() === 'rename') {
+    <app-modal labelledBy="family-rename-title" (closed)="closeDialog()">
+      <form novalidate (submit)="$event.preventDefault(); rename()" class="dialog-form">
         <div class="panel-header">
           <app-family-art />
-          <h2 id="family-create-title">{{ t('family.create.dialogTitle') }}</h2>
+          <h2 id="family-rename-title">{{ t('family.renameTitle') }}</h2>
         </div>
         <div class="field">
-          <label for="family-name">{{ t('family.create.name') }}</label>
-          <input id="family-name" [formField]="createForm.name" [placeholder]="t('family.create.namePlaceholder')" />
+          <label for="family-name">{{ t('family.name') }}</label>
+          <input id="family-name" [formField]="renameForm.name" [placeholder]="t('family.namePlaceholder')" />
         </div>
         @if (errorMessage(); as message) {
           <p class="form-error" role="alert">{{ message }}</p>
         }
         <div class="dialog-actions">
-          <button type="submit" class="btn-filled" [disabled]="!createForm().valid() || pending()">{{ t('family.create.submit') }}</button>
+          <button type="submit" class="btn-filled" [disabled]="!renameForm().valid() || pending()">{{ t('common.save') }}</button>
           <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
         </div>
       </form>
@@ -172,6 +213,29 @@
     </app-modal>
   }
 
+  @if (dialog() === 'join') {
+    <app-modal labelledBy="family-join-title" (closed)="closeDialog()">
+      <form novalidate (submit)="$event.preventDefault(); askToJoin()" class="dialog-form">
+        <div class="panel-header">
+          <app-family-art />
+          <h2 id="family-join-title">{{ t('family.join.title') }}</h2>
+        </div>
+        <div class="field">
+          <label for="family-join-email">{{ t('family.join.email') }}</label>
+          <input id="family-join-email" type="email" [formField]="joinForm.email" />
+          <p class="hint">{{ t('family.join.hint') }}</p>
+        </div>
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          <button type="submit" class="btn-filled" [disabled]="!joinForm().valid() || pending()">{{ t('family.join.submit') }}</button>
+          <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
+        </div>
+      </form>
+    </app-modal>
+  }
+
   @if (dialog() === 'leave') {
     <app-modal labelledBy="family-leave-title" (closed)="closeDialog()">
       <div class="dialog-form">
@@ -185,6 +249,25 @@
         }
         <div class="dialog-actions">
           <button type="button" class="btn-danger" [disabled]="pending()" (click)="leaveFamily()">{{ t('family.leaveYes') }}</button>
+          <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
+        </div>
+      </div>
+    </app-modal>
+  }
+
+  @if (removing(); as member) {
+    <app-modal labelledBy="family-remove-title" (closed)="closeDialog()">
+      <div class="dialog-form">
+        <div class="panel-header">
+          <app-family-art />
+          <h2 id="family-remove-title">{{ t('family.removeTitle', { name: member.displayName }) }}</h2>
+        </div>
+        <p>{{ t('family.removeConfirm') }}</p>
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          <button type="button" class="btn-danger" [disabled]="pending()" (click)="removeMember(member.id)">{{ t('family.removeYes') }}</button>
           <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
         </div>
       </div>

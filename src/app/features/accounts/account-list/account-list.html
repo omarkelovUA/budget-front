@@ -60,7 +60,7 @@
     }
   </div>
 
-  @if (currentUser()?.familyId && accountsResource.hasValue()) {
+  @if (accountsResource.hasValue()) {
     <app-family-transfers [accounts]="accountsResource.value()" (changed)="accountsResource.reload()" />
   }
 

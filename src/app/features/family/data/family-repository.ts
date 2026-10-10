@@ -1,12 +1,13 @@
 import { Observable } from 'rxjs';
-import { IFamily, IInvitation, IReceivedInvitation } from '../../../model/types';
+import { IFamily, IIncomingJoinRequest, IInvitation, IJoinRequest, IReceivedInvitation } from '../../../model/types';
 
-// Always the caller's own family: a user belongs to at most one (v1).
+// Always the caller's own family: every user belongs to exactly one (v1), their own from
+// sign-up on.
 export abstract class FamilyRepository {
-  // null when the user doesn't belong to a family yet.
-  abstract getCurrentFamily(): Observable<IFamily | null>;
+  abstract getCurrentFamily(): Observable<IFamily>;
 
-  abstract createFamily(name: string): Observable<IFamily>;
+  // Admin only.
+  abstract renameFamily(name: string): Observable<IFamily>;
 
   // Admin only. Invites an email; at most 10 people per family, pending invitations included.
   abstract invite(email: string): Observable<IInvitation>;
@@ -26,6 +27,26 @@ export abstract class FamilyRepository {
 
   abstract declineInvitation(id: string): Observable<void>;
 
-  // The last admin must promote someone first; the last member leaving deletes the family.
-  abstract leaveFamily(): Observable<void>;
+  // Only with others in the family. Returns the user's new family of their own.
+  abstract leaveFamily(): Observable<IFamily>;
+
+  // Admin only. The member gets a new family of their own.
+  abstract removeMember(userId: string): Observable<void>;
+
+  // Only while alone in the family, with a verified email: asks to join the family of the
+  // person with this email. Its admins answer.
+  abstract requestToJoin(email: string): Observable<IJoinRequest>;
+
+  // The user's open request, or null.
+  abstract getOwnJoinRequest(): Observable<IJoinRequest | null>;
+
+  abstract cancelJoinRequest(): Observable<void>;
+
+  // Admin only: open requests to join the user's family.
+  abstract getIncomingJoinRequests(): Observable<IIncomingJoinRequest[]>;
+
+  // Admin only. Moves the requester in; returns the family with them.
+  abstract approveJoinRequest(id: string): Observable<IFamily>;
+
+  abstract declineJoinRequest(id: string): Observable<void>;
 }

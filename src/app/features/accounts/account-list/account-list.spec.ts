@@ -3,6 +3,7 @@ import { of } from 'rxjs';
 import { AuthRepository } from '../../../core/auth/data/auth-repository';
 import { IAccount } from '../../../model/types';
 import { FamilyRepository } from '../../family/data/family-repository';
+import { FamilyTransferRepository } from '../../family-transfers/data/family-transfer-repository';
 import { AccountRepository } from '../data/account-repository';
 import { pressEscape, stubDialogs } from '../../../shared/ui/modal/modal.testing';
 import { AccountList } from './account-list';
@@ -30,6 +31,7 @@ describe('AccountList', () => {
         { provide: AccountRepository, useValue: { getAccounts: () => of([account('mine', 'owner')]) } },
         { provide: AuthRepository, useValue: {} },
         { provide: FamilyRepository, useValue: {} },
+        { provide: FamilyTransferRepository, useValue: {} },
       ],
     });
     const fixture = TestBed.createComponent(AccountList);
@@ -86,6 +88,7 @@ describe('AccountList', () => {
         },
         { provide: AuthRepository, useValue: {} },
         { provide: FamilyRepository, useValue: {} },
+        { provide: FamilyTransferRepository, useValue: {} },
       ],
     });
     const fixture = TestBed.createComponent(AccountList);

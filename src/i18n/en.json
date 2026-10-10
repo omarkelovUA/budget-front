@@ -145,7 +145,7 @@
         "visible": "View only",
         "shared": "Shared"
       },
-      "noFamilyHint": "Only you can see this account. To share it, create a family or join one.",
+      "noFamilyHint": "Only you can see this account. To share it, invite your family to the family page first.",
       "levelsHint": "View only: sees the account and its transactions. Shared: can also record transactions."
     },
     "closeDialog": {
@@ -212,9 +212,9 @@
     "monthGroup": "Selected month",
     "previousMonth": "Previous month",
     "nextMonth": "Next month",
-    "personalOnly": "You only see personal data.",
-    "createFamilyLink": "Create a family or join one",
-    "personalOnlyEnd": " to keep a shared budget.",
+    "alone": "Only you are in your family so far.",
+    "inviteLink": "Invite your loved ones",
+    "aloneEnd": " to keep a shared budget.",
     "balance": "Balance",
     "accountsFailed": "Couldn't load the accounts.",
     "mine": "mine {{amount}}",
@@ -242,23 +242,19 @@
     "subtitle": "Balances, spending and budgets at a glance."
   },
   "family": {
-    "verifyHint": "Family invitations are tied to an email address. To see and accept them, confirm your email by signing in with Google.",
+    "verifyHint": "Invitations and join requests are tied to email addresses. To use them, confirm your email by signing in with Google.",
+    "name": "Family name",
+    "namePlaceholder": "e.g. The Shevchenkos",
+    "rename": "Rename",
+    "renameTitle": "Rename the family",
     "received": {
       "title": "Invitations for you",
       "details": "Invited by {{name}} · members: {{count}} · valid until {{date}}",
       "switchTitle": "Join «{{name}}»?",
-      "switchWarning": "You will leave your current family. If you are its last member, it will be deleted.",
+      "switchWarning": "You will leave your current family, and its shared data will no longer be available to you.",
       "confirmSwitch": "Yes, switch",
       "accept": "Accept",
       "decline": "Decline"
-    },
-    "create": {
-      "title": "You don't have a family yet",
-      "intro": "Create a family to share your budget with your loved ones, or accept an invitation from one of them.",
-      "name": "Family name",
-      "namePlaceholder": "e.g. The Shevchenkos",
-      "submit": "Create family",
-      "dialogTitle": "New family"
     },
     "loading": "Loading the family...",
     "seats": "People in the family, invitations included: {{taken}} / {{max}}",
@@ -272,8 +268,27 @@
     "inviteEmail": "Member's email",
     "invite": "Invite",
     "inviteTitle": "Invite a family member",
+    "askToJoin": "Ask to join",
+    "join": {
+      "title": "Ask to join a family",
+      "email": "Email of someone in that family",
+      "hint": "Its admins will see your name and email and decide.",
+      "submit": "Send request"
+    },
+    "ownRequest": "You asked to join «{{family}}» ({{email}}). Waiting for its admins to answer.",
+    "cancelRequest": "Cancel request",
+    "incoming": {
+      "title": "Asking to join",
+      "approve": "Accept",
+      "decline": "Decline"
+    },
+    "remove": "Remove",
+    "removeAria": "Remove {{name}} from the family",
+    "removeTitle": "Remove {{name}}?",
+    "removeConfirm": "They'll get a family of their own and lose access to your family's shared data.",
+    "removeYes": "Yes, remove",
     "leaveTitle": "Leave the family?",
-    "leaveConfirm": "Shared data will no longer be available to you.",
+    "leaveConfirm": "You'll get a family of your own. This family's shared data will no longer be available to you.",
     "leaveYes": "Yes, leave",
     "leave": "Leave family",
     "subtitle": "The people you share accounts, categories and budgets with."
@@ -329,15 +344,14 @@
     "invalid-credentials": "Wrong email or password",
     "email-taken": "An account with this email already exists",
     "not-found": "Not found",
-    "already-in-family": "You already belong to a family",
     "invalid-invite": "The invitation is invalid, expired or already used",
     "already-invited": "This address has already been invited",
     "already-member": "This person is already in your family",
     "family-full": "A family can have at most 10 people, invitations included",
-    "email-not-verified": "Sign in with Google to use invitations",
+    "email-not-verified": "Sign in with Google to use invitations and join requests",
     "admin-required": "Only a family admin can do this",
     "last-admin": "The family needs at least one admin",
-    "no-family": "Create a family or join one to share data",
+    "no-family": "You need a family to share data",
     "visibility-immutable": "Access (personal/family) can't be changed after creation",
     "category-type-immutable": "A category's type can't be changed after creation",
     "account-in-use": "The account has transactions; close it instead of deleting it",
@@ -359,7 +373,12 @@
     "invalid-used-currencies": "Choose between 1 and 20 currencies",
     "default-currency-not-used": "The default currency must be one of the currencies you use",
     "unsupported-theme": "This theme isn't supported",
-    "validation-failed": "Some of what you entered isn't valid. Check the fields and try again."
+    "validation-failed": "Some of what you entered isn't valid. Check the fields and try again.",
+    "alone-in-family": "You're the only member of your family",
+    "not-alone": "Only someone alone in their family can ask to join another one",
+    "user-not-found": "Nobody has signed up with this email",
+    "already-requested": "You've already asked to join a family. Cancel that request first.",
+    "invalid-join-request": "The request is invalid, expired or already answered"
   },
   "colors": {
     "dollar": "Dollar green",

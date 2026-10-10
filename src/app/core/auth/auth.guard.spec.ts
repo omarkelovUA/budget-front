@@ -20,7 +20,7 @@ describe('auth guards', () => {
       providers: [
         provideRouter([]),
         { provide: AuthRepository, useValue: { login: () => of(SESSION) } },
-        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(null) } },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of({ id: 'f', name: 'Family', members: [] }) } },
       ],
     });
   });

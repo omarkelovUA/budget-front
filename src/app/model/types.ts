@@ -51,6 +51,26 @@ export interface IReceivedInvitation {
   expiresAt: Date;
 }
 
+// The current user's own open request to join someone else's family.
+export interface IJoinRequest {
+  id: string;
+  // Whose family: the email the user named, and that family's name.
+  email: string;
+  familyName: string;
+  createdAt: Date;
+  expiresAt: Date;
+}
+
+// An open request to join the current user's family, as its admins see it.
+export interface IIncomingJoinRequest {
+  id: string;
+  requesterId: string;
+  displayName: string;
+  email: string;
+  createdAt: Date;
+  expiresAt: Date;
+}
+
 export interface IFamily {
   id: string;
   name: string;
