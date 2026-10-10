@@ -61,6 +61,7 @@ export class TransactionForm {
   });
 
   readonly created = output();
+  readonly cancelled = output();
 
   submit() {
     if (!this.form().valid()) return;

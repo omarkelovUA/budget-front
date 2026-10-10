@@ -55,6 +55,15 @@ dialog::backdrop {
   }
 }
 
+/* A dialog's buttons, bottom right: the main action first in the DOM (focus order),
+   last on screen. */
+.dialog-actions {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
 /* Keyboard focus is always visible; mouse clicks don't get the ring. */
 :focus-visible {
   outline: 2px solid var(--color-focus);

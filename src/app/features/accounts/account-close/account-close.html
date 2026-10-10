@@ -37,7 +37,7 @@
     <p class="form-error" role="alert">{{ message }}</p>
   }
 
-  <div class="actions">
+  <div class="dialog-actions">
     <button type="button" class="btn-danger" [disabled]="!canConfirm()" (click)="confirm()">
       {{ t('accounts.closeDialog.confirm') }}
     </button>

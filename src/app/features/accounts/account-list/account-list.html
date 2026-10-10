@@ -81,19 +81,19 @@
   </ng-template>
 
   @if (isFormOpen()) {
-    <div class="form-panel card">
-      <app-account-form [account]="selectedAccount() ?? undefined" (edited)="onEdited()" />
-    </div>
+    <app-modal labelledBy="account-form-title" (closed)="closeForm()">
+      <app-account-form [account]="selectedAccount() ?? undefined" (edited)="onEdited()" (cancelled)="closeForm()" />
+    </app-modal>
   }
 
   @if (closingAccount(); as account) {
-    <div class="form-panel card">
+    <app-modal labelledBy="close-title" (closed)="closingAccount.set(null)">
       <app-account-close
         [account]="account"
         [accounts]="accountsResource.value() ?? []"
         (closed)="onClosed()"
         (cancelled)="closingAccount.set(null)"
       />
-    </div>
+    </app-modal>
   }
 </div>

@@ -59,6 +59,7 @@ export class AccountForm {
 
   readonly account = input<IAccount>();
   readonly edited = output();
+  readonly cancelled = output();
 
   private readonly familyResource = rxResource({
     params: () => this.currentUser()?.familyId ?? undefined,

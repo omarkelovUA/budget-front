@@ -80,8 +80,8 @@
   </div>
 
   @if (isFormOpen()) {
-    <div class="form-panel card">
-      <app-transaction-form (created)="onCreated()" />
-    </div>
+    <app-modal labelledBy="transaction-form-title" (closed)="isFormOpen.set(false)">
+      <app-transaction-form (created)="onCreated()" (cancelled)="isFormOpen.set(false)" />
+    </app-modal>
   }
 </div>

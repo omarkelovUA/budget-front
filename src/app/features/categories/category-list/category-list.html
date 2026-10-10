@@ -57,8 +57,8 @@
   </div>
 
   @if (isFormOpen()) {
-    <div class="form-panel card">
-      <app-category-form [category]="selectedCategory() ?? undefined" (edited)="onEdited()" />
-    </div>
+    <app-modal labelledBy="category-form-title" (closed)="closeForm()">
+      <app-category-form [category]="selectedCategory() ?? undefined" (edited)="onEdited()" (cancelled)="closeForm()" />
+    </app-modal>
   }
 </div>

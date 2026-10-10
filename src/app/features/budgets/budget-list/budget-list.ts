@@ -7,6 +7,7 @@ import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoDecimalPipe } from '@jsverse/transloco-locale';
 import { Icon } from '../../../shared/ui/icon/icon';
+import { Modal } from '../../../shared/ui/modal/modal';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { BudgetsArt } from '../../../shared/ui/illustrations/budgets-art';
 import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
@@ -14,7 +15,7 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 @Component({
   selector: 'app-budget-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, BudgetForm, VisibilityBadge, TranslocoDirective, TranslocoDecimalPipe, PageHeader, BudgetsArt, EmptyArt],
+  imports: [Icon, BudgetForm, Modal, VisibilityBadge, TranslocoDirective, TranslocoDecimalPipe, PageHeader, BudgetsArt, EmptyArt],
   templateUrl: './budget-list.html',
   styleUrl: './budget-list.css',
 })

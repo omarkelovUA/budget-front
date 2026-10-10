@@ -1,7 +1,7 @@
 <form novalidate (submit)="$event.preventDefault(); submit()" class="category-form" *transloco="let t">
   <div class="panel-header">
     <app-category-form-art />
-    <h2>{{ category()?.name ?? t('categories.add') }}</h2>
+    <h2 id="category-form-title">{{ category()?.name ?? t('categories.add') }}</h2>
   </div>
 
   <div class="field">
@@ -54,5 +54,8 @@
     <p class="form-error" role="alert">{{ message }}</p>
   }
 
-  <button type="submit" class="btn-filled" [disabled]="!form().valid()">{{ t('common.save') }}</button>
+  <div class="dialog-actions">
+    <button type="submit" class="btn-filled" [disabled]="!form().valid()">{{ t('common.save') }}</button>
+    <button type="button" class="btn-text" (click)="cancelled.emit()">{{ t('common.cancel') }}</button>
+  </div>
 </form>

@@ -4,6 +4,7 @@ import { AccountAccess, Transaction } from '../../../model/types';
 import { TransactionPage, TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
+import { pressEscape, stubDialogs } from '../../../shared/ui/modal/modal.testing';
 import { TransactionList } from './transaction-list';
 
 const tx = (id: string, editable = true, access: AccountAccess = 'owner'): Transaction => ({
@@ -23,6 +24,7 @@ describe('TransactionList', () => {
   let deleted: string[];
 
   beforeEach(() => {
+    stubDialogs();
     deleted = [];
     TestBed.configureTestingModule({
       imports: [TransactionList],
@@ -76,5 +78,27 @@ describe('TransactionList', () => {
 
     expect(deleted).toEqual(['3']);
     expect(ids(list)).toEqual(['1', '2']);
+  });
+
+  it('creates a transaction in a dialog that Cancel or Esc closes', async () => {
+    const fixture = TestBed.createComponent(TransactionList);
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+    const add = async () => {
+      (el.querySelector('app-page-header .btn-tonal') as HTMLElement).click();
+      await fixture.whenStable();
+    };
+
+    await add();
+    expect((el.querySelector('dialog') as HTMLDialogElement).open).toBe(true);
+    expect(el.querySelector('#transaction-form-title')?.textContent).toBe('Нова транзакція');
+    (el.querySelector('app-transaction-form .btn-text') as HTMLElement).click();
+    await fixture.whenStable();
+    expect(el.querySelector('dialog')).toBeNull();
+
+    await add();
+    await pressEscape(el.querySelector('dialog') as HTMLDialogElement);
+    await fixture.whenStable();
+    expect(el.querySelector('dialog')).toBeNull();
   });
 });

@@ -4,6 +4,7 @@ import { AuthRepository } from '../../../core/auth/data/auth-repository';
 import { IAccount } from '../../../model/types';
 import { FamilyRepository } from '../../family/data/family-repository';
 import { AccountRepository } from '../data/account-repository';
+import { pressEscape, stubDialogs } from '../../../shared/ui/modal/modal.testing';
 import { AccountList } from './account-list';
 
 const account = (id: string, access: IAccount['access']): IAccount => ({
@@ -20,6 +21,59 @@ const account = (id: string, access: IAccount['access']): IAccount => ({
 });
 
 describe('AccountList', () => {
+  beforeEach(() => stubDialogs());
+
+  async function render() {
+    TestBed.configureTestingModule({
+      imports: [AccountList],
+      providers: [
+        { provide: AccountRepository, useValue: { getAccounts: () => of([account('mine', 'owner')]) } },
+        { provide: AuthRepository, useValue: {} },
+        { provide: FamilyRepository, useValue: {} },
+      ],
+    });
+    const fixture = TestBed.createComponent(AccountList);
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+    const click = async (selector: string) => {
+      (el.querySelector(selector) as HTMLElement).click();
+      await fixture.whenStable();
+    };
+    return { fixture, el, click };
+  }
+
+  it('creates an account in a dialog that Cancel closes', async () => {
+    const { el, click } = await render();
+
+    await click('app-page-header .btn-tonal');
+    expect((el.querySelector('dialog') as HTMLDialogElement).open).toBe(true);
+    expect(el.querySelector('#account-form-title')?.textContent).toBe('Новий рахунок');
+
+    await click('app-account-form .btn-text');
+    expect(el.querySelector('dialog')).toBeNull();
+  });
+
+  it('edits an account in a dialog that Esc closes', async () => {
+    const { fixture, el, click } = await render();
+
+    await click('.card-select');
+    expect(el.querySelector('#account-form-title')?.textContent).toBe('mine');
+
+    await pressEscape(el.querySelector('dialog') as HTMLDialogElement);
+    await fixture.whenStable();
+    expect(el.querySelector('dialog')).toBeNull();
+  });
+
+  it('closes an account in a dialog', async () => {
+    const { el, click } = await render();
+
+    await click('.text-button');
+    expect(el.querySelector('dialog')?.getAttribute('aria-labelledby')).toBe('close-title');
+
+    await click('app-account-close .btn-text');
+    expect(el.querySelector('dialog')).toBeNull();
+  });
+
   it('groups accounts by access and offers management only for own accounts', async () => {
     TestBed.configureTestingModule({
       imports: [AccountList],

@@ -46,6 +46,7 @@ export class BudgetForm {
   });
 
   readonly created = output();
+  readonly cancelled = output();
 
   submit() {
     if (!this.form().valid()) return;

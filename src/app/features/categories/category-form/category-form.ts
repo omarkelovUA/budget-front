@@ -43,6 +43,7 @@ export class CategoryForm {
 
   readonly category = input<ICategory>();
   readonly edited = output();
+  readonly cancelled = output();
 
   constructor() {
     effect(() => {

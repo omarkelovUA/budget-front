@@ -65,8 +65,8 @@
   </div>
 
   @if (isFormOpen()) {
-    <div class="form-panel card">
-      <app-budget-form (created)="onCreated()" />
-    </div>
+    <app-modal labelledBy="budget-form-title" (closed)="isFormOpen.set(false)">
+      <app-budget-form (created)="onCreated()" (cancelled)="isFormOpen.set(false)" />
+    </app-modal>
   }
 </div>

@@ -6,6 +6,7 @@ import { CategoryForm } from '../category-form/category-form';
 import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-badge';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { Icon } from '../../../shared/ui/icon/icon';
+import { Modal } from '../../../shared/ui/modal/modal';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { CategoriesArt } from '../../../shared/ui/illustrations/categories-art';
 import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
@@ -13,7 +14,7 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 @Component({
   selector: 'app-category-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, CategoryForm, VisibilityBadge, TranslocoDirective, PageHeader, CategoriesArt, EmptyArt],
+  imports: [Icon, CategoryForm, Modal, VisibilityBadge, TranslocoDirective, PageHeader, CategoriesArt, EmptyArt],
   templateUrl: './category-list.html',
   styleUrl: './category-list.css',
 })
@@ -45,9 +46,13 @@ export class CategoryList {
     });
   }
 
-  onEdited() {
+  closeForm() {
     this.isFormOpen.set(false);
     this.selectedCategory.set(null);
+  }
+
+  onEdited() {
+    this.closeForm();
     this.categoriesResource.reload();
   }
 }

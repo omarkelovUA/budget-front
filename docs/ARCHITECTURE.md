@@ -260,8 +260,13 @@ workspace's `.docs/redesign.md` (M17).
     `shared/ui/illustrations`, whose template is an `.svg` file (320×200, `aria-hidden`,
     no text). It's coloured only through the classes in `illustration.css`, so it
     follows the hue and the theme.
-  - **Forms and lists:** form panels and the settings dialog show a small art in their
+  - **Forms and lists:** form dialogs and the settings dialog show a small art in their
     header, and empty lists show `app-empty-art`. `screens.spec.ts` checks every screen.
+- **Form dialogs:** create and edit forms (and closing an account) open in
+  `<app-modal labelledBy="<heading id>">` (`shared/ui/modal`), rendered by the list with
+  `@if`. It's a native modal `<dialog>`: it opens when rendered, Esc emits `(closed)`, and
+  removing it closes it, so focus goes back to the opener. Each form emits `cancelled`
+  from its *Cancel* button; the buttons sit in `.dialog-actions` (main action rightmost).
 - **Icons** are drawn by `app-icon` as a CSS mask filled with `currentColor`, so they
   follow the theme. Don't use `<img>` for them.
 - **Contrast:** `palette.spec.ts` checks every hue (white text on both gradient stops,

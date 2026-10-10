@@ -11,6 +11,7 @@ import { AccountForm } from '../account-form/account-form';
 import { FamilyTransfers } from '../../family-transfers/family-transfers/family-transfers';
 import { AuthState } from '../../../core/auth/auth-state';
 import { Icon } from '../../../shared/ui/icon/icon';
+import { Modal } from '../../../shared/ui/modal/modal';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { AccountsArt } from '../../../shared/ui/illustrations/accounts-art';
 import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
@@ -21,6 +22,7 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
   imports: [
     Icon,
     AccountForm,
+    Modal,
     AccountClose,
     AccessBadge,
     NgTemplateOutlet,
@@ -95,9 +97,13 @@ export class AccountList {
     this.accountsResource.reload();
   }
 
-  onEdited() {
+  closeForm() {
     this.isFormOpen.set(false);
     this.selectedAccount.set(null);
+  }
+
+  onEdited() {
+    this.closeForm();
     this.accountsResource.reload();
   }
 }
