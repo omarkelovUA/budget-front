@@ -1,4 +1,6 @@
 import { TestBed } from '@angular/core/testing';
+import { faviconSvg } from './favicon';
+import { paletteFor } from './palette';
 import { ThemeService } from './theme';
 
 describe('ThemeService', () => {
@@ -81,5 +83,16 @@ describe('ThemeService', () => {
     themeService.restoreHue();
 
     expect(primaryHue()).toBe('150');
+  });
+
+  it("gives the browser tab's icon the colour too", () => {
+    const icon = document.createElement('link');
+    icon.rel = 'icon';
+    document.head.append(icon);
+
+    TestBed.inject(ThemeService).useHue(350);
+
+    expect(decodeURIComponent(icon.href)).toBe(`data:image/svg+xml,${faviconSvg(paletteFor(350))}`);
+    icon.remove();
   });
 });

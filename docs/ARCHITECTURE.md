@@ -252,6 +252,11 @@ workspace's `.docs/redesign.md` (M17).
   `ThemeService.useHue` sets those inputs on `<html>`, and every token in
   `src/styles/theme.css` is derived from them. `previewHue`/`restoreHue` back the settings
   dialog's live preview.
+- **Tab icon:** the app bar's brand mark (a white ring around a soft glow) on a rounded
+  tile of the primary gradient, from `core/theme/favicon.ts`. `public/favicon.svg` is it
+  for the default hue (a spec keeps them equal); `ThemeService` swaps in the user's colour
+  as a data URL whenever the hue changes. Its colours are sRGB hex (`toHex`), since
+  favicons don't reliably take `oklch()`.
 - **Tokens:** Material 3 roles, all OKLCH:
   - primary, secondary container, tertiary (hue + 60);
   - surface containers from lowest to highest;

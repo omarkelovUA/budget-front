@@ -1,4 +1,5 @@
 import { DOCUMENT, inject, Injectable, signal } from '@angular/core';
+import { faviconSvg } from './favicon';
 import { DEFAULT_HUE, isHue, paletteFor } from './palette';
 
 export const THEMES = ['light', 'dark', 'system'] as const;
@@ -61,7 +62,8 @@ export class ThemeService {
     this.applyHue(this.committedHue());
   }
 
-  // Sets the inputs src/styles/theme.css derives every colour token from.
+  // Sets the inputs src/styles/theme.css derives every colour token from, and gives the
+  // browser tab's icon the same colour.
   private applyHue(hue: number): void {
     const palette = paletteFor(hue);
     const style = this.document.documentElement.style;
@@ -69,6 +71,8 @@ export class ThemeService {
     style.setProperty('--primary-c', String(palette.c));
     style.setProperty('--tertiary-c', String(palette.tertiaryC));
     style.setProperty('--primary-l', `${Math.round(palette.l * 100)}%`);
+    const icon = this.document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (icon) icon.href = `data:image/svg+xml,${encodeURIComponent(faviconSvg(palette))}`;
   }
 
   private savedHue(): number | null {

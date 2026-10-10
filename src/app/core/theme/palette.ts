@@ -29,7 +29,7 @@ export interface PaletteInputs {
 
 const MAX_CHROMA = 0.18;
 const START_LIGHTNESS = 0.54;
-const TERTIARY_SHIFT = 60;
+export const TERTIARY_SHIFT = 60;
 const AA = 4.5;
 const WHITE: Oklch = { l: 1, c: 0, h: 0 };
 
@@ -70,6 +70,18 @@ function maxChroma(l: number, h: number): number {
     else high = mid;
   }
   return low;
+}
+
+// #rrggbb, clipped to sRGB: for places that can't take oklch(), like the tab icon.
+export function toHex(color: Oklch): string {
+  const encode = (channel: number) => {
+    const linear = Math.min(1, Math.max(0, channel));
+    const srgb = linear <= 0.0031308 ? 12.92 * linear : 1.055 * linear ** (1 / 2.4) - 0.055;
+    return Math.round(srgb * 255)
+      .toString(16)
+      .padStart(2, '0');
+  };
+  return `#${toLinearSrgb(color).map(encode).join('')}`;
 }
 
 function luminance(color: Oklch): number {
