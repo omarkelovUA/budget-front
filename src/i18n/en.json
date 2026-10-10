@@ -246,6 +246,7 @@
     "received": {
       "title": "Invitations for you",
       "details": "Invited by {{name}} · members: {{count}} · valid until {{date}}",
+      "switchTitle": "Join «{{name}}»?",
       "switchWarning": "You will leave your current family. If you are its last member, it will be deleted.",
       "confirmSwitch": "Yes, switch",
       "accept": "Accept",
@@ -271,7 +272,8 @@
     "inviteEmail": "Member's email",
     "invite": "Invite",
     "inviteTitle": "Invite a family member",
-    "leaveConfirm": "Leave the family? Shared data will no longer be available to you.",
+    "leaveTitle": "Leave the family?",
+    "leaveConfirm": "Shared data will no longer be available to you.",
     "leaveYes": "Yes, leave",
     "leave": "Leave family",
     "subtitle": "The people you share accounts, categories and budgets with."

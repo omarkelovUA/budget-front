@@ -5,7 +5,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { email, form, FormField, required } from '@angular/forms/signals';
 import { Observable } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
-import { IFamily } from '../../../model/types';
+import { IFamily, IReceivedInvitation } from '../../../model/types';
 import { FamilyRepository } from '../data/family-repository';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { FamilyArt } from '../../../shared/ui/illustrations/family-art';
@@ -62,15 +62,15 @@ export class FamilyPage {
     () => (this.familyResource.value()?.members.length ?? 0) + (this.invitationsResource.value()?.length ?? 0),
   );
 
-  // Leaving and switching families take two clicks: the first one only asks for confirmation.
-  protected readonly confirmingLeave = signal(false);
-  protected readonly confirmingAccept = signal<string | null>(null);
   protected readonly pending = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
-  // The open form dialog; its errors show inside it.
-  protected readonly dialog = signal<'create' | 'invite' | null>(null);
+  // The open dialog; its errors show inside it. Leaving and switching families are
+  // confirmed in one.
+  protected readonly dialog = signal<'create' | 'invite' | 'leave' | null>(null);
+  // The invitation whose family the user is asked to switch to.
+  protected readonly switchTo = signal<IReceivedInvitation | null>(null);
 
-  openDialog(dialog: 'create' | 'invite') {
+  openDialog(dialog: 'create' | 'invite' | 'leave') {
     this.errorMessage.set(null);
     this.dialog.set(dialog);
   }
@@ -79,6 +79,7 @@ export class FamilyPage {
   closeDialog() {
     this.errorMessage.set(null);
     this.dialog.set(null);
+    this.switchTo.set(null);
   }
 
   createFamily() {
@@ -102,14 +103,21 @@ export class FamilyPage {
     this.run(this.familyRepository.revokeInvitation(id), () => this.invitationsResource.reload());
   }
 
-  acceptInvitation(id: string) {
+  acceptInvitation(invitation: IReceivedInvitation) {
     // Joining another family means leaving the current one, so ask first.
-    if (this.currentUser()?.familyId && this.confirmingAccept() !== id) {
-      this.confirmingAccept.set(id);
+    if (this.currentUser()?.familyId) {
+      this.errorMessage.set(null);
+      this.switchTo.set(invitation);
       return;
     }
-    this.confirmingAccept.set(null);
-    this.enterFamily(this.familyRepository.acceptInvitation(id), () => this.receivedResource.reload());
+    this.joinFamily(invitation.id);
+  }
+
+  joinFamily(id: string) {
+    this.enterFamily(this.familyRepository.acceptInvitation(id), () => {
+      this.closeDialog();
+      this.receivedResource.reload();
+    });
   }
 
   declineInvitation(id: string) {
@@ -121,14 +129,10 @@ export class FamilyPage {
   }
 
   leaveFamily() {
-    this.run(
-      this.familyRepository.leaveFamily(),
-      () => {
-        this.confirmingLeave.set(false);
-        this.authState.setFamilyId(null);
-      },
-      () => this.confirmingLeave.set(false),
-    );
+    this.run(this.familyRepository.leaveFamily(), () => {
+      this.closeDialog();
+      this.authState.setFamilyId(null);
+    });
   }
 
   private enterFamily(request$: Observable<IFamily>, reset: () => void) {
@@ -138,7 +142,7 @@ export class FamilyPage {
     });
   }
 
-  private run<T>(request$: Observable<T>, onSuccess: (value: T) => void, onError?: () => void) {
+  private run<T>(request$: Observable<T>, onSuccess: (value: T) => void) {
     this.pending.set(true);
     this.errorMessage.set(null);
     request$.subscribe({
@@ -148,7 +152,6 @@ export class FamilyPage {
       },
       error: (err: Error) => {
         this.pending.set(false);
-        onError?.();
         this.errorMessage.set(err.message);
       },
     });

@@ -37,23 +37,15 @@
               </span>
             </div>
             <div class="row-actions">
-              @if (confirmingAccept() === invitation.id) {
-                <span class="warning">{{ t('family.received.switchWarning') }}</span>
-                <button type="button" class="btn-filled" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">
-                  {{ t('family.received.confirmSwitch') }}
-                </button>
-                <button type="button" class="btn-outlined" (click)="confirmingAccept.set(null)">{{ t('common.cancel') }}</button>
-              } @else {
-                <button type="button" class="btn-filled" [disabled]="pending()" (click)="acceptInvitation(invitation.id)">{{ t('family.received.accept') }}</button>
-                <button
-                  type="button"
-                  class="btn-outlined"
-                  [disabled]="pending()"
-                  (click)="declineInvitation(invitation.id)"
-                >
-                  {{ t('family.received.decline') }}
-                </button>
-              }
+              <button type="button" class="btn-filled" [disabled]="pending()" (click)="acceptInvitation(invitation)">{{ t('family.received.accept') }}</button>
+              <button
+                type="button"
+                class="btn-outlined"
+                [disabled]="pending()"
+                (click)="declineInvitation(invitation.id)"
+              >
+                {{ t('family.received.decline') }}
+              </button>
             </div>
           </div>
         }
@@ -124,20 +116,14 @@
           }
 
           <div class="leave-row">
-            @if (confirmingLeave()) {
-              <span>{{ t('family.leaveConfirm') }}</span>
-              <button type="button" class="btn-danger" [disabled]="pending()" (click)="leaveFamily()">{{ t('family.leaveYes') }}</button>
-              <button type="button" class="btn-text" (click)="confirmingLeave.set(false)">{{ t('common.cancel') }}</button>
-            } @else {
-              <button type="button" class="btn-outlined" (click)="confirmingLeave.set(true)">{{ t('family.leave') }}</button>
-            }
+            <button type="button" class="btn-outlined" (click)="openDialog('leave')">{{ t('family.leave') }}</button>
           </div>
         </section>
       }
     }
   }
 
-  @if (!dialog() && errorMessage(); as message) {
+  @if (!dialog() && !switchTo() && errorMessage(); as message) {
     <p class="form-error" role="alert">{{ message }}</p>
   }
 
@@ -183,6 +169,46 @@
           <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
         </div>
       </form>
+    </app-modal>
+  }
+
+  @if (dialog() === 'leave') {
+    <app-modal labelledBy="family-leave-title" (closed)="closeDialog()">
+      <div class="dialog-form">
+        <div class="panel-header">
+          <app-family-art />
+          <h2 id="family-leave-title">{{ t('family.leaveTitle') }}</h2>
+        </div>
+        <p>{{ t('family.leaveConfirm') }}</p>
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          <button type="button" class="btn-danger" [disabled]="pending()" (click)="leaveFamily()">{{ t('family.leaveYes') }}</button>
+          <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
+        </div>
+      </div>
+    </app-modal>
+  }
+
+  @if (switchTo(); as invitation) {
+    <app-modal labelledBy="family-switch-title" (closed)="closeDialog()">
+      <div class="dialog-form">
+        <div class="panel-header">
+          <app-family-art />
+          <h2 id="family-switch-title">{{ t('family.received.switchTitle', { name: invitation.familyName }) }}</h2>
+        </div>
+        <p>{{ t('family.received.switchWarning') }}</p>
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          <button type="button" class="btn-danger" [disabled]="pending()" (click)="joinFamily(invitation.id)">
+            {{ t('family.received.confirmSwitch') }}
+          </button>
+          <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
+        </div>
+      </div>
     </app-modal>
   }
 </div>

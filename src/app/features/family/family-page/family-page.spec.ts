@@ -26,12 +26,14 @@ const INVITATION: IReceivedInvitation = {
 describe('FamilyPage', () => {
   let accepted: string[];
   let invited: string[];
+  let leaveFails: boolean;
 
   beforeEach(() => stubDialogs());
 
   async function render(currentFamily: IFamily | null, received: IReceivedInvitation[] | null) {
     accepted = [];
     invited = [];
+    leaveFails = false;
     TestBed.configureTestingModule({
       imports: [FamilyPage],
       providers: [
@@ -50,6 +52,7 @@ describe('FamilyPage', () => {
               return of(NEW_FAMILY);
             },
             createFamily: (name: string) => of({ ...NEW_FAMILY, name }),
+            leaveFamily: () => (leaveFails ? throwError(() => new Error('Last admin')) : of(undefined)),
             invite: (email: string) => {
               invited.push(email);
               return email.endsWith('@taken.com') ? throwError(() => new Error('Already invited')) : of({});
@@ -74,12 +77,25 @@ describe('FamilyPage', () => {
     buttons(el)[0].click();
     await fixture.whenStable();
     expect(accepted).toEqual([]);
-    expect(el.querySelector('.warning')?.textContent).toContain('покинете поточну сім');
+    expect(el.querySelector('#family-switch-title')?.textContent).toBe('Приєднатися до «Smiths»?');
+    expect(el.querySelector('app-modal')?.textContent).toContain('покинете поточну сім');
+
+    await click(fixture, 'app-modal .btn-danger');
+    expect(accepted).toEqual(['inv-1']);
+    expect(TestBed.inject(AuthState).currentUser()?.familyId).toBe('new');
+    expect(el.querySelector('app-modal')).toBeNull();
+  });
+
+  it('lets a family member back out of switching families', async () => {
+    const fixture = await render(OLD_FAMILY, [INVITATION]);
+    const el = fixture.nativeElement as HTMLElement;
 
     buttons(el)[0].click();
     await fixture.whenStable();
-    expect(accepted).toEqual(['inv-1']);
-    expect(TestBed.inject(AuthState).currentUser()?.familyId).toBe('new');
+    await click(fixture, 'app-modal .btn-text');
+
+    expect(accepted).toEqual([]);
+    expect(el.querySelector('app-modal')).toBeNull();
   });
 
   it('accepts right away for a user without a family', async () => {
@@ -159,5 +175,33 @@ describe('FamilyPage', () => {
 
     expect(invited).toEqual(['carol@x.com']);
     expect(el.querySelector('dialog')).toBeNull();
+  });
+
+  it('confirms leaving the family in a dialog', async () => {
+    const fixture = await render(ADMIN_FAMILY, []);
+    TestBed.inject(AuthState).setFamilyId('f');
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+
+    await click(fixture, '.leave-row .btn-outlined');
+    expect(el.querySelector('#family-leave-title')?.textContent).toBe("Покинути сім'ю?");
+
+    await click(fixture, 'app-modal .btn-danger');
+    expect(el.querySelector('app-modal')).toBeNull();
+    expect(TestBed.inject(AuthState).currentUser()?.familyId).toBeNull();
+  });
+
+  it('keeps the leave dialog open with the error when leaving fails', async () => {
+    const fixture = await render(ADMIN_FAMILY, []);
+    TestBed.inject(AuthState).setFamilyId('f');
+    leaveFails = true;
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+
+    await click(fixture, '.leave-row .btn-outlined');
+    await click(fixture, 'app-modal .btn-danger');
+
+    expect(el.querySelector('app-modal .form-error')?.textContent).toContain('Last admin');
+    expect(TestBed.inject(AuthState).currentUser()?.familyId).toBe('f');
   });
 });

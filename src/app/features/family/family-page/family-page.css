@@ -21,6 +21,10 @@
   gap: 16px;
 }
 
+.dialog-form p {
+  margin: 0;
+}
+
 .dialog-form .hint {
   margin: 4px 0 0;
 }
@@ -140,9 +144,4 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 8px;
-}
-
-.warning {
-  color: var(--color-warning);
-  font-size: 0.85rem;
 }
