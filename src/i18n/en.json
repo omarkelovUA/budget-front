@@ -42,7 +42,8 @@
       "owner": "Mine",
       "shared": "Shared",
       "visible": "View only"
-    }
+    },
+    "dragAria": "Move {{name}}: drag it, or use the arrow keys"
   },
   "icons": {
     "card": "Card",

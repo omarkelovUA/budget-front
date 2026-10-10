@@ -31,6 +31,13 @@ export class HttpCategoryRepository extends CategoryRepository {
     );
   }
 
+  reorderCategories(ids: string[]): Observable<void> {
+    return this.http.put<null>(`${CATEGORIES}/order`, { ids }).pipe(
+      map(() => undefined),
+      withUserErrors(),
+    );
+  }
+
   shareCategory(id: string): Observable<ICategory> {
     return this.http.post<ICategory>(`${CATEGORIES}/${id}/share`, null).pipe(withUserErrors());
   }

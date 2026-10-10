@@ -309,3 +309,22 @@ fieldset.field {
   margin: 0;
   font: var(--type-title);
 }
+
+/* Drag and drop (CDK): the dragged card floats at the top elevation, its slot stays as a
+   faint placeholder, and the others slide aside. */
+.cdk-drag-preview {
+  box-shadow: var(--elevation-3);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.35;
+}
+
+.cdk-drag-animating,
+.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
+  transition: transform 200ms ease;
+}
+
+body:has(.cdk-drag-preview) {
+  cursor: grabbing;
+}

@@ -105,4 +105,41 @@ describe('AccountList', () => {
     expect(groups[0].textContent).toContain('Доступ: Bob');
     expect(groups[1].textContent).toContain('Власник: Alice');
   });
+
+  it('moves an account within its group with the arrow keys and saves the order', async () => {
+    const saved: string[][] = [];
+    TestBed.configureTestingModule({
+      imports: [AccountList],
+      providers: [
+        {
+          provide: AccountRepository,
+          useValue: {
+            getAccounts: () => of([account('a', 'owner'), account('b', 'owner'), account('joint', 'shared')]),
+            reorderAccounts: (ids: string[]) => (saved.push(ids), of(undefined)),
+          },
+        },
+        { provide: AuthRepository, useValue: {} },
+        { provide: FamilyRepository, useValue: {} },
+        { provide: FamilyTransferRepository, useValue: {} },
+      ],
+    });
+    const fixture = TestBed.createComponent(AccountList);
+    await fixture.whenStable();
+    const el = fixture.nativeElement as HTMLElement;
+    const names = () => Array.from(el.querySelectorAll('.account-name')).map((n) => n.textContent);
+    const handle = (i: number) => el.querySelectorAll<HTMLElement>('app-drag-handle')[i];
+
+    expect(handle(0).getAttribute('aria-label')).toBe(
+      'Перемістити «a»: перетягніть або скористайтеся клавішами зі стрілками',
+    );
+    handle(0).dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowDown' }));
+    await fixture.whenStable();
+    expect(names()).toEqual(['b', 'a', 'joint']);
+    expect(saved).toEqual([['b', 'a', 'joint']]);
+
+    // Not across groups: the last one of "mine" stays put.
+    handle(1).dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight' }));
+    await fixture.whenStable();
+    expect(saved.length).toBe(1);
+  });
 });

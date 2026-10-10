@@ -96,6 +96,11 @@ The backend enforces these; the UI only has to present them correctly:
   invitations included.
 - A category's or budget's visibility is fixed in the edit form, and so is a category's
   income/expense type.
+- **Custom order** (M24): accounts (within their group) and categories are ordered by
+  dragging a card's grip (`shared/ui/drag-handle`, Angular CDK drag-drop); the grip also
+  moves its card with the arrow keys. The new order shows at once and is saved whole
+  (`reorderAccounts` / `reorderCategories`); if saving fails, the list reloads with the
+  error. The order is the user's own, and pickers follow it.
 - **Family categories** (M22) are the family's: every member uses them, only the admin
   edits, deletes or hides them (other members see them read-only on the categories
   page). Anyone can *Share with family* their own category. Creating one, the admin

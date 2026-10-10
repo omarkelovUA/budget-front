@@ -155,3 +155,8 @@
 .text-button:hover {
   color: var(--color-danger);
 }
+
+/* The grip sits close to the card's edge and its content. */
+.account-card app-drag-handle {
+  margin: 0 -8px;
+}

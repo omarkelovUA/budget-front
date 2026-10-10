@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
@@ -12,13 +13,14 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Modal } from '../../../shared/ui/modal/modal';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
+import { DragHandle } from '../../../shared/ui/drag-handle/drag-handle';
 import { CategoriesArt } from '../../../shared/ui/illustrations/categories-art';
 import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 
 @Component({
   selector: 'app-category-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, CategoryForm, Modal, NgTemplateOutlet, VisibilityBadge, TranslocoDirective, PageHeader, CategoriesArt, EmptyArt],
+  imports: [Icon, CategoryForm, Modal, NgTemplateOutlet, CdkDropList, CdkDrag, DragHandle, VisibilityBadge, TranslocoDirective, PageHeader, CategoriesArt, EmptyArt],
   templateUrl: './category-list.html',
   styleUrl: './category-list.css',
 })
@@ -62,6 +64,25 @@ export class CategoryList {
 
   deleteCategory(category: ICategory) {
     this.run(this.categoryRepository.deleteCategory(category.id));
+  }
+
+  dropCategory(event: Pick<CdkDragDrop<unknown>, 'previousIndex' | 'currentIndex'>) {
+    this.moveCategory(event.previousIndex, event.currentIndex);
+  }
+
+  // Shown at once and saved as the whole order.
+  moveCategory(from: number, to: number) {
+    const categories = [...(this.categoriesResource.value() ?? [])];
+    if (from === to || to < 0 || to >= categories.length) return;
+    moveItemInArray(categories, from, to);
+    this.actionError.set(null);
+    this.categoriesResource.set(categories);
+    this.categoryRepository.reorderCategories(categories.map((category) => category.id)).subscribe({
+      error: (err: Error) => {
+        this.actionError.set(err.message);
+        this.categoriesResource.reload();
+      },
+    });
   }
 
   shareCategory(category: ICategory) {

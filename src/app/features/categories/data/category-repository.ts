@@ -11,6 +11,9 @@ export abstract class CategoryRepository {
 
   abstract deleteCategory(id: string): Observable<boolean>;
 
+  // The user's own order of the categories they see (whole list, by id).
+  abstract reorderCategories(ids: string[]): Observable<void>;
+
   // Makes the user's own category a family one; other members' namesakes merge into it.
   abstract shareCategory(id: string): Observable<ICategory>;
 

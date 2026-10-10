@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoCurrencyPipe } from '@jsverse/transloco-locale';
@@ -12,6 +13,7 @@ import { FamilyTransfers } from '../../family-transfers/family-transfers/family-
 import { Icon } from '../../../shared/ui/icon/icon';
 import { Modal } from '../../../shared/ui/modal/modal';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
+import { DragHandle } from '../../../shared/ui/drag-handle/drag-handle';
 import { AccountsArt } from '../../../shared/ui/illustrations/accounts-art';
 import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 
@@ -29,6 +31,9 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
     TranslocoDirective,
     TranslocoCurrencyPipe,
     PageHeader,
+    CdkDropList,
+    CdkDrag,
+    DragHandle,
     AccountsArt,
     EmptyArt,
   ],
@@ -83,6 +88,27 @@ export class AccountList {
         else this.accountsResource.reload();
       },
       error: (err: Error) => this.actionError.set(err.message),
+    });
+  }
+
+  dropAccount(groupKey: string, event: Pick<CdkDragDrop<unknown>, 'previousIndex' | 'currentIndex'>) {
+    this.moveAccount(groupKey, event.previousIndex, event.currentIndex);
+  }
+
+  // Within its group (mine, shared, visible); shown at once and saved as the whole order.
+  moveAccount(groupKey: string, from: number, to: number) {
+    const groups = this.groups().map((group) => ({ ...group, accounts: [...group.accounts] }));
+    const accounts = groups.find((group) => group.key === groupKey)!.accounts;
+    if (from === to || to < 0 || to >= accounts.length) return;
+    moveItemInArray(accounts, from, to);
+    const ordered = groups.flatMap((group) => group.accounts);
+    this.actionError.set(null);
+    this.accountsResource.set(ordered);
+    this.accountRepository.reorderAccounts(ordered.map((account) => account.id)).subscribe({
+      error: (err: Error) => {
+        this.actionError.set(err.message);
+        this.accountsResource.reload();
+      },
     });
   }
 

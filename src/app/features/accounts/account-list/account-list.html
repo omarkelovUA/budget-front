@@ -28,9 +28,11 @@
       @for (group of groups(); track group.key) {
         <section class="account-group" [attr.aria-label]="t('accounts.groups.' + group.key)">
           <h2>{{ t('accounts.groups.' + group.key) }}</h2>
-          <div class="accounts-grid">
-            @for (acc of group.accounts; track acc.id) {
-              <div class="account-card card" [class.active]="selectedAccount()?.id === acc.id" [class.readonly]="acc.access !== 'owner'">
+          <div class="accounts-grid" cdkDropList cdkDropListOrientation="mixed" [cdkDropListData]="group.accounts"
+               (cdkDropListDropped)="dropAccount(group.key, $event)">
+            @for (acc of group.accounts; track acc.id; let i = $index) {
+              <div class="account-card card" cdkDrag [class.active]="selectedAccount()?.id === acc.id" [class.readonly]="acc.access !== 'owner'">
+                <app-drag-handle [label]="t('common.dragAria', { name: acc.name })" (move)="moveAccount(group.key, i, i + $event)" />
                 @if (acc.access === 'owner') {
                   <button type="button" class="card-select" (click)="selectAccount(acc)"
                           [attr.aria-label]="t('accounts.editAria', { name: acc.name })">

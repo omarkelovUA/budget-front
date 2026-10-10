@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { FamilyRole, ICategory, IFamily } from '../../../model/types';
 import { AuthState } from '../../../core/auth/auth-state';
 import { AuthRepository } from '../../../core/auth/data/auth-repository';
@@ -22,12 +22,14 @@ describe('CategoryList', () => {
   let updated: ICategory[];
   let calls: string[];
   let role: FamilyRole;
+  let failOrder: boolean;
 
   beforeEach(() => {
     stubDialogs();
     updated = [];
     calls = [];
     role = 'admin';
+    failOrder = false;
     TestBed.configureTestingModule({
       imports: [CategoryList],
       providers: [
@@ -35,6 +37,8 @@ describe('CategoryList', () => {
           provide: CategoryRepository,
           useValue: {
             getCategories: () => of([FOOD, RENT]),
+            reorderCategories: (ids: string[]) =>
+              (calls.push(`order ${ids.join(' ')}`), failOrder ? throwError(() => new Error('Nope')) : of(undefined)),
             shareCategory: (id: string) => (calls.push(`share ${id}`), of(FOOD)),
             hideCategory: (id: string) => (calls.push(`hide ${id}`), of(RENT)),
             updateCategory: (category: ICategory) => {
@@ -119,5 +123,26 @@ describe('CategoryList', () => {
     (rent.querySelector('.text-button') as HTMLButtonElement).click();
 
     expect(calls).toEqual(['hide c2']);
+  });
+
+  it('saves a dropped category in its new place', async () => {
+    const { fixture, el } = await render();
+
+    fixture.componentInstance.dropCategory({ previousIndex: 1, currentIndex: 0 });
+    await fixture.whenStable();
+
+    expect(calls).toEqual(['order c2 c1']);
+    expect(Array.from(el.querySelectorAll('.category-name')).map((n) => n.textContent)).toEqual(['Rent', 'Food']);
+  });
+
+  it('puts the order back and says why when saving fails', async () => {
+    failOrder = true;
+    const { fixture, el } = await render();
+
+    fixture.componentInstance.moveCategory(0, 1);
+    await fixture.whenStable();
+
+    expect(el.querySelector('.form-error')?.textContent).toContain('Nope');
+    expect(Array.from(el.querySelectorAll('.category-name')).map((n) => n.textContent)).toEqual(['Food', 'Rent']);
   });
 });

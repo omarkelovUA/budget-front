@@ -126,3 +126,8 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* The grip sits close to the card's edge and its content. */
+.category-card app-drag-handle {
+  margin: 0 -8px;
+}

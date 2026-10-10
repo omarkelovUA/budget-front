@@ -31,6 +31,13 @@ export class HttpAccountRepository extends AccountRepository {
     );
   }
 
+  reorderAccounts(ids: string[]): Observable<void> {
+    return this.http.put<null>(`${ACCOUNTS}/order`, { ids }).pipe(
+      map(() => undefined),
+      withUserErrors(),
+    );
+  }
+
   closeAccount(id: string, targetAccountId: string | null): Observable<IAccount> {
     return this.http.post<IAccount>(`${ACCOUNTS}/${id}/close`, { targetAccountId }).pipe(withUserErrors());
   }

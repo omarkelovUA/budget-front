@@ -25,10 +25,12 @@
     }
 
     @else {
-      <div class="categories-grid">
-        @for (cat of categoriesResource.value(); track cat.id) {
-          <div class="category-card card" [class.active]="selectedCategory()?.id === cat.id"
+      <div class="categories-grid" cdkDropList cdkDropListOrientation="mixed"
+           [cdkDropListData]="categoriesResource.value()" (cdkDropListDropped)="dropCategory($event)">
+        @for (cat of categoriesResource.value(); track cat.id; let i = $index) {
+          <div class="category-card card" cdkDrag [class.active]="selectedCategory()?.id === cat.id"
                [class.readonly]="!canManage(cat)">
+            <app-drag-handle [label]="t('common.dragAria', { name: cat.name })" (move)="moveCategory(i, i + $event)" />
             @if (canManage(cat)) {
               <button type="button" class="card-select" (click)="selectCategory(cat)"
                       [attr.aria-label]="t('categories.editAria', { name: cat.name })">

@@ -13,6 +13,9 @@ export abstract class AccountRepository {
   // Only accounts without transactions; others have to be closed.
   abstract deleteAccount(id: string): Observable<boolean>;
 
+  // The user's own order of the open accounts they see (whole list, by id).
+  abstract reorderAccounts(ids: string[]): Observable<void>;
+
   // Moves a non-zero balance to targetAccountId (same currency) and archives the account.
   abstract closeAccount(id: string, targetAccountId: string | null): Observable<IAccount>;
 }
