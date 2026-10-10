@@ -2,6 +2,11 @@
   <div class="panel-header">
     <app-family-transfers-art />
     <h2 id="in-transit-title">{{ t('familyTransfers.title') }}</h2>
+    @if (recipients().length > 0) {
+      <button type="button" class="btn-tonal send-button" [disabled]="pending()" (click)="startSend()">
+        <span aria-hidden="true">+</span> {{ t('familyTransfers.send.submit') }}
+      </button>
+    }
   </div>
 
   @if (transfersResource.value(); as transfers) {
@@ -19,72 +24,99 @@
               {{ t('familyTransfers.' + group.mode) }}
             </button>
           </div>
-          @if (withdrawing()?.transfer?.id === transfer.id) {
-            <div class="withdraw-panel">
-              @if (targetsFor(transfer).length === 0) {
-                <p class="form-error" role="alert">{{ t('familyTransfers.noTarget', { currency: transfer.currency }) }}</p>
-              } @else {
-                <label>
-                  {{ t('familyTransfers.toAccount') }}
-                  <select [value]="targetId()" (change)="targetId.set($any($event.target).value)">
-                    @for (account of targetsFor(transfer); track account.id) {
-                      <option [value]="account.id">{{ account.name }}</option>
-                    }
-                  </select>
-                </label>
-                <label>
-                  {{ t('familyTransfers.amountOptional') }}
-                  <input
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    [value]="withdrawAmount()"
-                    (input)="withdrawAmount.set($any($event.target).value)"
-                  />
-                </label>
-                <button type="button" class="btn-filled" [disabled]="pending()" (click)="confirmWithdraw()">{{ t('familyTransfers.confirm') }}</button>
-              }
-              <button type="button" class="btn-text" (click)="withdrawing.set(null)">{{ t('common.cancel') }}</button>
-            </div>
-          }
         }
       }
     }
   }
 
-  @if (recipients().length > 0) {
-    <form novalidate class="send-form" (submit)="$event.preventDefault(); send()">
-      <h3>{{ t('familyTransfers.send.title') }}</h3>
-      <label>
-        {{ t('familyTransfers.send.fromAccount') }}
-        <select [formField]="sendForm.fromAccountId">
-          <option value="" disabled>{{ t('common.chooseAccount') }}</option>
-          @for (account of ownAccounts(); track account.id) {
-            <option [value]="account.id">
-              {{ account.name }} ({{ account.balance | translocoCurrency: 'symbol' : {} : account.currency }})
-            </option>
+  @if (withdrawing(); as active) {
+    <app-modal labelledBy="withdraw-title" (closed)="closeDialog()">
+      <form novalidate class="dialog-form" (submit)="$event.preventDefault(); confirmWithdraw()">
+        <div class="panel-header">
+          <app-family-transfers-art />
+          <h2 id="withdraw-title">{{ t('familyTransfers.' + active.mode) }}</h2>
+        </div>
+        <p>
+          {{ t('familyTransfers.' + (active.mode === 'collect' ? 'from' : 'to')) }}:
+          <strong>{{ active.transfer.counterpart.displayName }}</strong> ·
+          {{ active.transfer.amount | translocoCurrency: 'symbol' : {} : active.transfer.currency }}
+        </p>
+        @if (targetsFor(active.transfer).length === 0) {
+          <p class="form-error" role="alert">{{ t('familyTransfers.noTarget', { currency: active.transfer.currency }) }}</p>
+        } @else {
+          <div class="field">
+            <label for="withdraw-target">{{ t('familyTransfers.toAccount') }}</label>
+            <select id="withdraw-target" [value]="targetId()" (change)="targetId.set($any($event.target).value)">
+              @for (account of targetsFor(active.transfer); track account.id) {
+                <option [value]="account.id">{{ account.name }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label for="withdraw-amount">{{ t('familyTransfers.amountOptional') }}</label>
+            <input
+              id="withdraw-amount"
+              type="number"
+              min="0.01"
+              step="0.01"
+              [value]="withdrawAmount()"
+              (input)="withdrawAmount.set($any($event.target).value)"
+            />
+          </div>
+        }
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          @if (targetsFor(active.transfer).length > 0) {
+            <button type="submit" class="btn-filled" [disabled]="pending()">{{ t('familyTransfers.confirm') }}</button>
           }
-        </select>
-      </label>
-      <label>
-        {{ t('familyTransfers.send.recipient') }}
-        <select [formField]="sendForm.recipientId">
-          <option value="" disabled>{{ t('familyTransfers.send.chooseMember') }}</option>
-          @for (member of recipients(); track member.id) {
-            <option [value]="member.id">{{ member.displayName }}</option>
-          }
-        </select>
-      </label>
-      <label>
-        {{ t('common.amount') }}
-        <input type="number" [formField]="sendForm.amount" />
-      </label>
-      <button type="submit" class="btn-filled" [disabled]="pending() || !sendForm().valid()">{{ t('familyTransfers.send.submit') }}</button>
-      <p class="hint">{{ t('familyTransfers.send.hint') }}</p>
-    </form>
+          <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
+        </div>
+      </form>
+    </app-modal>
   }
 
-  @if (errorMessage(); as message) {
-    <p class="form-error" role="alert">{{ message }}</p>
+  @if (sending()) {
+    <app-modal labelledBy="send-title" (closed)="closeDialog()">
+      <form novalidate class="dialog-form" (submit)="$event.preventDefault(); send()">
+        <div class="panel-header">
+          <app-family-transfers-art />
+          <h2 id="send-title">{{ t('familyTransfers.send.title') }}</h2>
+        </div>
+        <div class="field">
+          <label for="send-from">{{ t('familyTransfers.send.fromAccount') }}</label>
+          <select id="send-from" [formField]="sendForm.fromAccountId">
+            <option value="" disabled>{{ t('common.chooseAccount') }}</option>
+            @for (account of ownAccounts(); track account.id) {
+              <option [value]="account.id">
+                {{ account.name }} ({{ account.balance | translocoCurrency: 'symbol' : {} : account.currency }})
+              </option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="send-recipient">{{ t('familyTransfers.send.recipient') }}</label>
+          <select id="send-recipient" [formField]="sendForm.recipientId">
+            <option value="" disabled>{{ t('familyTransfers.send.chooseMember') }}</option>
+            @for (member of recipients(); track member.id) {
+              <option [value]="member.id">{{ member.displayName }}</option>
+            }
+          </select>
+        </div>
+        <div class="field">
+          <label for="send-amount">{{ t('common.amount') }}</label>
+          <input id="send-amount" type="number" step="0.01" [formField]="sendForm.amount" />
+          <p class="hint">{{ t('familyTransfers.send.hint') }}</p>
+        </div>
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          <button type="submit" class="btn-filled" [disabled]="pending() || !sendForm().valid()">{{ t('familyTransfers.send.submit') }}</button>
+          <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
+        </div>
+      </form>
+    </app-modal>
   }
 </section>

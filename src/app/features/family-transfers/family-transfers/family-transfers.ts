@@ -9,14 +9,16 @@ import { IAccount, IInTransit } from '../../../model/types';
 import { FamilyRepository } from '../../family/data/family-repository';
 import { FamilyTransferRepository } from '../data/family-transfer-repository';
 import { FamilyTransfersArt } from '../../../shared/ui/illustrations/family-transfers-art';
+import { Modal } from '../../../shared/ui/modal/modal';
 
 type WithdrawMode = 'collect' | 'takeBack';
 
 // "In transit" on the accounts page: send money to a family member, collect what's
-// waiting for you, take back what you sent and wasn't collected yet.
+// waiting for you, take back what you sent and wasn't collected yet. Each of these
+// opens a dialog, which shows its own errors.
 @Component({
   selector: 'app-family-transfers',
-  imports: [FormField, TranslocoDirective, TranslocoCurrencyPipe, FamilyTransfersArt],
+  imports: [FormField, TranslocoDirective, TranslocoCurrencyPipe, FamilyTransfersArt, Modal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './family-transfers.html',
   styleUrl: './family-transfers.css',
@@ -54,7 +56,8 @@ export class FamilyTransfers {
     min(f.amount, 0.01);
   });
 
-  // The row whose collect / take back panel is open.
+  protected readonly sending = signal(false);
+  // The transfer whose collect / take back dialog is open.
   protected readonly withdrawing = signal<{ transfer: IInTransit; mode: WithdrawMode } | null>(null);
   protected readonly targetId = signal('');
   // Empty = everything waiting.
@@ -66,6 +69,11 @@ export class FamilyTransfers {
   // Same currency as the transfer: there's no FX.
   targetsFor(transfer: IInTransit): IAccount[] {
     return this.ownAccounts().filter((a) => a.currency === transfer.currency);
+  }
+
+  startSend() {
+    this.errorMessage.set(null);
+    this.sending.set(true);
   }
 
   send() {
@@ -91,16 +99,23 @@ export class FamilyTransfers {
       active.mode === 'collect'
         ? this.transferRepository.collect(active.transfer.id, this.targetId(), amount)
         : this.transferRepository.takeBack(active.transfer.id, this.targetId(), amount);
-    this.run(request$, () => this.withdrawing.set(null));
+    this.run(request$);
   }
 
-  private run(request$: Observable<void>, onSuccess: () => void) {
+  closeDialog() {
+    this.errorMessage.set(null);
+    this.sending.set(false);
+    this.withdrawing.set(null);
+  }
+
+  private run(request$: Observable<void>, onSuccess?: () => void) {
     this.pending.set(true);
     this.errorMessage.set(null);
     request$.subscribe({
       next: () => {
         this.pending.set(false);
-        onSuccess();
+        onSuccess?.();
+        this.closeDialog();
         this.transfersResource.reload();
         this.changed.emit();
       },

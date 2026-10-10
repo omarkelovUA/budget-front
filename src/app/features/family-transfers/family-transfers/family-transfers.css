@@ -4,15 +4,17 @@
   gap: 12px;
 }
 
+.send-button {
+  margin-left: auto;
+}
+
 .family-transfers h3 {
   margin: 8px 0 0;
   font-size: 0.9rem;
   color: var(--color-text-muted);
 }
 
-.transit-row,
-.withdraw-panel,
-.send-form {
+.transit-row {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -23,38 +25,23 @@
   border-radius: var(--radius-md);
 }
 
-.withdraw-panel {
-  background: var(--color-primary-soft);
-}
-
 .amount {
   margin-left: auto;
   font-weight: 600;
 }
 
-label {
+.dialog-form {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 0.85rem;
+  gap: 16px;
 }
 
-select,
-input {
-  min-height: 40px;
-  padding: 0 12px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-sm);
-}
-
-.send-form h3 {
-  width: 100%;
+.dialog-form p {
   margin: 0;
 }
 
 .hint {
-  width: 100%;
-  margin: 0;
+  margin: 4px 0 0;
   font-size: 0.8rem;
   color: var(--color-text-muted);
 }
