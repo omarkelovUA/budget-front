@@ -12,29 +12,25 @@
 
 .create-family p {
   color: var(--color-text-muted);
-  margin: 0 0 16px;
+  margin: 0;
 }
 
-.family-form,
-.invite-form {
+.dialog-form {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  max-width: 400px;
 }
 
-.invite-form {
-  flex-direction: row;
-  align-items: flex-start;
+.dialog-form .hint {
+  margin: 4px 0 0;
+}
+
+.leave-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
   margin-top: 16px;
-}
-
-.invite-form input {
-  flex: 1;
-  min-height: 40px;
-  padding: 0 14px;
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-sm);
 }
 
 .members-list {

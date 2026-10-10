@@ -262,7 +262,8 @@ workspace's `.docs/redesign.md` (M17).
     follows the hue and the theme.
   - **Forms and lists:** form dialogs and the settings dialog show a small art in their
     header, and empty lists show `app-empty-art`. `screens.spec.ts` checks every screen.
-- **Form dialogs:** create and edit forms (and closing an account) open in
+- **Form dialogs:** create and edit forms (closing an account, creating a family and
+  inviting to it too) open in
   `<app-modal labelledBy="<heading id>">` (`shared/ui/modal`), rendered by the list with
   `@if`. It's a native modal `<dialog>`: it opens when rendered, Esc emits `(closed)`, and
   removing it closes it, so focus goes back to the opener. Each form emits `cancelled`

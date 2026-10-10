@@ -1,5 +1,14 @@
 <div class="family-page" *transloco="let t">
   <app-page-header [title]="t('nav.family')" [subtitle]="t('family.subtitle')">
+    @if (!currentUser()?.familyId) {
+      <button actions type="button" class="btn-tonal" (click)="openDialog('create')">
+        <span aria-hidden="true">+</span> {{ t('family.create.submit') }}
+      </button>
+    } @else if (isAdmin()) {
+      <button actions type="button" class="btn-tonal" [disabled]="seatsTaken() >= maxFamilySize" (click)="openDialog('invite')">
+        <span aria-hidden="true">+</span> {{ t('family.invite') }}
+      </button>
+    }
     <app-family-art art />
   </app-page-header>
 
@@ -56,14 +65,6 @@
     <section class="create-family card">
       <h2>{{ t('family.create.title') }}</h2>
       <p>{{ t('family.create.intro') }}</p>
-
-      <form novalidate (submit)="$event.preventDefault(); createFamily()" class="family-form">
-        <div class="field">
-          <label for="family-name">{{ t('family.create.name') }}</label>
-          <input id="family-name" [formField]="createForm.name" [placeholder]="t('family.create.namePlaceholder')" />
-        </div>
-        <button type="submit" class="btn-filled" [disabled]="!createForm().valid() || pending()">{{ t('family.create.submit') }}</button>
-      </form>
     </section>
   } @else {
     @if (familyResource.isLoading()) {
@@ -122,21 +123,7 @@
             </div>
           }
 
-          @if (isAdmin()) {
-            <form novalidate (submit)="$event.preventDefault(); invite()" class="invite-form">
-              <input
-                type="email"
-                [formField]="inviteForm.email"
-                [placeholder]="t('family.inviteEmail')"
-                [attr.aria-label]="t('family.inviteEmail')"
-              />
-              <button type="submit" class="btn-filled" [disabled]="!inviteForm().valid() || pending() || seatsTaken() >= maxFamilySize">
-                {{ t('family.invite') }}
-              </button>
-            </form>
-          }
-
-          <div class="invite-form">
+          <div class="leave-row">
             @if (confirmingLeave()) {
               <span>{{ t('family.leaveConfirm') }}</span>
               <button type="button" class="btn-danger" [disabled]="pending()" (click)="leaveFamily()">{{ t('family.leaveYes') }}</button>
@@ -150,7 +137,52 @@
     }
   }
 
-  @if (errorMessage(); as message) {
+  @if (!dialog() && errorMessage(); as message) {
     <p class="form-error" role="alert">{{ message }}</p>
+  }
+
+  @if (dialog() === 'create') {
+    <app-modal labelledBy="family-create-title" (closed)="closeDialog()">
+      <form novalidate (submit)="$event.preventDefault(); createFamily()" class="dialog-form">
+        <div class="panel-header">
+          <app-family-art />
+          <h2 id="family-create-title">{{ t('family.create.dialogTitle') }}</h2>
+        </div>
+        <div class="field">
+          <label for="family-name">{{ t('family.create.name') }}</label>
+          <input id="family-name" [formField]="createForm.name" [placeholder]="t('family.create.namePlaceholder')" />
+        </div>
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          <button type="submit" class="btn-filled" [disabled]="!createForm().valid() || pending()">{{ t('family.create.submit') }}</button>
+          <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
+        </div>
+      </form>
+    </app-modal>
+  }
+
+  @if (dialog() === 'invite') {
+    <app-modal labelledBy="family-invite-title" (closed)="closeDialog()">
+      <form novalidate (submit)="$event.preventDefault(); invite()" class="dialog-form">
+        <div class="panel-header">
+          <app-family-art />
+          <h2 id="family-invite-title">{{ t('family.inviteTitle') }}</h2>
+        </div>
+        <div class="field">
+          <label for="family-invite-email">{{ t('family.inviteEmail') }}</label>
+          <input id="family-invite-email" type="email" [formField]="inviteForm.email" />
+          <p class="hint">{{ t('family.seats', { taken: seatsTaken(), max: maxFamilySize }) }}</p>
+        </div>
+        @if (errorMessage(); as message) {
+          <p class="form-error" role="alert">{{ message }}</p>
+        }
+        <div class="dialog-actions">
+          <button type="submit" class="btn-filled" [disabled]="!inviteForm().valid() || pending()">{{ t('family.invite') }}</button>
+          <button type="button" class="btn-text" (click)="closeDialog()">{{ t('common.cancel') }}</button>
+        </div>
+      </form>
+    </app-modal>
   }
 </div>

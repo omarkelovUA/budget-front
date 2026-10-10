@@ -9,13 +9,14 @@ import { IFamily } from '../../../model/types';
 import { FamilyRepository } from '../data/family-repository';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { FamilyArt } from '../../../shared/ui/illustrations/family-art';
+import { Modal } from '../../../shared/ui/modal/modal';
 
 // Members plus pending invitations (enforced by the backend).
 export const MAX_FAMILY_SIZE = 10;
 
 @Component({
   selector: 'app-family-page',
-  imports: [FormField, TranslocoDirective, TranslocoDatePipe, PageHeader, FamilyArt],
+  imports: [FormField, TranslocoDirective, TranslocoDatePipe, PageHeader, FamilyArt, Modal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './family-page.html',
   styleUrl: './family-page.css',
@@ -66,18 +67,33 @@ export class FamilyPage {
   protected readonly confirmingAccept = signal<string | null>(null);
   protected readonly pending = signal(false);
   protected readonly errorMessage = signal<string | null>(null);
+  // The open form dialog; its errors show inside it.
+  protected readonly dialog = signal<'create' | 'invite' | null>(null);
+
+  openDialog(dialog: 'create' | 'invite') {
+    this.errorMessage.set(null);
+    this.dialog.set(dialog);
+  }
+
+  // A dismissed dialog takes its error with it.
+  closeDialog() {
+    this.errorMessage.set(null);
+    this.dialog.set(null);
+  }
 
   createFamily() {
     if (!this.createForm().valid()) return;
-    this.enterFamily(this.familyRepository.createFamily(this.createForm().value().name), () =>
-      this.createModel.set({ name: '' }),
-    );
+    this.enterFamily(this.familyRepository.createFamily(this.createForm().value().name), () => {
+      this.createModel.set({ name: '' });
+      this.closeDialog();
+    });
   }
 
   invite() {
     if (!this.inviteForm().valid()) return;
     this.run(this.familyRepository.invite(this.inviteForm().value().email), () => {
       this.inviteModel.set({ email: '' });
+      this.closeDialog();
       this.invitationsResource.reload();
     });
   }

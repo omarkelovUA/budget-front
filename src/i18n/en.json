@@ -256,7 +256,8 @@
       "intro": "Create a family to share your budget with your loved ones, or accept an invitation from one of them.",
       "name": "Family name",
       "namePlaceholder": "e.g. The Shevchenkos",
-      "submit": "Create family"
+      "submit": "Create family",
+      "dialogTitle": "New family"
     },
     "loading": "Loading the family...",
     "seats": "People in the family, invitations included: {{taken}} / {{max}}",
@@ -269,6 +270,7 @@
     "revokeAria": "Cancel the invitation for {{email}}",
     "inviteEmail": "Member's email",
     "invite": "Invite",
+    "inviteTitle": "Invite a family member",
     "leaveConfirm": "Leave the family? Shared data will no longer be available to you.",
     "leaveYes": "Yes, leave",
     "leave": "Leave family",
