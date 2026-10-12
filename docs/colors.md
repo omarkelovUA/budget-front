@@ -118,7 +118,7 @@ Illustrations also draw their gold coins with `--color-warning`.
 ### Account and category colours (fixed hues, the same in both themes)
 
 Accounts and categories store a colour slug; `shared/ui/colors` lists the slugs
-(`ACCOUNT_COLORS`: all ten, `CATEGORY_COLORS`: the first four below) and `tagColor()`
+(`TAG_COLORS`, offered by both forms) and `tagColor()`
 paints one as `--color-tag-<slug>`, or the primary for an unknown slug. White icons sit on
 them, so each keeps ≥ 4.5:1 against white and stays inside sRGB (`colors.spec.ts` in
 `shared/ui/colors`). Labels are `tagColors.<slug>`.

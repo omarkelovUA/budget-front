@@ -70,6 +70,20 @@ describe('CategoryForm', () => {
     expect(created).toEqual([expect.objectContaining({ type: 'income', icon: 'assets/pension.svg' })]);
   });
 
+  it('offers the ten colours and saves the picked one', async () => {
+    await fixture.whenStable();
+    const radios = el().querySelectorAll<HTMLInputElement>('.color-picker input');
+    expect(radios).toHaveLength(10);
+    expect(radios[7].getAttribute('aria-label')).toBe('Жовтий');
+
+    (el().querySelector('#category-name') as HTMLInputElement).value = 'Pets';
+    el().querySelector('#category-name')!.dispatchEvent(new Event('input'));
+    radios[6].click();
+    await fixture.whenStable();
+    (el().querySelector('form') as HTMLFormElement).requestSubmit();
+    expect(created).toEqual([expect.objectContaining({ name: 'Pets', color: 'orange' })]);
+  });
+
   it('keeps an icon that fits both types', async () => {
     await fixture.whenStable();
     await pickIcon('assets/gift.svg');

@@ -3,7 +3,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, required } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
-import { ACCOUNT_COLORS, tagColor } from '../../../shared/ui/colors/colors';
+import { TAG_COLORS, tagColor } from '../../../shared/ui/colors/colors';
 import { ACCOUNT_ICONS } from '../../../shared/ui/icon-picker/icons';
 import { AuthState } from '../../../core/auth/auth-state';
 import { GrantLevel, IAccount } from '../../../model/types';
@@ -42,7 +42,7 @@ export class AccountForm {
   private readonly settings = inject(SettingsState).settings;
   private readonly currentUser = inject(AuthState).currentUser;
 
-  protected readonly colors = ACCOUNT_COLORS;
+  protected readonly colors = TAG_COLORS;
   protected readonly tagColor = tagColor;
   protected readonly icons = ACCOUNT_ICONS;
   protected readonly accessLevels: MemberAccess[] = ['hidden', 'visible', 'shared'];
