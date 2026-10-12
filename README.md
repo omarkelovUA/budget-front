@@ -37,7 +37,9 @@ npx ng test --watch=false   # Vitest unit tests
 npx ng build                # production build into dist/
 ```
 
-CI runs both on every push (`.github/workflows/ci.yml`).
+CI runs both on every push (`.github/workflows/ci.yml`). A push to `main` also builds the
+production image (`Dockerfile`: the SPA served by Caddy, see `Caddyfile`), pushes it to
+GHCR and deploys it (ARCHITECTURE.md §4.9).
 
 ## How it's put together
 

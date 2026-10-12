@@ -318,6 +318,21 @@ workspace's `.docs/redesign.md` (M17).
 cookie (`Path=/api/v1/auth`, `SameSite=Strict`) behaves as in production. Running the
 backend locally is described in the backend repo's `docs/LOCAL-DEV.md`.
 
+### 4.9 Production
+
+The `Dockerfile` builds the SPA with Node and serves it from `caddy:2-alpine`. The
+`Caddyfile` keeps the dev proxy's single origin:
+- It proxies `/api/*`, `/oauth2/*`, `/login/oauth2/*` and `/actuator/health*` to `api:8080`,
+  so there's still no CORS and the refresh cookie works unchanged.
+- It falls back to `index.html` for client-side routes.
+- It terminates TLS for `$DOMAIN` with Let's Encrypt, sends security headers (HSTS,
+  nosniff, `X-Frame-Options`), caches hashed bundles (`main-XXXXXXXX.js`) as immutable
+  and serves everything else with `no-cache`.
+
+The stack itself (`deploy/compose.yaml`) and the VM live in the backend repo; see its
+ARCHITECTURE.md §6.4. On `main`, CI pushes `ghcr.io/omarkelovua/budget-front:<sha>` and
+deploys it with `deploy.sh web <sha>`.
+
 ## 5. Key decisions & why
 
 System-wide decisions (two repos, sharing model, auth design, backend stack) are in the
