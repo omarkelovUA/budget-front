@@ -16,6 +16,8 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'already-member',
   'family-full',
   'email-not-verified',
+  'invalid-google-token',
+  'google-link-confirmation-required',
   'admin-required',
   'last-admin',
   'no-family',
