@@ -398,6 +398,8 @@
     "invalid-google-token": "Google sign-in failed. Please try again.",
     "google-unavailable": "Google sign-in is unavailable right now. Please try again later.",
     "google-link-confirmation-required": "An account with this email already exists. Confirm to link it to Google; its password will stop working.",
+    "id-conflict": "This item already exists.",
+    "invalid-sync-cursor": "Sync got out of step. It will restart.",
     "admin-required": "Only a family admin can do this",
     "last-admin": "The family needs at least one admin",
     "no-family": "You need a family to share data",

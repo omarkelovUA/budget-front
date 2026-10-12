@@ -19,6 +19,8 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'invalid-google-token',
   'google-unavailable',
   'google-link-confirmation-required',
+  'id-conflict',
+  'invalid-sync-cursor',
   'admin-required',
   'last-admin',
   'no-family',

@@ -210,6 +210,9 @@ the backend doc §6. On the client:
   types (`invalid-google-token`, `google-unavailable`,
   `google-link-confirmation-required`) have translations
   like every other slug.
+- The Android app also syncs through `GET /sync/changes` and sends its own ids when it
+  creates something (optional `id` on account, category, transaction and budget
+  creates). The SPA sends no `id`, so the server picks one as before.
 
 ### 4.5 Error handling
 
