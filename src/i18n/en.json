@@ -396,6 +396,7 @@
     "family-full": "A family can have at most 10 people, invitations included",
     "email-not-verified": "Sign in with Google to use invitations and join requests",
     "invalid-google-token": "Google sign-in failed. Please try again.",
+    "google-unavailable": "Google sign-in is unavailable right now. Please try again later.",
     "google-link-confirmation-required": "An account with this email already exists. Confirm to link it to Google; its password will stop working.",
     "admin-required": "Only a family admin can do this",
     "last-admin": "The family needs at least one admin",

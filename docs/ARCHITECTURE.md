@@ -207,7 +207,8 @@ the backend doc §6. On the client:
   auth signal.
 - The backend also serves the Android app through `/auth/google/mobile` and
   `/auth/mobile/*` (tokens in the body). The SPA doesn't use them, but their problem
-  types (`invalid-google-token`, `google-link-confirmation-required`) have translations
+  types (`invalid-google-token`, `google-unavailable`,
+  `google-link-confirmation-required`) have translations
   like every other slug.
 
 ### 4.5 Error handling
