@@ -11,6 +11,7 @@ import { Modal } from '../../../shared/ui/modal/modal';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { BudgetsArt } from '../../../shared/ui/illustrations/budgets-art';
 import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
+import { tagColor } from '../../../shared/ui/colors/colors';
 
 @Component({
   selector: 'app-budget-list',
@@ -20,6 +21,7 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
   styleUrl: './budget-list.css',
 })
 export class BudgetList {
+  protected readonly tagColor = tagColor;
   private readonly budgetRepository = inject(BudgetRepository);
   protected readonly isFormOpen = signal(false);
   protected readonly actionError = signal<string | null>(null);

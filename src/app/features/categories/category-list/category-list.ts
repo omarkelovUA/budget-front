@@ -16,6 +16,7 @@ import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { DragHandle } from '../../../shared/ui/drag-handle/drag-handle';
 import { CategoriesArt } from '../../../shared/ui/illustrations/categories-art';
 import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
+import { tagColor } from '../../../shared/ui/colors/colors';
 
 @Component({
   selector: 'app-category-list',
@@ -27,6 +28,7 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 // Family categories are the family's: every member uses them, only the admin changes,
 // hides or deletes them. Anyone can share their own category with the family.
 export class CategoryList {
+  protected readonly tagColor = tagColor;
   private readonly categoryRepository = inject(CategoryRepository);
   private readonly familyRepository = inject(FamilyRepository);
   private readonly currentUser = inject(AuthState).currentUser;

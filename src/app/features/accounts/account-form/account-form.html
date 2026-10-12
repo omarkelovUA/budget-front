@@ -29,8 +29,8 @@
     <div class="color-picker" role="radiogroup" [attr.aria-label]="t('common.color')">
       @for (color of colors; track color) {
         <label class="color-option">
-          <input type="radio" [formField]="form.color" [value]="color" [attr.aria-label]="color" />
-          <span [style.background-color]="color" class="color-swatch"></span>
+          <input type="radio" [formField]="form.color" [value]="color" [attr.aria-label]="t('tagColors.' + color)" />
+          <span [style.background-color]="tagColor(color)" class="color-swatch"></span>
         </label>
       }
     </div>

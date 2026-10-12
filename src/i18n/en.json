@@ -45,6 +45,18 @@
     },
     "dragAria": "Move {{name}}: drag it, or use the arrow keys"
   },
+  "tagColors": {
+    "green": "Green",
+    "teal": "Teal",
+    "blue": "Blue",
+    "purple": "Purple",
+    "pink": "Pink",
+    "red": "Red",
+    "orange": "Orange",
+    "yellow": "Yellow",
+    "brown": "Brown",
+    "gray": "Gray"
+  },
   "icons": {
     "card": "Card",
     "wallet": "Wallet",

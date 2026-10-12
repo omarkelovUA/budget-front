@@ -16,6 +16,7 @@ import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { DragHandle } from '../../../shared/ui/drag-handle/drag-handle';
 import { AccountsArt } from '../../../shared/ui/illustrations/accounts-art';
 import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
+import { tagColor } from '../../../shared/ui/colors/colors';
 
 @Component({
   selector: 'app-account-list',
@@ -41,6 +42,7 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
   styleUrl: './account-list.css',
 })
 export class AccountList {
+  protected readonly tagColor = tagColor;
   private readonly accountRepository = inject(AccountRepository);
   protected readonly selectedAccount = signal<IAccount | null>(null);
   protected readonly closingAccount = signal<IAccount | null>(null);

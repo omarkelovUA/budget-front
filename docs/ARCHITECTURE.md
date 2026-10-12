@@ -305,6 +305,11 @@ workspace's `.docs/redesign.md` (M17).
   category's icon onto it; editing still shows a stored icon from the other list.
   The picker's `slots` input reserves the longer list's cells, so switching the type
   doesn't change the dialog's height.
+- **Account and category colours** (`shared/ui/colors/colors.ts`): stored as a slug.
+  The account form offers ten (`ACCOUNT_COLORS`), the category form four
+  (`CATEGORY_COLORS`). Lists and pickers paint them with `tagColor()`, i.e. the fixed-hue
+  `--color-tag-<slug>` tokens (colors.md), never as CSS colour names. Swatches are
+  labelled `tagColors.<slug>`. A slug must never be renamed or removed once used.
 - **Icons** are drawn by `app-icon` as a CSS mask filled with `currentColor`, so they
   follow the theme. Don't use `<img>` for them.
 - **Contrast:** `palette.spec.ts` checks every hue (white text on both gradient stops,

@@ -82,6 +82,19 @@
   --color-warning: light-dark(oklch(55.7% 0.115 83), oklch(80% 0.13 85));
   --color-warning-soft: light-dark(oklch(96.4% 0.051 93), oklch(30% 0.06 85));
 
+  /* Account and category colours (shared/ui/colors): fixed hues, dark enough for white
+     icons in both themes. */
+  --color-tag-green: oklch(52% 0.14 150);
+  --color-tag-teal: oklch(52% 0.08 195);
+  --color-tag-blue: oklch(52% 0.16 257);
+  --color-tag-purple: oklch(50% 0.17 300);
+  --color-tag-pink: oklch(54% 0.18 350);
+  --color-tag-red: oklch(54% 0.19 25);
+  --color-tag-orange: oklch(56% 0.14 50);
+  --color-tag-yellow: oklch(55% 0.105 85);
+  --color-tag-brown: oklch(45% 0.07 50);
+  --color-tag-gray: oklch(50% 0.01 257);
+
   /* Effects */
   --color-focus: var(--color-primary);
   --color-shadow: light-dark(oklch(0% 0 0 / 0.15), oklch(0% 0 0 / 0.5));

@@ -64,7 +64,7 @@
   </div>
 
   <ng-template #cardBody let-cat>
-    <span class="icon-box" [style.background-color]="cat.color">
+    <span class="icon-box" [style.background-color]="tagColor(cat.color)">
       <app-icon [src]="cat.icon" />
     </span>
     <span class="category-info">

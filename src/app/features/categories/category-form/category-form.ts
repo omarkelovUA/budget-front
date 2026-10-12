@@ -7,6 +7,7 @@ import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
 import { CATEGORY_ICON_SLOTS, categoryIcons, iconName, iconPath } from '../../../shared/ui/icon-picker/icons';
 import { CategoryFormArt } from '../../../shared/ui/illustrations/category-form-art';
 import { Modal } from '../../../shared/ui/modal/modal';
+import { CATEGORY_COLORS, tagColor } from '../../../shared/ui/colors/colors';
 
 type CategoryFormModel = Omit<ICategory, 'id'>;
 
@@ -30,7 +31,8 @@ export class CategoryForm {
 
   protected readonly types: ICategory['type'][] = ['income', 'expense'];
   protected readonly iconSlots = CATEGORY_ICON_SLOTS;
-  protected readonly colors = ['green', 'yellow', 'blue', 'red'];
+  protected readonly colors = CATEGORY_COLORS;
+  protected readonly tagColor = tagColor;
   protected readonly visibilities: ICategory['visibility'][] = ['private', 'shared'];
 
   private readonly model = signal<CategoryFormModel>({ ...DEFAULT_MODEL });

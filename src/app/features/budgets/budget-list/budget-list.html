@@ -29,7 +29,7 @@
         @for (budget of budgetsResource.value(); track budget.id) {
           <div class="budget-card card" [class.over]="isOverBudget(budget)">
             <div class="budget-header">
-              <div class="icon-box" [style.background-color]="budget.category.color">
+              <div class="icon-box" [style.background-color]="tagColor(budget.category.color)">
                 <app-icon [src]="budget.category.icon" />
               </div>
               <div class="budget-info">

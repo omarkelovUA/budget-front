@@ -74,6 +74,26 @@ describe('AccountForm', () => {
     expect(options.map((o) => (o as HTMLOptionElement).value)).toEqual(['PLN', 'EUR']);
   });
 
+  it('offers ten colours, labelled and painted through the theme tokens', () => {
+    const radios = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>('.color-picker input'));
+
+    expect(radios).toHaveLength(10);
+    expect(radios.slice(0, 3).map((r) => r.getAttribute('aria-label'))).toEqual(['Зелений', 'Бірюзовий', 'Синій']);
+    expect((radios[1].nextElementSibling as HTMLElement).style.backgroundColor).toBe(
+      'var(--color-tag-teal, var(--color-primary))',
+    );
+  });
+
+  it('saves the picked colour', () => {
+    const radios = (fixture.nativeElement as HTMLElement).querySelectorAll<HTMLInputElement>('.color-picker input');
+    radios[9].click();
+    (component as any).model.update((m: object) => ({ ...m, name: 'Spare' }));
+
+    component.submit();
+
+    expect(created[0].color).toBe('gray');
+  });
+
   it('lists the other family members, hidden by default', () => {
     const rows = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.member-access'));
 

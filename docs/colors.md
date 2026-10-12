@@ -115,6 +115,27 @@ tint of the primary hue (`--neutral-c` is 6% of the primary chroma). `P` stands 
 
 Illustrations also draw their gold coins with `--color-warning`.
 
+### Account and category colours (fixed hues, the same in both themes)
+
+Accounts and categories store a colour slug; `shared/ui/colors` lists the slugs
+(`ACCOUNT_COLORS`: all ten, `CATEGORY_COLORS`: the first four below) and `tagColor()`
+paints one as `--color-tag-<slug>`, or the primary for an unknown slug. White icons sit on
+them, so each keeps ≥ 4.5:1 against white and stays inside sRGB (`colors.spec.ts` in
+`shared/ui/colors`). Labels are `tagColors.<slug>`.
+
+| Token | Value |
+|---|---|
+| `--color-tag-green` | `oklch(52% 0.14 150)` |
+| `--color-tag-yellow` | `oklch(55% 0.105 85)` |
+| `--color-tag-blue` | `oklch(52% 0.16 257)` |
+| `--color-tag-red` | `oklch(54% 0.19 25)` |
+| `--color-tag-teal` | `oklch(52% 0.08 195)` |
+| `--color-tag-purple` | `oklch(50% 0.17 300)` |
+| `--color-tag-pink` | `oklch(54% 0.18 350)` |
+| `--color-tag-orange` | `oklch(56% 0.14 50)` |
+| `--color-tag-brown` | `oklch(45% 0.07 50)` |
+| `--color-tag-gray` | `oklch(50% 0.01 257)` |
+
 ### Effects
 
 `--color-focus` (the primary), `--color-shadow`, `--color-shadow-soft`, `--color-backdrop`, and
