@@ -399,6 +399,7 @@
     "google-unavailable": "Google sign-in is unavailable right now. Please try again later.",
     "google-link-confirmation-required": "An account with this email already exists. Confirm to link it to Google; its password will stop working.",
     "id-conflict": "This item already exists.",
+    "already-deleted": "This was deleted in the meantime.",
     "invalid-sync-cursor": "Sync got out of step. It will restart.",
     "admin-required": "Only a family admin can do this",
     "last-admin": "The family needs at least one admin",

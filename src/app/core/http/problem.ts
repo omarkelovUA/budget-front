@@ -20,6 +20,7 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'google-unavailable',
   'google-link-confirmation-required',
   'id-conflict',
+  'already-deleted',
   'invalid-sync-cursor',
   'admin-required',
   'last-admin',
