@@ -32,7 +32,8 @@ flowchart LR
 - Single SPA, no server-side rendering requirement for v1.
 - Talks only to the backend's REST API; it never talks to Google directly (the OAuth2 flow
   runs entirely on the backend, see §4.4).
-- The Android app (`budget-app-mobile`) is a second client of the same API. Its changes
+- The Android app (`budget-app-mobile`) is the main client of the same API: every user has
+  it, and only some also use this SPA. It covers everything the SPA does. Its changes
   reach the server when it syncs and show up in the SPA on the next load; there is no push
   to the browser.
 
