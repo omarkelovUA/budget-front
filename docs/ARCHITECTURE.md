@@ -1,7 +1,6 @@
 # Family Budget — Frontend Architecture
 
 Status: draft v0.6 · 2026-10-07
-Companion doc: [PLAN.md](../../.docs/PLAN.md) (workspace `.docs/`) (roadmap, phases, open decisions)
 Backend, domain rules, API and security: [backend ARCHITECTURE.md][backend-arch]
 
 [backend-arch]: https://github.com/omarkelovUA/budget-backend/blob/main/docs/ARCHITECTURE.md
@@ -257,8 +256,7 @@ unknown 400 falls back to `errors.badRequest`, everything else to `errors.fallba
 ### 4.7 Theme, colours and design
 
 The full colour reference is [colors.md](colors.md). The design rules for new screens
-are in the workspace's `design` skill (`.claude/skills/design`), and the plan is the
-workspace's `.docs/redesign.md` (M17).
+are in the `design` skill (`.claude/skills/design`).
 
 - **One input: the primary hue.** The user picks it in settings (`primaryHue`, 0–359;
   default 150, a "dollar" green). `core/theme/palette.ts` turns it into
@@ -363,5 +361,7 @@ backend doc §8.
 
 ## 6. Open questions
 
-Tracked with owners/status in [PLAN.md §Open decisions](../../.docs/PLAN.md#open-decisions) —
-not repeated here to avoid the two docs drifting out of sync.
+- The login and register pages have no language switcher; they follow the browser until
+  sign-in.
+- The two-user browser run-through (invitations, shared accounts, transfers) hasn't been
+  done by hand yet. System-wide open points are in the backend doc §9.

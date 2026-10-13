@@ -5,8 +5,8 @@ description: Design system of the Family Budget SPA (Material 3 look, OKLCH toke
 
 # Design (`budget-app-front`)
 
-**Reference:** the frontend repo's `docs/colors.md` (every token). **Plan:** the workspace's
-`.docs/redesign.md` (M17). Load the `frontend` skill too.
+**Reference:** the frontend repo's `docs/colors.md` (every token). Load the `frontend`
+skill too.
 
 ## Colour
 - **One input:** the user's primary hue, default 150 (a "dollar" green).

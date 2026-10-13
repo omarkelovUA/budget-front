@@ -1,9 +1,8 @@
 # Colours
 
 This is the colour reference for the Family Budget SPA. The tokens live in
-`src/styles/theme.css`; this page explains where they come from and how to use them. The
-plan behind it is the workspace's `.docs/redesign.md` (M17), and the rules for new
-screens are in the workspace's `design` skill.
+`src/styles/theme.css`; this page explains where they come from and how to use them. The rules
+for new screens are in the `design` skill.
 
 ## 1. One input: the primary hue
 
