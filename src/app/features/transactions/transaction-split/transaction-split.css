@@ -17,6 +17,17 @@
   gap: 12px;
 }
 
+/* Phones: the category gets its own line, so its name isn't cut off. */
+@media (max-width: 480px) {
+  .split-part {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .split-part > .field:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
 .remove-part {
   font-size: 1.25rem;
   line-height: 1;
