@@ -1,0 +1,50 @@
+<form novalidate (submit)="$event.preventDefault(); submit()" class="transaction-split" *transloco="let t">
+  @let currency = transaction().account.currency;
+  <div class="panel-header">
+    <app-transaction-form-art />
+    <h2 id="transaction-split-title">{{ t('transactions.splitForm.title') }}</h2>
+  </div>
+
+  <p class="split-total">
+    {{ t('transactions.splitForm.total', { amount: transaction().amount | translocoCurrency: 'symbol' : {} : currency }) }}
+  </p>
+
+  @for (part of form.parts; track $index; let i = $index) {
+    <div class="split-part">
+      <div class="field">
+        <label [for]="'split-category-' + i">{{ t('common.category') }}</label>
+        <select [id]="'split-category-' + i" [formField]="part.categoryId">
+          <option value="" disabled>{{ t('common.chooseCategory') }}</option>
+          @for (cat of categories(); track cat.id) {
+            <option [value]="cat.id">{{ cat.name }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="field">
+        <label [for]="'split-amount-' + i">{{ t('common.amount') }}</label>
+        <input [id]="'split-amount-' + i" type="number" step="0.01" [formField]="part.amount" />
+      </div>
+
+      <button type="button" class="btn-text remove-part" (click)="removePart(i)"
+              [disabled]="partCount() <= 2" [attr.aria-label]="t('transactions.splitForm.removePart')">×</button>
+    </div>
+  }
+
+  <button type="button" class="btn-tonal add-part" (click)="addPart()" [disabled]="partCount() >= maxParts">
+    <span aria-hidden="true">+</span> {{ t('transactions.splitForm.addPart') }}
+  </button>
+
+  <p class="split-remaining" [class.off]="remaining() !== 0" role="status">
+    {{ t('transactions.splitForm.remaining', { amount: remaining() | translocoCurrency: 'symbol' : {} : currency }) }}
+  </p>
+
+  @if (errorMessage(); as message) {
+    <p class="form-error" role="alert">{{ message }}</p>
+  }
+
+  <div class="dialog-actions">
+    <button type="submit" class="btn-filled" [disabled]="!canSave()">{{ t('common.save') }}</button>
+    <button type="button" class="btn-text" (click)="cancelled.emit()">{{ t('common.cancel') }}</button>
+  </div>
+</form>

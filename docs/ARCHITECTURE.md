@@ -75,7 +75,8 @@ The backend enforces these; the UI only has to present them correctly:
   account form shows that per-member editor, and only the owner can edit, close or delete
   an account. The account list groups accounts into *mine / shared with me / visible to
   me*. Transaction pickers offer only open accounts the user may record on
-  (`canRecordOn`), and the transaction list shows delete only when `editable`.
+  (`canRecordOn`), and the transaction list shows delete (and *Split* for payments)
+  only when `editable`.
 - Closing an account moves its balance to another open, same-currency account the user
   can record on, then archives it. The close dialog only offers such targets.
 - **Settings** (header → *Settings*, `SettingsDialog`; cached in `SettingsState`, loaded
@@ -117,6 +118,13 @@ The backend enforces these; the UI only has to present them correctly:
   member can see a transfer from someone's private account without seeing that account.
 - Transactions are create/delete only; deleting can fail with `transaction-not-editable`
   when the caller can't access all of its accounts.
+- **Splitting** a payment (`POST /transactions/{id}/split`) replaces it with independent
+  payments on the same account and date, one per category part. The split dialog
+  (`transaction-split`) starts with the whole amount in the payment's category plus an
+  empty part, offers only categories of the payment's type, and shows what's left to
+  split; *Save* is enabled only when that's exactly 0 (compared in hundredths) and every
+  part has a category and a positive amount. The server checks the total again
+  (`split-total-mismatch`). The parts aren't linked afterwards.
 - Month totals come back per currency and are never summed across currencies.
 
 ## 4. Frontend architecture (Angular)

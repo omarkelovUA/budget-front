@@ -53,8 +53,14 @@
             </div>
 
             @if (tx.editable) {
-              <button type="button" class="delete-button" (click)="deleteTransaction(tx)"
-                      [attr.aria-label]="t('transactions.deleteAria', { date, amount })">×</button>
+              <div class="row-actions">
+                @if (!isTransfer(tx)) {
+                  <button type="button" class="btn-text split-button" (click)="splitting.set(tx)"
+                          [attr.aria-label]="t('transactions.splitAria', { date, amount })">{{ t('transactions.split') }}</button>
+                }
+                <button type="button" class="delete-button" (click)="deleteTransaction(tx)"
+                        [attr.aria-label]="t('transactions.deleteAria', { date, amount })">×</button>
+              </div>
             } @else {
               <span></span>
             }
@@ -82,6 +88,12 @@
   @if (isFormOpen()) {
     <app-modal labelledBy="transaction-form-title" (closed)="isFormOpen.set(false)">
       <app-transaction-form (created)="onCreated()" (cancelled)="isFormOpen.set(false)" />
+    </app-modal>
+  }
+
+  @if (splitting(); as tx) {
+    <app-modal labelledBy="transaction-split-title" (closed)="splitting.set(null)">
+      <app-transaction-split [transaction]="tx" (saved)="onSplit()" (cancelled)="splitting.set(null)" />
     </app-modal>
   }
 </div>

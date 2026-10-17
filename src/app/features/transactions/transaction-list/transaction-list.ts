@@ -2,9 +2,16 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoCurrencyPipe, TranslocoDatePipe } from '@jsverse/transloco-locale';
 import { Subscription } from 'rxjs';
-import { getTransactionAccess, isTransferTransaction, Transaction, transactionCurrency } from '../../../model/types';
+import {
+  getTransactionAccess,
+  isTransferTransaction,
+  PaymentTransaction,
+  Transaction,
+  transactionCurrency,
+} from '../../../model/types';
 import { TransactionRepository } from '../data/transaction-repository';
 import { TransactionForm } from '../transaction-form/transaction-form';
+import { TransactionSplit } from '../transaction-split/transaction-split';
 import { AccessBadge } from '../../../shared/ui/access-badge/access-badge';
 import { Modal } from '../../../shared/ui/modal/modal';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
@@ -14,13 +21,14 @@ import { EmptyArt } from '../../../shared/ui/illustrations/empty-art';
 @Component({
   selector: 'app-transaction-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TransactionForm, Modal, AccessBadge, TranslocoDirective, TranslocoDatePipe, TranslocoCurrencyPipe, PageHeader, TransactionsArt, EmptyArt],
+  imports: [TransactionForm, TransactionSplit, Modal, AccessBadge, TranslocoDirective, TranslocoDatePipe, TranslocoCurrencyPipe, PageHeader, TransactionsArt, EmptyArt],
   templateUrl: './transaction-list.html',
   styleUrl: './transaction-list.css',
 })
 export class TransactionList {
   private readonly transactionRepository = inject(TransactionRepository);
   protected readonly isFormOpen = signal(false);
+  protected readonly splitting = signal<PaymentTransaction | null>(null);
   protected readonly isTransfer = isTransferTransaction;
   protected readonly accessOf = getTransactionAccess;
   protected readonly currencyOf = transactionCurrency;
@@ -65,6 +73,11 @@ export class TransactionList {
       next: () => this.reload(),
       error: (err: Error) => this.actionError.set(err.message),
     });
+  }
+
+  onSplit() {
+    this.splitting.set(null);
+    this.reload();
   }
 
   onCreated() {

@@ -70,6 +70,35 @@ describe('TransactionList', () => {
     ]);
   });
 
+  it('offers to split editable payments and reloads after the split', async () => {
+    const transfer = {
+      id: 't',
+      amount: 5,
+      date: new Date('2026-10-01'),
+      editable: true,
+      fromAccount: tx('x').account,
+      toAccount: tx('x').account,
+    } as Transaction;
+    const firstPage = pages[0];
+    pages[0] = { items: [tx('1'), tx('2', false), transfer], hasMore: false };
+    const fixture = TestBed.createComponent(TransactionList);
+    await fixture.whenStable();
+    pages[0] = firstPage;
+    const el = fixture.nativeElement as HTMLElement;
+    const rows = Array.from(el.querySelectorAll('.transaction-row'));
+
+    expect(rows.map((r) => r.querySelector('.split-button') !== null)).toEqual([true, false, false]);
+
+    (rows[0].querySelector('.split-button') as HTMLElement).click();
+    await fixture.whenStable();
+    expect(el.querySelector('#transaction-split-title')?.textContent).toBe('Розділити за категоріями');
+
+    fixture.debugElement.query((d) => d.name === 'app-transaction-split').componentInstance.saved.emit();
+    await fixture.whenStable();
+    expect(el.querySelector('dialog')).toBeNull();
+    expect(ids(fixture.componentInstance)).toEqual(['1', '2']);
+  });
+
   it('starts again from the first page after a delete', () => {
     const list = TestBed.createComponent(TransactionList).componentInstance;
     list.loadMore();

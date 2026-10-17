@@ -11,7 +11,7 @@ import {
   NewTransaction,
   Transaction,
 } from '../../../model/types';
-import { TransactionPage, TransactionRepository } from './transaction-repository';
+import { SplitPart, TransactionPage, TransactionRepository } from './transaction-repository';
 
 // The backend omits the unused pair (account/category vs. fromAccount/toAccount),
 // so isTransferTransaction() keeps working on the parsed JSON.
@@ -98,5 +98,11 @@ export class HttpTransactionRepository extends TransactionRepository {
       map(() => true),
       withUserErrors(),
     );
+  }
+
+  splitTransaction(id: string, parts: SplitPart[]): Observable<Transaction[]> {
+    return this.http
+      .post<TransactionDto[]>(`${TRANSACTIONS}/${id}/split`, { parts })
+      .pipe(map((dtos) => dtos.map(toTransaction)), withUserErrors());
   }
 }

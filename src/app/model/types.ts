@@ -194,7 +194,7 @@ interface BaseTransaction {
   editable: boolean;
 }
 
-interface PaymentTransaction extends BaseTransaction {
+export interface PaymentTransaction extends BaseTransaction {
   account: IAccountRef;
   category: ICategory;
   fromAccount?: never;

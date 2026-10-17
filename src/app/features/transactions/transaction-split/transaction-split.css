@@ -1,0 +1,37 @@
+.transaction-split {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.split-total {
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Category, amount and the remove button on one line; the amount stays narrow. */
+.split-part {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.remove-part {
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.add-part {
+  align-self: flex-start;
+}
+
+.split-remaining {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.split-remaining.off {
+  color: var(--color-danger);
+  font-weight: 600;
+}

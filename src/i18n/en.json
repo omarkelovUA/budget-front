@@ -246,7 +246,16 @@
       "fromAccount": "From account",
       "toAccount": "To account"
     },
-    "subtitle": "Every income, expense and transfer, in one place."
+    "subtitle": "Every income, expense and transfer, in one place.",
+    "split": "Split",
+    "splitAria": "Split the transaction of {{date}} for {{amount}}",
+    "splitForm": {
+      "title": "Split into categories",
+      "total": "Total: {{amount}}",
+      "remaining": "Left to split: {{amount}}",
+      "addPart": "Add a category",
+      "removePart": "Remove this part"
+    }
   },
   "dashboard": {
     "title": "Overview",
@@ -432,7 +441,8 @@
     "already-requested": "You've already asked to join a family. Cancel that request first.",
     "invalid-join-request": "The request is invalid, expired or already answered",
     "category-exists": "There's already a category with this name and type",
-    "category-used-by-family": "Others in the family already use this category, so it can't be hidden"
+    "category-used-by-family": "Others in the family already use this category, so it can't be hidden",
+    "split-total-mismatch": "The parts must add up to the payment's amount."
   },
   "colors": {
     "dollar": "Dollar green",

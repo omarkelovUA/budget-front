@@ -18,6 +18,7 @@ const SCREENS: Record<string, string[]> = {
     'app-empty-art',
   ],
   [`${F}/transactions/transaction-form/transaction-form.html`]: ['app-transaction-form-art'],
+  [`${F}/transactions/transaction-split/transaction-split.html`]: ['app-transaction-form-art'],
   [`${F}/budgets/budget-list/budget-list.html`]: ['app-page-header', 'app-budgets-art', 'app-empty-art'],
   [`${F}/budgets/budget-form/budget-form.html`]: ['app-budget-form-art'],
   [`${F}/family/family-page/family-page.html`]: ['app-page-header', 'app-family-art'],

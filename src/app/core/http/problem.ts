@@ -36,6 +36,7 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'not-account-owner',
   'account-read-only',
   'account-closed',
+  'split-total-mismatch',
   'grantee-not-in-family',
   'close-target-required',
   'transient-account',
