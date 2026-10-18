@@ -52,6 +52,11 @@
   transition: background-color 0.2s;
 }
 
+/* An operator's seventh tab: a little less padding keeps all of them in view on a laptop. */
+.app-nav:has(a:nth-child(7)) a {
+  padding-inline: 12px;
+}
+
 /* Inactive tabs stay full on-primary: any fading drops them below AA on the gradient. */
 .app-nav a:not(.active):hover {
   background-color: var(--color-state-on-gradient);

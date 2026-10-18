@@ -3,6 +3,7 @@ import { catchError, finalize, firstValueFrom, forkJoin, map, Observable, of, sh
 import { IFamily, IUser } from '../../model/types';
 import { GOOGLE_LOGIN_URL } from '../config/api';
 import { FamilyRepository } from '../../features/family/data/family-repository';
+import { OperatorRepository } from '../../features/operator/data/operator-repository';
 import { SettingsState } from '../../features/settings/settings-state';
 import { AuthRepository, AuthSession } from './data/auth-repository';
 
@@ -10,6 +11,7 @@ import { AuthRepository, AuthSession } from './data/auth-repository';
 export class AuthState {
   private readonly authRepository = inject(AuthRepository);
   private readonly familyRepository = inject(FamilyRepository);
+  private readonly operatorRepository = inject(OperatorRepository);
   private readonly settingsState = inject(SettingsState);
 
   private readonly user = signal<IUser | null>(null);
@@ -26,6 +28,10 @@ export class AuthState {
   // whenever the family is loaded.
   private readonly frozen = signal(false);
   readonly familyFrozen = this.frozen.asReadonly();
+
+  // Whether the user runs the service and may open the operator page.
+  private readonly operator = signal(false);
+  readonly isOperator = this.operator.asReadonly();
 
   private refreshInFlight: Observable<string> | null = null;
 
@@ -69,6 +75,7 @@ export class AuthState {
     this.token.set(null);
     this.user.set(null);
     this.frozen.set(false);
+    this.operator.set(false);
     this.settingsState.clear();
   }
 
@@ -83,16 +90,20 @@ export class AuthState {
 
   // The backend's user has no familyId (the membership is the source of truth; every
   // user has a family), so it's looked up right after the session starts, along with the settings that
-  // switch the UI to the account's language. Without settings the session still
-  // starts, in the device's language.
+  // switch the UI to the account's language, and whether they're an operator. Without settings the
+  // session still starts, in the device's language.
   private start(session: AuthSession): Observable<IUser> {
     this.token.set(session.accessToken);
     this.user.set({ ...session.user, familyId: null });
     return forkJoin([
       this.familyRepository.getCurrentFamily(),
       this.settingsState.load().pipe(catchError(() => of(null))),
+      this.operatorRepository.isOperator().pipe(catchError(() => of(false))),
     ]).pipe(
-      tap(([family]) => this.setFamily(family)),
+      tap(([family, , operator]) => {
+        this.setFamily(family);
+        this.operator.set(operator);
+      }),
       map(() => this.user()!),
     );
   }

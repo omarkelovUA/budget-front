@@ -20,6 +20,7 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'family-frozen',
   'invalid-purchase',
   'google-play-unavailable',
+  'operator-required',
   'id-conflict',
   'already-deleted',
   'invalid-sync-cursor',

@@ -257,3 +257,37 @@ export function getTransactionAccess(transaction: Transaction): AccountAccess {
   const seen = accounts.map((a) => a.access).filter((access) => access !== 'none');
   return seen.reduce((lowest, access) => (ACCESS_RANK[access] < ACCESS_RANK[lowest] ? access : lowest), 'owner');
 }
+
+// The operator page (backend ARCHITECTURE §3.5): whoever runs the service.
+export interface IDailyCount {
+  day: string; // 'YYYY-MM-DD', UTC
+  count: number;
+}
+
+export interface IOperatorStats {
+  users: {
+    total: number;
+    newLast7Days: number;
+    newLast30Days: number;
+    activeLast30Days: number;
+    // One entry per day of the last 30, oldest first.
+    signups: IDailyCount[];
+    activeUsers: IDailyCount[];
+  };
+  families: { withMembers: number; frozen: number };
+  subscriptions: {
+    activeGooglePlay: number;
+    activeManual: number;
+    googlePlayByState: Partial<Record<SubscriptionState, number>>;
+  };
+}
+
+// Free access given by hand; expiresAt null: no end.
+export interface IGrant {
+  userId: string;
+  email: string;
+  displayName: string;
+  expiresAt: Date | null;
+  createdAt: Date;
+  active: boolean;
+}

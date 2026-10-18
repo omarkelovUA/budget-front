@@ -1,0 +1,71 @@
+<figure class="daily-bars" *transloco="let t">
+  <svg [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img" [attr.aria-label]="label()">
+    <line class="grid" [attr.x1]="left" [attr.x2]="width" [attr.y1]="top" [attr.y2]="top" />
+    <line class="grid" [attr.x1]="left" [attr.x2]="width" [attr.y1]="base" [attr.y2]="base" />
+    <text class="tick" [attr.x]="left - 6" [attr.y]="top + 4" text-anchor="end">
+      {{ max() | translocoDecimal }}
+    </text>
+    <text class="tick" [attr.x]="left - 6" [attr.y]="base + 4" text-anchor="end">0</text>
+    @for (bar of bars(); track bar.day; let i = $index) {
+      @if (bar.path) {
+        <path class="bar" [class.active]="hovered() === i" [attr.d]="bar.path" />
+      }
+      <!-- The whole slot is the hit target, bigger than its column. -->
+      <rect
+        class="hit"
+        [attr.x]="bar.slotX"
+        [attr.y]="top"
+        [attr.width]="bar.slot"
+        [attr.height]="base - top"
+        tabindex="0"
+        [attr.aria-label]="
+          (bar.date | translocoDate: { dateStyle: 'medium', timeZone: 'UTC' }) + ': ' + bar.count
+        "
+        (pointerenter)="hovered.set(i)"
+        (pointerleave)="hovered.set(null)"
+        (focus)="hovered.set(i)"
+        (blur)="hovered.set(null)"
+      />
+    }
+    @if (bars().length) {
+      <text class="tick" [attr.x]="left" [attr.y]="height - 6">
+        {{ bars()[0].date | translocoDate: { month: 'short', day: 'numeric', timeZone: 'UTC' } }}
+      </text>
+      <text class="tick" [attr.x]="width" [attr.y]="height - 6" text-anchor="end">
+        {{
+          bars()[bars().length - 1].date
+            | translocoDate: { month: 'short', day: 'numeric', timeZone: 'UTC' }
+        }}
+      </text>
+    }
+  </svg>
+
+  @if (active(); as bar) {
+    <div class="tooltip" role="status" [style.left.%]="bar.center">
+      <strong>{{ bar.count | translocoDecimal }}</strong>
+      <span>{{ bar.date | translocoDate: { dateStyle: 'medium', timeZone: 'UTC' } }}</span>
+    </div>
+  }
+
+  <table class="visually-hidden">
+    <caption>
+      {{
+        label()
+      }}
+    </caption>
+    <thead>
+      <tr>
+        <th scope="col">{{ t('operator.charts.day') }}</th>
+        <th scope="col">{{ t('operator.charts.count') }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (bar of bars(); track bar.day) {
+        <tr>
+          <td>{{ bar.date | translocoDate: { dateStyle: 'medium', timeZone: 'UTC' } }}</td>
+          <td>{{ bar.count }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</figure>

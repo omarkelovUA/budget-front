@@ -1,0 +1,142 @@
+<div class="operator-page" *transloco="let t">
+  <app-page-header [title]="t('operator.title')" [subtitle]="t('operator.subtitle')">
+    <app-dashboard-art art />
+  </app-page-header>
+
+  @if (statsResource.isLoading() && !statsResource.hasValue()) {
+    <div class="status-message" role="status">
+      <div class="spinner" aria-hidden="true"></div>
+      <p>{{ t('operator.loading') }}</p>
+    </div>
+  } @else if (statsResource.error()) {
+    <div class="status-message error" role="alert">
+      <p>{{ t('common.loadFailed') }}</p>
+    </div>
+  } @else if (statsResource.value(); as stats) {
+    <div class="tiles">
+      <section class="tile card">
+        <h2>{{ t('operator.tiles.users') }}</h2>
+        <span class="tile-value">{{ stats.users.total | translocoDecimal }}</span>
+        <span class="tile-note">
+          {{
+            t('operator.tiles.newUsers', {
+              week: stats.users.newLast7Days,
+              month: stats.users.newLast30Days,
+            })
+          }}
+        </span>
+      </section>
+      <section class="tile card">
+        <h2>{{ t('operator.tiles.active') }}</h2>
+        <span class="tile-value">{{ stats.users.activeLast30Days | translocoDecimal }}</span>
+        <span class="tile-note">{{ t('operator.tiles.activeNote') }}</span>
+      </section>
+      <section class="tile card">
+        <h2>{{ t('operator.tiles.families') }}</h2>
+        <span class="tile-value">{{ stats.families.withMembers | translocoDecimal }}</span>
+        <span class="tile-note">{{
+          t('operator.tiles.frozen', { count: stats.families.frozen })
+        }}</span>
+      </section>
+      <section class="tile card">
+        <h2>{{ t('operator.tiles.subscriptions') }}</h2>
+        <span class="tile-value">
+          {{
+            stats.subscriptions.activeGooglePlay + stats.subscriptions.activeManual
+              | translocoDecimal
+          }}
+        </span>
+        <span class="tile-note">
+          {{
+            t('operator.tiles.subscriptionsNote', {
+              play: stats.subscriptions.activeGooglePlay,
+              manual: stats.subscriptions.activeManual,
+            })
+          }}
+        </span>
+      </section>
+    </div>
+
+    <div class="charts">
+      <section class="card chart-card">
+        <h2>{{ t('operator.charts.signups') }}</h2>
+        <app-daily-bars [days]="stats.users.signups" [label]="t('operator.charts.signups')" />
+      </section>
+      <section class="card chart-card">
+        <h2>{{ t('operator.charts.active') }}</h2>
+        <app-daily-bars [days]="stats.users.activeUsers" [label]="t('operator.charts.active')" />
+      </section>
+    </div>
+
+    <section class="card play-states">
+      <h2>{{ t('operator.play.title') }}</h2>
+      <dl>
+        @for (state of playStates; track state) {
+          <div>
+            <dt>{{ t('operator.play.states.' + state) }}</dt>
+            <dd>{{ stats.subscriptions.googlePlayByState[state] ?? 0 | translocoDecimal }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+  }
+
+  <section class="card grants" aria-labelledby="grants-title">
+    <h2 id="grants-title">{{ t('operator.grants.title') }}</h2>
+    <p class="muted">{{ t('operator.grants.hint') }}</p>
+
+    <form novalidate (submit)="$event.preventDefault(); grant()" class="grant-form">
+      <div class="field">
+        <label for="grant-email">{{ t('operator.grants.email') }}</label>
+        <input id="grant-email" type="email" [formField]="grantForm.email" />
+      </div>
+      <div class="field">
+        <label for="grant-until">{{ t('operator.grants.until') }}</label>
+        <input id="grant-until" type="date" [formField]="grantForm.until" />
+      </div>
+      <button type="submit" class="btn-filled" [disabled]="!grantForm().valid() || pending()">
+        {{ t('operator.grants.give') }}
+      </button>
+    </form>
+    @if (errorMessage(); as message) {
+      <p class="form-error" role="alert">{{ message }}</p>
+    }
+
+    <div class="grant-list">
+      @for (grant of grantsResource.value(); track grant.userId) {
+        <div class="grant-row">
+          <div class="grant-info">
+            <span class="grant-name">{{ grant.displayName }}</span>
+            <span class="muted">{{ grant.email }}</span>
+          </div>
+          <span class="muted">
+            {{
+              grant.expiresAt
+                ? t('operator.grants.endsOn', {
+                    date: (grant.expiresAt | translocoDate: { dateStyle: 'medium' }),
+                  })
+                : t('operator.grants.noEnd')
+            }}
+          </span>
+          <span class="chip" [class.ended]="!grant.active">
+            {{ t(grant.active ? 'operator.grants.active' : 'operator.grants.ended') }}
+          </span>
+          <button
+            type="button"
+            class="btn-text"
+            [disabled]="pending()"
+            (click)="revoke(grant.userId)"
+            [attr.aria-label]="t('operator.grants.revokeAria', { email: grant.email })"
+          >
+            {{ t('operator.grants.revoke') }}
+          </button>
+        </div>
+      } @empty {
+        <div class="empty-state">
+          <app-empty-art />
+          <p>{{ t('operator.grants.empty') }}</p>
+        </div>
+      }
+    </div>
+  </section>
+</div>

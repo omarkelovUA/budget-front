@@ -23,6 +23,7 @@ const SCREENS: Record<string, string[]> = {
   [`${F}/family/family-page/family-page.html`]: ['app-page-header', 'app-family-art'],
   [`${F}/family-transfers/family-transfers/family-transfers.html`]: ['app-family-transfers-art'],
   [`${F}/settings/settings-dialog/settings-dialog.html`]: ['app-settings-art'],
+  [`${F}/operator/operator-page/operator-page.html`]: ['app-page-header', 'app-dashboard-art', 'app-empty-art'],
 };
 
 describe('screens', () => {

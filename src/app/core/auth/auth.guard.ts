@@ -8,6 +8,13 @@ export const authGuard: CanActivateFn = () => {
   return authState.isAuthenticated() ? true : router.createUrlTree(['/login']);
 };
 
+// The operator page is for operators only; anyone else lands on the dashboard.
+export const operatorGuard: CanActivateFn = () => {
+  const authState = inject(AuthState);
+  const router = inject(Router);
+  return authState.isOperator() ? true : router.createUrlTree(['/dashboard']);
+};
+
 // Keeps an already-logged-in user from landing on /login.
 export const guestGuard: CanActivateFn = () => {
   const authState = inject(AuthState);

@@ -8,6 +8,7 @@ import { AuthState } from './core/auth/auth-state';
 import { IAddedCategory, IFamily, IUserSettings } from './model/types';
 import { CategoryRepository } from './features/categories/data/category-repository';
 import { FamilyRepository } from './features/family/data/family-repository';
+import { OperatorRepository } from './features/operator/data/operator-repository';
 import { SettingsRepository } from './features/settings/data/settings-repository';
 import { LanguageService } from './core/i18n/language';
 import { TEST_SETTINGS } from '../test-providers';
@@ -27,17 +28,20 @@ describe('App', () => {
   let settings: IUserSettings;
   let family: IFamily;
   let seen: number;
+  let operator: boolean;
 
   beforeEach(async () => {
     settings = TEST_SETTINGS;
     family = { id: 'f', name: 'Family', members: [], categoriesReviewed: true, entitled: true, frozen: false };
     seen = 0;
+    operator = false;
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
         provideRouter(routes),
         { provide: AuthRepository, useValue: { refresh: () => of(SESSION) } },
         { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(family) } },
+        { provide: OperatorRepository, useValue: { isOperator: () => of(operator) } },
         {
           provide: CategoryRepository,
           useValue: {
@@ -82,6 +86,12 @@ describe('App', () => {
     expect(await logIn()).toEqual(['Dashboard', 'Accounts', 'Categories', 'Transactions', 'Budgets', 'Family']);
     expect(TestBed.inject(LanguageService).current()).toBe('en');
     expect(document.documentElement.lang).toBe('en');
+  });
+
+  it('shows the operator page link to operators only', async () => {
+    operator = true;
+
+    expect(await logIn()).toContain('Оператор');
   });
 
   it('tells everyone in a frozen family that sharing is paused', async () => {

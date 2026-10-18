@@ -25,6 +25,8 @@ import { HttpAuthRepository } from './core/auth/data/http-auth-repository';
 import { FamilyRepository } from './features/family/data/family-repository';
 import { HttpFamilyRepository } from './features/family/data/http-family-repository';
 import { SubscriptionRepository } from './features/family/data/subscription-repository';
+import { OperatorRepository } from './features/operator/data/operator-repository';
+import { HttpOperatorRepository } from './features/operator/data/http-operator-repository';
 import { HttpSubscriptionRepository } from './features/family/data/http-subscription-repository';
 import { SettingsRepository } from './features/settings/data/settings-repository';
 import { FamilyTransferRepository } from './features/family-transfers/data/family-transfer-repository';
@@ -68,6 +70,7 @@ export const appConfig: ApplicationConfig = {
     { provide: AuthRepository, useClass: HttpAuthRepository },
     { provide: FamilyRepository, useClass: HttpFamilyRepository },
     { provide: SubscriptionRepository, useClass: HttpSubscriptionRepository },
+    { provide: OperatorRepository, useClass: HttpOperatorRepository },
     { provide: SettingsRepository, useClass: HttpSettingsRepository },
     { provide: FamilyTransferRepository, useClass: HttpFamilyTransferRepository },
   ],

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard, oauthCallbackGuard } from './core/auth/auth.guard';
+import { authGuard, guestGuard, oauthCallbackGuard, operatorGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -44,6 +44,12 @@ export const routes: Routes = [
         path: 'family',
         loadComponent: () =>
           import('./features/family/family-page/family-page').then((m) => m.FamilyPage),
+      },
+      {
+        path: 'operator',
+        canActivate: [operatorGuard],
+        loadComponent: () =>
+          import('./features/operator/operator-page/operator-page').then((m) => m.OperatorPage),
       },
     ],
   },

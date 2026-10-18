@@ -23,6 +23,7 @@ export class App {
 
   protected readonly currentUser = this.authState.currentUser;
   protected readonly familyFrozen = this.authState.familyFrozen;
+  protected readonly isOperator = this.authState.isOperator;
 
   // The admin is told, once they open the app, about family categories other members
   // added; they can rename or delete them on the categories page.

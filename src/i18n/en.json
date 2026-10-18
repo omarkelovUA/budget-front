@@ -11,7 +11,8 @@
     "budgets": "Budgets",
     "family": "Family",
     "settings": "Settings",
-    "logout": "Log out"
+    "logout": "Log out",
+    "operator": "Operator"
   },
   "common": {
     "save": "Save",
@@ -408,6 +409,7 @@
     "family-frozen": "Shared data is read-only until a family admin renews the subscription",
     "invalid-purchase": "This purchase couldn’t be confirmed",
     "google-play-unavailable": "Google Play can’t be reached right now. Try again later.",
+    "operator-required": "Only the service’s operators can open this",
     "id-conflict": "This item already exists.",
     "already-deleted": "This was deleted in the meantime.",
     "invalid-sync-cursor": "Sync got out of step. It will restart.",
@@ -455,5 +457,52 @@
     "rose": "Rose",
     "red": "Red",
     "amber": "Amber"
+  },
+  "operator": {
+    "title": "Operator",
+    "subtitle": "How the app is used, and who uses it for free.",
+    "loading": "Loading numbers...",
+    "tiles": {
+      "users": "Users",
+      "newUsers": "{{week}} new in 7 days · {{month}} in 30 days",
+      "active": "Active users",
+      "activeNote": "Signed in or synced in the last 30 days",
+      "families": "Families with members",
+      "frozen": "{{count}} frozen",
+      "subscriptions": "Active subscriptions",
+      "subscriptionsNote": "{{play}} through Google Play · {{manual}} free"
+    },
+    "charts": {
+      "signups": "Sign-ups per day",
+      "active": "Active users per day",
+      "day": "Day",
+      "count": "Count"
+    },
+    "play": {
+      "title": "Google Play subscriptions by state",
+      "states": {
+        "active": "Active",
+        "in_grace": "In grace period",
+        "canceled": "Cancelled, not ended",
+        "on_hold": "On hold",
+        "paused": "Paused",
+        "pending": "Waiting for payment",
+        "expired": "Ended"
+      }
+    },
+    "grants": {
+      "title": "Free access",
+      "hint": "People who can add family members without a subscription.",
+      "email": "Email",
+      "until": "Last day (optional)",
+      "give": "Give access",
+      "endsOn": "Until {{date}}",
+      "noEnd": "No end date",
+      "active": "Active",
+      "ended": "Ended",
+      "revoke": "Take back",
+      "revokeAria": "Take back free access from {{email}}",
+      "empty": "Nobody has free access."
+    }
   }
 }

@@ -12,6 +12,9 @@
         <a routerLink="/transactions" routerLinkActive="active">{{ t('nav.transactions') }}</a>
         <a routerLink="/budgets" routerLinkActive="active">{{ t('nav.budgets') }}</a>
         <a routerLink="/family" routerLinkActive="active">{{ t('nav.family') }}</a>
+        @if (isOperator()) {
+          <a routerLink="/operator" routerLinkActive="active">{{ t('nav.operator') }}</a>
+        }
       </nav>
       <div class="user-menu">
         <span class="user-avatar" aria-hidden="true">{{ user.displayName.charAt(0) }}</span>

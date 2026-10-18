@@ -1,0 +1,150 @@
+.operator-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+  gap: 16px;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tile h2,
+.card h2 {
+  margin: 0;
+  font: var(--type-label);
+  color: var(--color-text-muted);
+}
+
+.tile-value {
+  font: var(--type-headline);
+  color: var(--color-text);
+}
+
+.tile-note,
+.muted {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
+  gap: 16px;
+}
+
+/* Room above the columns for the hover tooltip. */
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+.play-states dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 12px 0 0;
+}
+
+.play-states dt {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.play-states dd {
+  margin: 0;
+  font: var(--type-title);
+}
+
+.grants {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.grants p {
+  margin: 0;
+}
+
+.grant-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.grant-form .field {
+  flex: 1 1 200px;
+}
+
+.grant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.grant-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-container-low);
+}
+
+.grant-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.grant-info span {
+  overflow-wrap: anywhere;
+}
+
+.grant-name {
+  font-weight: 500;
+}
+
+.chip.ended {
+  color: var(--color-text-muted);
+}
+
+.status-message {
+  text-align: center;
+  padding: 40px;
+  color: var(--color-text-muted);
+}
+
+.status-message.error {
+  color: var(--color-danger);
+}
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

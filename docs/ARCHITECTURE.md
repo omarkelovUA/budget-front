@@ -98,6 +98,17 @@ The backend enforces these; the UI only has to present them correctly:
   sign-in instead of the list. Accepting moves the user out of their family, so with
   others in it the page asks for confirmation first. A family holds at most 10 people, pending
   invitations included.
+- **Operator page** (backend §3.5), for whoever runs the service.
+  - `GET /users/me` tells `AuthState.isOperator` when the session starts. Only then does
+    the nav show *Оператор*, and `operatorGuard` lets `/operator` open; anyone else lands
+    on the dashboard.
+  - Stat tiles, then two charts of the last 30 days, sign-ups and active users per day
+    (`DailyBars`). They're single-series columns in the primary token, with a tooltip on
+    hover and focus and a hidden table carrying every value; they follow the `dataviz`
+    guidance.
+  - Google Play subscriptions by state, and the free access given by hand: give by email
+    with an optional last day (access lasts through its end, in the operator's time
+    zone), or take back.
 - **Family subscription** (backend §3.4): adding people needs a family admin's
   subscription, sold only in the Android app (Google Play), so the web never takes a
   payment.
@@ -179,6 +190,7 @@ src/app/
     transactions/
     budgets/
     family/                 # own family, email invitations, join requests, member list
+    operator/               # the operator page: usage numbers and free access (operators only)
     auth/                   # the Google sign-in page
     dashboard/              # aggregated overview (balances, month summary)
   app.routes.ts             # lazy-loaded per feature
