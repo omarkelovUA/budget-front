@@ -119,28 +119,13 @@
     "other": "Other"
   },
   "auth": {
-    "email": "Email",
-    "password": "Password",
     "login": {
       "title": "Sign in",
-      "submit": "Sign in",
-      "pending": "Signing in...",
-      "or": "or",
+      "lead": "New here? Your first sign-in creates your account, with your own family ready to go.",
+      "pending": "Opening Google...",
       "google": "Sign in with Google",
-      "noAccount": "No account yet?",
-      "registerLink": "Sign up",
       "googleEmailNotVerified": "Your Google account's email isn't verified",
       "googleFailed": "Couldn't sign in with Google"
-    },
-    "register": {
-      "title": "Sign up",
-      "displayName": "Name",
-      "displayNamePlaceholder": "e.g. Olena",
-      "password": "Password (at least 8 characters)",
-      "submit": "Sign up",
-      "pending": "Signing up...",
-      "haveAccount": "Already have an account?",
-      "loginLink": "Sign in"
     },
     "tagline": "Your family’s money, in one bright, shared place."
   },
@@ -396,8 +381,6 @@
   "errors": {
     "fallback": "Something went wrong. Please try again later.",
     "badRequest": "Please check what you entered",
-    "invalid-credentials": "Wrong email or password",
-    "email-taken": "An account with this email already exists",
     "not-found": "Not found",
     "invalid-invite": "The invitation is invalid, expired or already used",
     "already-invited": "This address has already been invited",
@@ -406,7 +389,7 @@
     "email-not-verified": "Sign in with Google to use invitations and join requests",
     "invalid-google-token": "Google sign-in failed. Please try again.",
     "google-unavailable": "Google sign-in is unavailable right now. Please try again later.",
-    "google-link-confirmation-required": "An account with this email already exists. Confirm to link it to Google; its password will stop working.",
+    "google-link-confirmation-required": "An account with this email already exists. Confirm to link it to Google; everyone signed in to it will be signed out.",
     "id-conflict": "This item already exists.",
     "already-deleted": "This was deleted in the meantime.",
     "invalid-sync-cursor": "Sync got out of step. It will restart.",

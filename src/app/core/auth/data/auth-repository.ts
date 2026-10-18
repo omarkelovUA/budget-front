@@ -10,10 +10,6 @@ export interface AuthSession {
 }
 
 export abstract class AuthRepository {
-  abstract login(email: string, password: string): Observable<AuthSession>;
-
-  abstract register(email: string, password: string, displayName: string): Observable<AuthSession>;
-
   // Exchanges the refresh cookie for a new access token (rotating the cookie).
   // Also how a Google login lands: the backend sets the cookie, then redirects here.
   abstract refresh(): Observable<AuthSession>;

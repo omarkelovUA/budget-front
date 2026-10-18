@@ -1,7 +1,6 @@
 import { Type } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { LoginArt } from './login-art';
-import { RegisterArt } from './register-art';
 import { DashboardArt } from './dashboard-art';
 import { AccountsArt } from './accounts-art';
 import { AccountFormArt } from './account-form-art';
@@ -19,7 +18,6 @@ import { EmptyArt } from './empty-art';
 
 const ARTS: Type<unknown>[] = [
   LoginArt,
-  RegisterArt,
   DashboardArt,
   AccountsArt,
   AccountFormArt,

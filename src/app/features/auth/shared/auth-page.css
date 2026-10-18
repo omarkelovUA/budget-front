@@ -1,4 +1,4 @@
-/* Sign-in and sign-up: one card, the illustration on a gradient panel beside the form. */
+/* Sign-in: one card, the illustration on a gradient panel beside the Google button. */
 .auth-page {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -36,6 +36,7 @@
 .auth-body {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 16px;
   padding: 40px 32px;
 }
@@ -45,41 +46,14 @@
   font: var(--type-headline);
 }
 
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.auth-lead {
+  margin: 0;
+  color: var(--color-text-muted);
 }
 
 .error {
   margin: 0;
   color: var(--color-danger);
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--color-text-muted);
-  font: var(--type-label);
-}
-
-.divider::before,
-.divider::after {
-  content: '';
-  flex: 1;
-  border-top: 1px solid var(--color-border);
-}
-
-.switch-link {
-  margin: 0;
-  color: var(--color-text-muted);
-  text-align: center;
-}
-
-.switch-link a {
-  color: var(--color-primary-text);
-  font-weight: 500;
 }
 
 @media (max-width: 720px) {

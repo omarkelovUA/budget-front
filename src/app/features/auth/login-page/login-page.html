@@ -6,35 +6,14 @@
 
   <div class="auth-body">
     <h1>{{ t('auth.login.title') }}</h1>
+    <p class="auth-lead">{{ t('auth.login.lead') }}</p>
 
-    <form novalidate (submit)="$event.preventDefault(); submit()" class="auth-form">
-      <div class="field">
-        <label for="login-email">{{ t('auth.email') }}</label>
-        <input id="login-email" type="email" [formField]="form.email" placeholder="demo@family.app" />
-      </div>
+    @if (oauthErrorKey; as key) {
+      <p class="error" role="alert">{{ t(key) }}</p>
+    }
 
-      <div class="field">
-        <label for="login-password">{{ t('auth.password') }}</label>
-        <input id="login-password" type="password" [formField]="form.password" />
-      </div>
-
-      @if (errorMessage(); as message) {
-        <p class="error" role="alert">{{ message }}</p>
-      } @else if (oauthErrorKey(); as key) {
-        <p class="error" role="alert">{{ t(key) }}</p>
-      }
-
-      <button type="submit" class="btn-filled" [disabled]="!form().valid() || pending()">
-        {{ pending() ? t('auth.login.pending') : t('auth.login.submit') }}
-      </button>
-    </form>
-
-    <div class="divider"><span>{{ t('auth.login.or') }}</span></div>
-
-    <button type="button" class="btn-outlined google-button" [disabled]="pending()" (click)="loginWithGoogle()">
-      {{ t('auth.login.google') }}
+    <button type="button" class="btn-filled" [disabled]="pending()" (click)="loginWithGoogle()">
+      {{ pending() ? t('auth.login.pending') : t('auth.login.google') }}
     </button>
-
-    <p class="switch-link">{{ t('auth.login.noAccount') }} <a routerLink="/register">{{ t('auth.login.registerLink') }}</a></p>
   </div>
 </section>

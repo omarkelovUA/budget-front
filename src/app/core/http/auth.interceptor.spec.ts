@@ -19,6 +19,8 @@ describe('authInterceptor', () => {
   let refreshes: number;
   // When set, refresh() stays pending until the test emits on it.
   let pendingRefresh: Subject<AuthSession> | null;
+  // The access token the next refresh() hands out.
+  let issued: string;
 
   beforeEach(() => {
     refreshes = 0;
@@ -31,10 +33,9 @@ describe('authInterceptor', () => {
         {
           provide: AuthRepository,
           useValue: {
-            login: () => of(session('old-token')),
             refresh: (): Observable<AuthSession> => {
               refreshes++;
-              return pendingRefresh ?? of(session('new-token'));
+              return pendingRefresh ?? of(session(issued));
             },
           },
         },
@@ -43,7 +44,11 @@ describe('authInterceptor', () => {
     });
     http = TestBed.inject(HttpClient);
     backend = TestBed.inject(HttpTestingController);
-    TestBed.inject(AuthState).login('demo@family.app', 'x').subscribe();
+    // The session the page load restored from the refresh cookie.
+    issued = 'old-token';
+    TestBed.inject(AuthState).restoreSession();
+    issued = 'new-token';
+    refreshes = 0;
   });
 
   afterEach(() => backend.verify());

@@ -23,18 +23,9 @@ export class AuthState {
 
   private refreshInFlight: Observable<string> | null = null;
 
-  login(email: string, password: string): Observable<IUser> {
-    return this.authRepository.login(email, password).pipe(switchMap((s) => this.start(s)));
-  }
-
-  register(email: string, password: string, displayName: string): Observable<IUser> {
-    return this.authRepository
-      .register(email, password, displayName)
-      .pipe(switchMap((s) => this.start(s)));
-  }
-
-  // Full-page redirect into the backend's OAuth2 flow. It comes back to
-  // /auth/callback with the refresh cookie set (see oauthCallbackGuard).
+  // The only way in: a full-page redirect into the backend's OAuth2 flow, which also
+  // signs up a new user. It comes back to /auth/callback with the refresh cookie set
+  // (see oauthCallbackGuard).
   loginWithGoogle(): void {
     window.location.assign(GOOGLE_LOGIN_URL);
   }

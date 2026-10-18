@@ -17,11 +17,11 @@ describe('problem mapping', () => {
   });
 
   it('maps known types to their UI message in the active language', () => {
-    expect(toUserError(problem('invalid-credentials', 401)).message).toBe('Невірний email або пароль');
+    expect(toUserError(problem('budget-exists')).message).toBe('Бюджет для цієї категорії на цей місяць уже існує');
 
     transloco.setActiveLang('en');
 
-    expect(toUserError(problem('invalid-credentials', 401)).message).toBe('Wrong email or password');
+    expect(toUserError(problem('budget-exists')).message).toBe('This category already has a budget for this month');
   });
 
   it('explains requests the server rejected as invalid', () => {

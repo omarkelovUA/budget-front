@@ -8,7 +8,7 @@ export const authGuard: CanActivateFn = () => {
   return authState.isAuthenticated() ? true : router.createUrlTree(['/login']);
 };
 
-// Keeps an already-logged-in user from landing on /login or /register.
+// Keeps an already-logged-in user from landing on /login.
 export const guestGuard: CanActivateFn = () => {
   const authState = inject(AuthState);
   const router = inject(Router);

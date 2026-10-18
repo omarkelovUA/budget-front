@@ -163,7 +163,7 @@ src/app/
     transactions/
     budgets/
     family/                 # own family, email invitations, join requests, member list
-    auth/                   # login and register pages
+    auth/                   # the Google sign-in page
     dashboard/              # aggregated overview (balances, month summary)
   app.routes.ts             # lazy-loaded per feature
 src/i18n/                   # en.json, uk.json: one translation file per language
@@ -210,7 +210,9 @@ the backend doc §6. On the client:
   401 it refreshes once — concurrent 401s share one refresh, since each refresh rotates
   the cookie — and retries; if refreshing fails it clears the session and goes to
   `/login`.
-- Google login is a full-page navigation to `/oauth2/authorization/google`. The backend
+- **Google is the only way in**: `/login` has just the Google button, and there's no
+  register page, since the first sign-in creates the account. It's a full-page
+  navigation to `/oauth2/authorization/google`. The backend
   redirects back to `/auth/callback`; by then the startup refresh has already restored
   the session, so `oauthCallbackGuard` just routes to `/dashboard` (or to
   `/login?error=oauth` on failure).
@@ -369,7 +371,6 @@ backend doc §8.
 
 ## 6. Open questions
 
-- The login and register pages have no language switcher; they follow the browser until
-  sign-in.
+- The sign-in page has no language switcher; it follows the browser until sign-in.
 - The two-user browser run-through (invitations, shared accounts, transfers) hasn't been
   done by hand yet. System-wide open points are in the backend doc §9.

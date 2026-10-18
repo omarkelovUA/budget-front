@@ -5,7 +5,6 @@ import { readFileSync } from 'node:fs';
 const F = 'src/app/features';
 const SCREENS: Record<string, string[]> = {
   [`${F}/auth/login-page/login-page.html`]: ['app-login-art'],
-  [`${F}/auth/register-page/register-page.html`]: ['app-register-art'],
   [`${F}/dashboard/dashboard.html`]: ['app-page-header', 'app-dashboard-art'],
   [`${F}/accounts/account-list/account-list.html`]: ['app-page-header', 'app-accounts-art', 'app-empty-art'],
   [`${F}/accounts/account-form/account-form.html`]: ['app-account-form-art'],

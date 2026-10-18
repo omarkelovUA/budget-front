@@ -29,9 +29,7 @@ describe('templates', () => {
     expect(readFileSync('src/app/app.html', 'utf8')).not.toMatch(/<h1/);
     const panelsBelowH2 = ALL.filter((path) => /class="panel-header">\s*<app-[\w-]+ \/>\s*<h3/.test(readFileSync(path, 'utf8')));
     expect(panelsBelowH2).toEqual([]);
-    for (const path of ['login-page', 'register-page']) {
-      expect(readFileSync(`src/app/features/auth/${path}/${path}.html`, 'utf8')).toMatch(/<h1/);
-    }
+    expect(readFileSync('src/app/features/auth/login-page/login-page.html', 'utf8')).toMatch(/<h1/);
     expect(readFileSync('src/app/features/dashboard/dashboard.html', 'utf8')).not.toMatch(/<h3/);
   });
 });

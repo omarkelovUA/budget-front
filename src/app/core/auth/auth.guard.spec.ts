@@ -19,7 +19,7 @@ describe('auth guards', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        { provide: AuthRepository, useValue: { login: () => of(SESSION) } },
+        { provide: AuthRepository, useValue: { refresh: () => of(SESSION) } },
         { provide: FamilyRepository, useValue: { getCurrentFamily: () => of({ id: 'f', name: 'Family', members: [] }) } },
       ],
     });
@@ -32,7 +32,7 @@ describe('auth guards', () => {
   });
 
   it('authGuard lets authenticated users through', () => {
-    TestBed.inject(AuthState).login(SESSION.user.email, 'x').subscribe();
+    TestBed.inject(AuthState).restoreSession();
     expect(run(authGuard)).toBe(true);
   });
 
@@ -41,7 +41,7 @@ describe('auth guards', () => {
   });
 
   it('oauthCallbackGuard sends a restored session to /dashboard', () => {
-    TestBed.inject(AuthState).login(SESSION.user.email, 'x').subscribe();
+    TestBed.inject(AuthState).restoreSession();
     expect(urlOf(run(oauthCallbackGuard))).toBe('/dashboard');
   });
 
@@ -50,7 +50,7 @@ describe('auth guards', () => {
   });
 
   it('guestGuard redirects authenticated users to /dashboard', () => {
-    TestBed.inject(AuthState).login(SESSION.user.email, 'x').subscribe();
+    TestBed.inject(AuthState).restoreSession();
     expect(urlOf(run(guestGuard))).toBe('/dashboard');
   });
 });

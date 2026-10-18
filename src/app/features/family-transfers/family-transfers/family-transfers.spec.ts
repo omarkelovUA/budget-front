@@ -49,7 +49,7 @@ describe('FamilyTransfers', () => {
       providers: [
         {
           provide: AuthRepository,
-          useValue: { login: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
+          useValue: { refresh: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
         },
         { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(FAMILY) } },
         {
@@ -65,7 +65,7 @@ describe('FamilyTransfers', () => {
         },
       ],
     });
-    TestBed.inject(AuthState).login('me@x.com', 'x').subscribe();
+    TestBed.inject(AuthState).restoreSession();
     fixture = TestBed.createComponent(FamilyTransfers);
     fixture.componentRef.setInput('accounts', [
       account('uah-card', 'UAH'),

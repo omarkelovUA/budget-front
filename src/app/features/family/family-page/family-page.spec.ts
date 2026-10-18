@@ -66,7 +66,7 @@ describe('FamilyPage', () => {
       providers: [
         {
           provide: AuthRepository,
-          useValue: { login: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
+          useValue: { refresh: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
         },
         {
           provide: FamilyRepository,
@@ -108,7 +108,7 @@ describe('FamilyPage', () => {
         },
       ],
     });
-    TestBed.inject(AuthState).login('me@x.com', 'x').subscribe();
+    TestBed.inject(AuthState).restoreSession();
     fixture = TestBed.createComponent(FamilyPage);
     await fixture.whenStable();
   }

@@ -94,7 +94,7 @@ describe('Dashboard', () => {
         },
         {
           provide: AuthRepository,
-          useValue: { login: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
+          useValue: { refresh: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
         },
         { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(family) } },
         { provide: FamilyTransferRepository, useValue: { getInTransit: () => of({ incoming: [], outgoing: [] }) } },
@@ -127,7 +127,7 @@ describe('Dashboard', () => {
   });
 
   async function signedIn() {
-    TestBed.inject(AuthState).login('me@x.com', 'x').subscribe();
+    TestBed.inject(AuthState).restoreSession();
     const fixture = TestBed.createComponent(Dashboard);
     await fixture.whenStable();
     return fixture.nativeElement as HTMLElement;

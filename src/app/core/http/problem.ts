@@ -8,8 +8,6 @@ const PROBLEM_TYPE_BASE = 'https://familybudget.app/problems/';
 
 // Each has its text under errors.<slug> in the translation files.
 export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
-  'invalid-credentials',
-  'email-taken',
   'not-found',
   'invalid-invite',
   'already-invited',

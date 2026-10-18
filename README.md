@@ -23,7 +23,8 @@ npm ci
 npm start
 ```
 
-Open <http://localhost:4200>, register, and create a family to share data.
+Open <http://localhost:4200> and sign in with Google (the backend needs a Google OAuth
+client, see its README); the first sign-in creates your account and family.
 
 `npm start` (`ng serve`) proxies `/api`, `/oauth2` and `/login/oauth2` to the backend
 (`src/proxy.conf.json`), so the browser sees a single origin: no CORS setup, and the
