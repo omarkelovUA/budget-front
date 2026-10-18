@@ -16,7 +16,6 @@ export const KNOWN_PROBLEMS: ReadonlySet<string> = new Set([
   'email-not-verified',
   'invalid-google-token',
   'google-unavailable',
-  'google-link-confirmation-required',
   'id-conflict',
   'already-deleted',
   'invalid-sync-cursor',

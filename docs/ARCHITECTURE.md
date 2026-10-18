@@ -220,8 +220,7 @@ the backend doc §6. On the client:
   auth signal.
 - The backend also serves the Android app through `/auth/google/mobile` and
   `/auth/mobile/*` (tokens in the body). The SPA doesn't use them, but their problem
-  types (`invalid-google-token`, `google-unavailable`,
-  `google-link-confirmation-required`) have translations
+  types (`invalid-google-token`, `google-unavailable`) have translations
   like every other slug.
 - The Android app also syncs through `GET /sync/changes` and sends its own ids when it
   creates something (optional `id` on account, category, transaction and budget

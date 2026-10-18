@@ -389,7 +389,6 @@
     "email-not-verified": "Sign in with Google to use invitations and join requests",
     "invalid-google-token": "Google sign-in failed. Please try again.",
     "google-unavailable": "Google sign-in is unavailable right now. Please try again later.",
-    "google-link-confirmation-required": "An account with this email already exists. Confirm to link it to Google; everyone signed in to it will be signed out.",
     "id-conflict": "This item already exists.",
     "already-deleted": "This was deleted in the meantime.",
     "invalid-sync-cursor": "Sync got out of step. It will restart.",
