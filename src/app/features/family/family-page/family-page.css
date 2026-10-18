@@ -29,6 +29,19 @@
   margin: 0;
 }
 
+/* The admin's subscription status, or how to get one (in the Android app). */
+.subscription {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.subscription h2,
+.subscription p {
+  margin: 0;
+}
+
 .dialog-form {
   display: flex;
   flex-direction: column;

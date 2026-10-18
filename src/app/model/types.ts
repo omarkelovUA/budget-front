@@ -78,6 +78,29 @@ export interface IFamily {
   // Whether the admin has chosen which categories the family sees: asked once, on the
   // first other member.
   categoriesReviewed: boolean;
+  // An admin has a subscription, so members can be added (sold in the Android app).
+  entitled: boolean;
+  // Members but no subscription: shared data is read-only until an admin renews.
+  frozen: boolean;
+}
+
+export type SubscriptionState =
+  | 'pending'
+  | 'active'
+  | 'in_grace'
+  | 'on_hold'
+  | 'paused'
+  | 'canceled'
+  | 'expired';
+
+// The user's own subscription: a Google Play purchase, or access granted by hand.
+export interface ISubscription {
+  source: 'google_play' | 'manual';
+  state: SubscriptionState;
+  expiresAt: Date | null; // null: a manual grant without an end
+  autoRenewing: boolean;
+  // Whether it entitles the user now.
+  active: boolean;
 }
 
 //TODO add Map monthYear is key and amount is value - plan and fact (fact for caching)
@@ -163,9 +186,10 @@ export interface IFamilyTransfers {
   incoming: IInTransit[];
 }
 
-// Only open accounts the user owns or has shared access to take transactions.
-export function canRecordOn(account: Pick<IAccount, 'access' | 'closed'>): boolean {
-  return !account.closed && (account.access === 'owner' || account.access === 'shared');
+// Only open accounts the user owns or has shared access to take transactions; in a
+// frozen family, only their own.
+export function canRecordOn(account: Pick<IAccount, 'access' | 'closed'>, familyFrozen = false): boolean {
+  return !account.closed && (account.access === 'owner' || (account.access === 'shared' && !familyFrozen));
 }
 
 export interface IBudget {

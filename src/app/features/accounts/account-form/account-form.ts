@@ -41,6 +41,7 @@ export class AccountForm {
   private readonly familyRepository = inject(FamilyRepository);
   private readonly settings = inject(SettingsState).settings;
   private readonly currentUser = inject(AuthState).currentUser;
+  private readonly familyFrozen = inject(AuthState).familyFrozen;
 
   protected readonly colors = TAG_COLORS;
   protected readonly tagColor = tagColor;
@@ -93,6 +94,13 @@ export class AccountForm {
 
   accessOf(userId: string): MemberAccess {
     return this.memberAccess()[userId] ?? 'hidden';
+  }
+
+  // While the family is frozen, sharing may shrink but not grow past what the account had.
+  canPick(userId: string, access: MemberAccess): boolean {
+    if (!this.familyFrozen()) return true;
+    const saved = this.account()?.grants?.find((g) => g.userId === userId)?.level ?? 'hidden';
+    return this.accessLevels.indexOf(access) <= this.accessLevels.indexOf(saved);
   }
 
   setAccess(userId: string, access: MemberAccess) {

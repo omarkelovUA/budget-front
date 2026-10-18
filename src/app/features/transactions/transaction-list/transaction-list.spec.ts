@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { AUTH_STATE_DEPENDENCIES } from '../../../core/auth/auth-state.testing';
 import { AccountAccess, ICategory, Transaction } from '../../../model/types';
 import { TransactionPage, TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
@@ -29,6 +30,7 @@ describe('TransactionList', () => {
     TestBed.configureTestingModule({
       imports: [TransactionList],
       providers: [
+        ...AUTH_STATE_DEPENDENCIES,
         {
           provide: TransactionRepository,
           useValue: {

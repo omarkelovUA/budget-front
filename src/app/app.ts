@@ -22,6 +22,7 @@ export class App {
   private readonly categoryRepository = inject(CategoryRepository);
 
   protected readonly currentUser = this.authState.currentUser;
+  protected readonly familyFrozen = this.authState.familyFrozen;
 
   // The admin is told, once they open the app, about family categories other members
   // added; they can rename or delete them on the categories page.

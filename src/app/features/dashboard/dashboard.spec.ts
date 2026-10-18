@@ -70,7 +70,7 @@ describe('Dashboard', () => {
 
   beforeEach(() => {
     requestedPeriods = [];
-    family = { id: 'f', name: 'Family', members: [member('me')], categoriesReviewed: true };
+    family = { id: 'f', name: 'Family', members: [member('me')], categoriesReviewed: true, entitled: true, frozen: false };
     TestBed.configureTestingModule({
       imports: [Dashboard],
       providers: [

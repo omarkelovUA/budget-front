@@ -4,7 +4,7 @@
     <div class="panel-header">
       <app-family-transfers-art />
       <h2 id="in-transit-title">{{ t('familyTransfers.title') }}</h2>
-      <button type="button" class="btn-tonal send-button" [disabled]="pending()" (click)="startSend()">
+      <button type="button" class="btn-tonal send-button" [disabled]="pending() || familyFrozen()" (click)="startSend()">
         <span aria-hidden="true">+</span> {{ t('familyTransfers.send.submit') }}
       </button>
     </div>

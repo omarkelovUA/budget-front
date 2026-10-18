@@ -37,8 +37,10 @@
                 <span class="budget-period">{{ budget.period }}</span>
               </div>
               <app-visibility-badge [visibility]="budget.visibility" />
-              <button type="button" class="delete-button" (click)="deleteBudget(budget)"
-                      [attr.aria-label]="t('budgets.deleteAria', { name: budget.category.name, period: budget.period })">×</button>
+              @if (budget.visibility === 'private' || !familyFrozen()) {
+                <button type="button" class="delete-button" (click)="deleteBudget(budget)"
+                        [attr.aria-label]="t('budgets.deleteAria', { name: budget.category.name, period: budget.period })">×</button>
+              }
             </div>
 
             <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100"

@@ -1,7 +1,7 @@
 <div class="family-page" *transloco="let t">
   <app-page-header [title]="t('nav.family')" [subtitle]="t('family.subtitle')">
     @if (isAdmin()) {
-      <button actions type="button" class="btn-tonal" [disabled]="seatsTaken() >= maxFamilySize" (click)="openDialog('invite')">
+      <button actions type="button" class="btn-tonal" [disabled]="!entitled() || seatsTaken() >= maxFamilySize" (click)="openDialog('invite')">
         <span aria-hidden="true">+</span> {{ t('family.invite') }}
       </button>
     }
@@ -12,6 +12,25 @@
     }
     <app-family-art art />
   </app-page-header>
+
+  @if (isAdmin() && familyResource.value(); as family) {
+    <section class="subscription card" aria-labelledby="family-subscription-title">
+      <h2 id="family-subscription-title">{{ t('family.subscription.title') }}</h2>
+      @if (family.entitled) {
+        @if (subscriptionStatus(); as status) {
+          <p>
+            {{ t('family.subscription.' + status.key, { date: status.date ? (status.date | translocoDate: { dateStyle: 'long' }) : '' }) }}
+          </p>
+        }
+      } @else {
+        <p>{{ t('family.subscription.needed') }}</p>
+        @if (family.frozen) {
+          <p class="hint">{{ t('family.subscription.frozenHint') }}</p>
+        }
+        <a class="btn-filled" [href]="playStoreUrl" target="_blank" rel="noopener">{{ t('family.subscription.getApp') }}</a>
+      }
+    </section>
+  }
 
   @if (receivedResource.hasValue()) {
     @let received = receivedResource.value();
@@ -73,7 +92,7 @@
             <span class="member-email">{{ request.email }}</span>
           </div>
           <div class="row-actions">
-            <button type="button" class="btn-filled" [disabled]="pending()" (click)="approveJoinRequest(request.id)">
+            <button type="button" class="btn-filled" [disabled]="pending() || !entitled()" (click)="approveJoinRequest(request.id)">
               {{ t('family.incoming.approve') }}
             </button>
             <button type="button" class="btn-outlined" [disabled]="pending()" (click)="declineJoinRequest(request.id)">

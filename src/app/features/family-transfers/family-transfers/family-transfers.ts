@@ -27,6 +27,8 @@ export class FamilyTransfers {
   private readonly transferRepository = inject(FamilyTransferRepository);
   private readonly familyRepository = inject(FamilyRepository);
   private readonly currentUser = inject(AuthState).currentUser;
+  // Money in transit can still be collected or taken back, but none sent.
+  protected readonly familyFrozen = inject(AuthState).familyFrozen;
 
   // The accounts the user can see; money only moves from/to their own open ones.
   readonly accounts = input.required<IAccount[]>();

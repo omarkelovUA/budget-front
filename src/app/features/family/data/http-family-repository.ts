@@ -17,6 +17,8 @@ interface FamilyDto {
   id: string;
   name: string;
   categoriesReviewed: boolean;
+  entitled: boolean;
+  frozen: boolean;
   members: {
     userId: string;
     email: string;
@@ -70,6 +72,8 @@ function toFamily(dto: FamilyDto): IFamily {
     id: dto.id,
     name: dto.name,
     categoriesReviewed: dto.categoriesReviewed,
+    entitled: dto.entitled,
+    frozen: dto.frozen,
     members: dto.members.map((m) => ({
       user: { id: m.userId, email: m.email, displayName: m.displayName, familyId: dto.id },
       role: m.role,

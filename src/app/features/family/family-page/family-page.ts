@@ -3,11 +3,12 @@ import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoDatePipe } from '@jsverse/transloco-locale';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { email, form, FormField, required } from '@angular/forms/signals';
-import { forkJoin, Observable, of, switchMap } from 'rxjs';
+import { forkJoin, Observable, of, switchMap, tap } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
 import { ICategory, IFamily, IReceivedInvitation, IUser } from '../../../model/types';
 import { CategoryRepository } from '../../categories/data/category-repository';
 import { FamilyRepository } from '../data/family-repository';
+import { SubscriptionRepository } from '../data/subscription-repository';
 import { PageHeader } from '../../../shared/ui/page-header/page-header';
 import { FamilyArt } from '../../../shared/ui/illustrations/family-art';
 import { Modal } from '../../../shared/ui/modal/modal';
@@ -15,11 +16,15 @@ import { Modal } from '../../../shared/ui/modal/modal';
 // Members plus pending invitations (enforced by the backend).
 export const MAX_FAMILY_SIZE = 10;
 
+// Family subscriptions are sold through Google Play, in the Android app.
+export const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=app.familybudget';
+
 type FamilyDialog = 'rename' | 'invite' | 'join' | 'leave';
 
 // Every user has a family (their own from sign-up on). Alone in it, they can invite
 // someone or ask to join someone else's family; with others, admins invite and remove
-// members, and everyone can leave.
+// members, and everyone can leave. Adding members needs an admin's subscription, bought
+// in the Android app; admins see its status here.
 @Component({
   selector: 'app-family-page',
   imports: [FormField, TranslocoDirective, TranslocoDatePipe, PageHeader, FamilyArt, Modal],
@@ -31,9 +36,11 @@ export class FamilyPage {
   private readonly authState = inject(AuthState);
   private readonly familyRepository = inject(FamilyRepository);
   private readonly categoryRepository = inject(CategoryRepository);
+  private readonly subscriptionRepository = inject(SubscriptionRepository);
 
   protected readonly currentUser = this.authState.currentUser;
   protected readonly maxFamilySize = MAX_FAMILY_SIZE;
+  protected readonly playStoreUrl = PLAY_STORE_URL;
 
   private readonly renameModel = signal({ name: '' });
   protected readonly renameForm = form(this.renameModel, (f) => required(f.name));
@@ -52,7 +59,8 @@ export class FamilyPage {
 
   protected readonly familyResource = rxResource({
     params: () => this.currentUser()?.familyId ?? undefined,
-    stream: () => this.familyRepository.getCurrentFamily(),
+    // Whether the family is frozen may have changed since the app loaded it.
+    stream: () => this.familyRepository.getCurrentFamily().pipe(tap((family) => this.authState.setFamily(family))),
   });
 
   protected readonly invitationsResource = rxResource({
@@ -74,6 +82,24 @@ export class FamilyPage {
   protected readonly isAdmin = computed(() => {
     const userId = this.currentUser()?.id;
     return this.familyResource.value()?.members.some((m) => m.user.id === userId && m.role === 'admin') ?? false;
+  });
+
+  protected readonly entitled = computed(() => this.familyResource.value()?.entitled ?? false);
+
+  // The admin's own subscription; the family may also be covered by another admin's.
+  protected readonly subscriptionResource = rxResource({
+    params: () => (this.isAdmin() ? this.currentUser()?.id : undefined),
+    stream: () => this.subscriptionRepository.getSubscription(),
+  });
+
+  // What the admin's subscription card says while the family is entitled: a key under
+  // family.subscription, and the date it mentions. Undefined until it's known.
+  protected readonly subscriptionStatus = computed(() => {
+    if (!this.entitled() || !this.subscriptionResource.hasValue()) return undefined;
+    const own = this.subscriptionResource.value();
+    if (!own?.active) return { key: 'otherAdmin', date: null };
+    if (own.source === 'manual') return own.expiresAt ? { key: 'manualUntil', date: own.expiresAt } : { key: 'manual', date: null };
+    return { key: own.autoRenewing ? 'renews' : 'until', date: own.expiresAt };
   });
 
   protected readonly incomingResource = rxResource({
@@ -255,7 +281,7 @@ export class FamilyPage {
   private enterFamily(request$: Observable<IFamily>, reload?: () => void) {
     this.run(request$, (family) => {
       this.closeDialog();
-      this.authState.setFamilyId(family.id);
+      this.authState.setFamily(family);
       reload?.();
     });
   }

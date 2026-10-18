@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { IBudget } from '../../../model/types';
+import { AuthState } from '../../../core/auth/auth-state';
 import { BudgetRepository } from '../data/budget-repository';
 import { BudgetForm } from '../budget-form/budget-form';
 import { VisibilityBadge } from '../../../shared/ui/visibility-badge/visibility-badge';
@@ -23,6 +24,8 @@ import { tagColor } from '../../../shared/ui/colors/colors';
 export class BudgetList {
   protected readonly tagColor = tagColor;
   private readonly budgetRepository = inject(BudgetRepository);
+  // A frozen family's shared budgets are read-only.
+  protected readonly familyFrozen = inject(AuthState).familyFrozen;
   protected readonly isFormOpen = signal(false);
   protected readonly actionError = signal<string | null>(null);
 

@@ -24,6 +24,8 @@ import { AuthRepository } from './core/auth/data/auth-repository';
 import { HttpAuthRepository } from './core/auth/data/http-auth-repository';
 import { FamilyRepository } from './features/family/data/family-repository';
 import { HttpFamilyRepository } from './features/family/data/http-family-repository';
+import { SubscriptionRepository } from './features/family/data/subscription-repository';
+import { HttpSubscriptionRepository } from './features/family/data/http-subscription-repository';
 import { SettingsRepository } from './features/settings/data/settings-repository';
 import { FamilyTransferRepository } from './features/family-transfers/data/family-transfer-repository';
 import { HttpFamilyTransferRepository } from './features/family-transfers/data/http-family-transfer-repository';
@@ -65,6 +67,7 @@ export const appConfig: ApplicationConfig = {
     { provide: BudgetRepository, useClass: HttpBudgetRepository },
     { provide: AuthRepository, useClass: HttpAuthRepository },
     { provide: FamilyRepository, useClass: HttpFamilyRepository },
+    { provide: SubscriptionRepository, useClass: HttpSubscriptionRepository },
     { provide: SettingsRepository, useClass: HttpSettingsRepository },
     { provide: FamilyTransferRepository, useClass: HttpFamilyTransferRepository },
   ],

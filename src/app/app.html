@@ -25,6 +25,14 @@
 </ng-container>
 
 <main class="app-main">
+  @if (currentUser() && familyFrozen()) {
+    <aside class="app-notice card" role="status" *transloco="let t">
+      <p>{{ t('family.frozen.notice') }}</p>
+      <div class="notice-actions">
+        <a routerLink="/family" class="btn-tonal">{{ t('family.frozen.details') }}</a>
+      </div>
+    </aside>
+  }
   @if (addedSummary(); as summary) {
     <aside class="app-notice card" role="status" *transloco="let t">
       <p>{{ t('categories.added.notice', { categories: summary }) }}</p>

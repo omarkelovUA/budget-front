@@ -14,6 +14,8 @@ const FAMILY: IFamily = {
   id: 'f',
   name: 'Smiths',
   categoriesReviewed: true,
+  entitled: true,
+  frozen: false,
   members: [
     { user: user('me', 'Me'), role: 'admin', joinedAt: new Date() },
     { user: user('bob', 'Bob'), role: 'member', joinedAt: new Date() },
@@ -153,5 +155,15 @@ describe('FamilyTransfers', () => {
     await fixture.whenStable();
 
     expect(el().querySelector('section')).toBeNull();
+  });
+
+  it('sends nothing in a frozen family, but money in transit still moves', async () => {
+    TestBed.inject(AuthState).setFamily({ id: TestBed.inject(AuthState).currentUser()!.familyId!, frozen: true });
+    await fixture.whenStable();
+
+    expect((el().querySelector('.send-button') as HTMLButtonElement).disabled).toBe(true);
+    const withdrawals = Array.from(el().querySelectorAll<HTMLButtonElement>('.btn-tonal:not(.send-button)'));
+    expect(withdrawals.length).toBeGreaterThan(0);
+    expect(withdrawals.every((button) => !button.disabled)).toBe(true);
   });
 });

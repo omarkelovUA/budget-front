@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { AUTH_STATE_DEPENDENCIES } from '../../../core/auth/auth-state.testing';
 import { pressEscape, stubDialogs } from '../../../shared/ui/modal/modal.testing';
 import { CategoryRepository } from '../../categories/data/category-repository';
 import { BudgetRepository } from '../data/budget-repository';
@@ -11,6 +12,7 @@ describe('BudgetList', () => {
     TestBed.configureTestingModule({
       imports: [BudgetList],
       providers: [
+        ...AUTH_STATE_DEPENDENCIES,
         { provide: BudgetRepository, useValue: { getBudgets: () => of([]) } },
         { provide: CategoryRepository, useValue: { getCategories: () => of([]) } },
       ],

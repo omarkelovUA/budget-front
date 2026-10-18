@@ -98,6 +98,22 @@ The backend enforces these; the UI only has to present them correctly:
   sign-in instead of the list. Accepting moves the user out of their family, so with
   others in it the page asks for confirmation first. A family holds at most 10 people, pending
   invitations included.
+- **Family subscription** (backend §3.4): adding people needs a family admin's
+  subscription, sold only in the Android app (Google Play), so the web never takes a
+  payment.
+  - The family page shows admins a card from `IFamily.entitled` and their own
+    `GET /subscriptions/me` (`SubscriptionRepository`): when it renews or ends, free access
+    granted by hand, or another admin's subscription covering the family. Without one,
+    the card links to the app on Google Play, and Invite and Approve stay disabled.
+  - A family with members but no subscription is **frozen** (`IFamily.frozen`): shared
+    data is read-only. `AuthState.familyFrozen` holds it, set whenever the family loads,
+    and the app shell shows a notice on every page.
+  - Screens offer only what the backend still allows: personal categories and budgets
+    only, no editing, hiding or deleting family categories, no deleting shared budgets,
+    `canRecordOn(account, familyFrozen)` limiting pickers to the user's own accounts,
+    access on an account that may only shrink, and no sending family transfers
+    (collecting and taking back still work). Transactions on others' accounts come with
+    `editable: false` from the backend.
 - A category's or budget's visibility is fixed in the edit form, and so is a category's
   income/expense type.
 - **Custom order** (M24): accounts (within their group) and categories are ordered by

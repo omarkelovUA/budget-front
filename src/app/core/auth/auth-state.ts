@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { catchError, finalize, firstValueFrom, forkJoin, map, Observable, of, shareReplay, switchMap, tap } from 'rxjs';
-import { IUser } from '../../model/types';
+import { IFamily, IUser } from '../../model/types';
 import { GOOGLE_LOGIN_URL } from '../config/api';
 import { FamilyRepository } from '../../features/family/data/family-repository';
 import { SettingsState } from '../../features/settings/settings-state';
@@ -20,6 +20,12 @@ export class AuthState {
   // loses it; restoreSession() gets a new one from the refresh cookie.
   private readonly token = signal<string | null>(null);
   readonly accessToken = this.token.asReadonly();
+
+  // Whether the user's family is frozen (members, no subscription): shared data is
+  // read-only, so screens offer only what the backend still allows. Kept current
+  // whenever the family is loaded.
+  private readonly frozen = signal(false);
+  readonly familyFrozen = this.frozen.asReadonly();
 
   private refreshInFlight: Observable<string> | null = null;
 
@@ -62,11 +68,17 @@ export class AuthState {
   clear(): void {
     this.token.set(null);
     this.user.set(null);
+    this.frozen.set(false);
     this.settingsState.clear();
   }
 
-  setFamilyId(familyId: string): void {
-    this.user.update((u) => (u ? { ...u, familyId } : u));
+  // A no-op when nothing changed: pages reload the family often, and a new user object
+  // would set off everything that reads it.
+  setFamily(family: Pick<IFamily, 'id' | 'frozen'>): void {
+    if (this.user()?.familyId !== family.id) {
+      this.user.update((u) => (u ? { ...u, familyId: family.id } : u));
+    }
+    this.frozen.set(family.frozen);
   }
 
   // The backend's user has no familyId (the membership is the source of truth; every
@@ -80,7 +92,7 @@ export class AuthState {
       this.familyRepository.getCurrentFamily(),
       this.settingsState.load().pipe(catchError(() => of(null))),
     ]).pipe(
-      tap(([family]) => this.setFamilyId(family.id)),
+      tap(([family]) => this.setFamily(family)),
       map(() => this.user()!),
     );
   }

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { AUTH_STATE_DEPENDENCIES } from '../../../core/auth/auth-state.testing';
 import { IAccount } from '../../../model/types';
 import { AccountRepository } from '../data/account-repository';
 import { AccountClose } from './account-close';
@@ -26,6 +27,7 @@ describe('AccountClose', () => {
     TestBed.configureTestingModule({
       imports: [AccountClose],
       providers: [
+        ...AUTH_STATE_DEPENDENCIES,
         {
           provide: AccountRepository,
           useValue: {

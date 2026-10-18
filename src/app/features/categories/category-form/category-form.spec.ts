@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { AuthState } from '../../../core/auth/auth-state';
+import { AUTH_STATE_DEPENDENCIES } from '../../../core/auth/auth-state.testing';
 import { ICategory } from '../../../model/types';
 import { CategoryRepository } from '../data/category-repository';
 import { CATEGORY_ICON_SLOTS } from '../../../shared/ui/icon-picker/icons';
@@ -15,6 +17,7 @@ describe('CategoryForm', () => {
     TestBed.configureTestingModule({
       imports: [CategoryForm],
       providers: [
+        ...AUTH_STATE_DEPENDENCIES,
         {
           provide: CategoryRepository,
           useValue: {
@@ -137,5 +140,30 @@ describe('CategoryForm', () => {
 
     const picked = el().querySelector<HTMLInputElement>('.visibility-picker input:checked');
     expect(picked?.value).toBe('private');
+  });
+
+  describe('in a frozen family', () => {
+    beforeEach(() => TestBed.inject(AuthState).setFamily({ id: 'f', frozen: true }));
+
+    it('offers members only a personal category', async () => {
+      await fixture.whenStable();
+
+      const offered = Array.from(el().querySelectorAll<HTMLInputElement>('.visibility-picker input')).map((i) => i.value);
+      expect(offered).toEqual(['private']);
+    });
+
+    it("saves the admin's new category as personal without asking", async () => {
+      stubDialogs();
+      fixture.componentRef.setInput('isAdmin', true);
+      await fixture.whenStable();
+
+      (el().querySelector('#category-name') as HTMLInputElement).value = 'Garden';
+      el().querySelector('#category-name')!.dispatchEvent(new Event('input'));
+      (el().querySelector('form') as HTMLFormElement).requestSubmit();
+      await fixture.whenStable();
+
+      expect(el().querySelector('#category-visibility-title')).toBeNull();
+      expect(created).toEqual([expect.objectContaining({ name: 'Garden', visibility: 'private' })]);
+    });
   });
 });

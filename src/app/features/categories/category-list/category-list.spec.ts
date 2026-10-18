@@ -15,6 +15,8 @@ const familyWithMe = (role: FamilyRole): IFamily => ({
   id: 'f',
   name: 'Family',
   categoriesReviewed: true,
+  entitled: true,
+  frozen: false,
   members: [{ user: { id: 'me', email: 'me@x.com', displayName: 'Me', familyId: 'f' }, role, joinedAt: new Date() }],
 });
 
@@ -23,6 +25,7 @@ describe('CategoryList', () => {
   let calls: string[];
   let role: FamilyRole;
   let failOrder: boolean;
+  let frozen: boolean;
 
   beforeEach(() => {
     stubDialogs();
@@ -30,6 +33,7 @@ describe('CategoryList', () => {
     calls = [];
     role = 'admin';
     failOrder = false;
+    frozen = false;
     TestBed.configureTestingModule({
       imports: [CategoryList],
       providers: [
@@ -51,7 +55,7 @@ describe('CategoryList', () => {
           provide: AuthRepository,
           useValue: { refresh: () => of({ accessToken: 't', user: { id: 'me', email: 'me@x.com', displayName: 'Me' } }) },
         },
-        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of(familyWithMe(role)) } },
+        { provide: FamilyRepository, useValue: { getCurrentFamily: () => of({ ...familyWithMe(role), frozen }) } },
       ],
     });
   });
@@ -123,6 +127,16 @@ describe('CategoryList', () => {
     (rent.querySelector('.text-button') as HTMLButtonElement).click();
 
     expect(calls).toEqual(['hide c2']);
+  });
+
+  it("leaves a frozen family's categories alone, even for the admin", async () => {
+    frozen = true;
+    const { el } = await render();
+    const [food, rent] = cards(el);
+
+    expect(rent.querySelector('button')).toBeNull();
+    expect(rent.classList).toContain('readonly');
+    expect((food.querySelector('.text-button') as HTMLButtonElement).disabled).toBe(true);
   });
 
   it('saves a dropped category in its new place', async () => {

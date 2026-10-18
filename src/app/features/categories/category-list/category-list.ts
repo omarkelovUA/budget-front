@@ -32,6 +32,7 @@ export class CategoryList {
   private readonly categoryRepository = inject(CategoryRepository);
   private readonly familyRepository = inject(FamilyRepository);
   private readonly currentUser = inject(AuthState).currentUser;
+  protected readonly familyFrozen = inject(AuthState).familyFrozen;
   protected readonly selectedCategory = signal<ICategory | null>(null);
   protected readonly isFormOpen = signal(false);
   protected readonly actionError = signal<string | null>(null);
@@ -50,8 +51,9 @@ export class CategoryList {
     return this.familyResource.value()?.members.some((m) => m.user.id === userId && m.role === 'admin') ?? false;
   });
 
+  // A frozen family's categories are read-only, even for the admin.
   canManage(category: ICategory): boolean {
-    return category.visibility === 'private' || this.isAdmin();
+    return category.visibility === 'private' || (this.isAdmin() && !this.familyFrozen());
   }
 
   selectCategory(category: ICategory) {

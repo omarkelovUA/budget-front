@@ -29,7 +29,7 @@
   <div class="field">
     <label>{{ t('common.access') }}</label>
     <div class="visibility-picker" role="radiogroup" [attr.aria-label]="t('common.access')">
-      @for (visibility of visibilities; track visibility) {
+      @for (visibility of visibilities(); track visibility) {
         <label class="visibility-option">
           <input type="radio" [formField]="form.visibility" [value]="visibility" />
           <span class="visibility-label">{{ t('common.visibility.' + visibility) }}</span>

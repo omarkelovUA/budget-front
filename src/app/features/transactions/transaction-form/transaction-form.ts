@@ -3,6 +3,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, min } from '@angular/forms/signals';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { canRecordOn, NewTransaction } from '../../../model/types';
+import { AuthState } from '../../../core/auth/auth-state';
 import { TransactionRepository } from '../data/transaction-repository';
 import { AccountRepository } from '../../accounts/data/account-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
@@ -41,15 +42,18 @@ export class TransactionForm {
   private readonly transactionRepository = inject(TransactionRepository);
   private readonly accountRepository = inject(AccountRepository);
   private readonly categoryRepository = inject(CategoryRepository);
+  private readonly familyFrozen = inject(AuthState).familyFrozen;
 
   protected readonly kinds: Kind[] = ['payment', 'transfer'];
 
   protected readonly accountsResource = rxResource({
     stream: () => this.accountRepository.getAccounts(),
   });
-  // Only accounts the user owns or has shared access to; "visible" ones take no
-  // transactions in either direction.
-  protected readonly usableAccounts = computed(() => (this.accountsResource.value() ?? []).filter(canRecordOn));
+  // Only accounts the user owns or has shared access to (only their own in a frozen
+  // family); "visible" ones take no transactions in either direction.
+  protected readonly usableAccounts = computed(() =>
+    (this.accountsResource.value() ?? []).filter((a) => canRecordOn(a, this.familyFrozen())),
+  );
   protected readonly categoriesResource = rxResource({
     stream: () => this.categoryRepository.getCategories(),
   });

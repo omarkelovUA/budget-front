@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { disabled, form, FormField, required } from '@angular/forms/signals';
 import { ICategory } from '../../../model/types';
+import { AuthState } from '../../../core/auth/auth-state';
 import { CategoryRepository } from '../data/category-repository';
 import { TranslocoDirective } from '@jsverse/transloco';
 import { IconPicker } from '../../../shared/ui/icon-picker/icon-picker';
@@ -28,12 +29,16 @@ const DEFAULT_MODEL: CategoryFormModel = {
 })
 export class CategoryForm {
   private readonly categoryRepository = inject(CategoryRepository);
+  private readonly familyFrozen = inject(AuthState).familyFrozen;
 
   protected readonly types: ICategory['type'][] = ['income', 'expense'];
   protected readonly iconSlots = CATEGORY_ICON_SLOTS;
   protected readonly colors = TAG_COLORS;
   protected readonly tagColor = tagColor;
-  protected readonly visibilities: ICategory['visibility'][] = ['private', 'shared'];
+  // A frozen family takes no new family categories.
+  protected readonly visibilities = computed<ICategory['visibility'][]>(() =>
+    this.familyFrozen() && !this.category() ? ['private'] : ['private', 'shared'],
+  );
 
   private readonly model = signal<CategoryFormModel>({ ...DEFAULT_MODEL });
   protected readonly errorMessage = signal<string | null>(null);
@@ -49,7 +54,7 @@ export class CategoryForm {
 
   // The admin's new category: instead of a picker, Save asks whether the family sees it.
   // Other members pick in the form, personal by default.
-  protected readonly asksVisibility = computed(() => this.isAdmin() && !this.category());
+  protected readonly asksVisibility = computed(() => this.isAdmin() && !this.category() && !this.familyFrozen());
   protected readonly choosingVisibility = signal(false);
 
   // The chosen type's icons. A category saved with an icon from the other list (before

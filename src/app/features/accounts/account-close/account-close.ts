@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output, si
 import { TranslocoDirective } from '@jsverse/transloco';
 import { TranslocoCurrencyPipe } from '@jsverse/transloco-locale';
 import { canRecordOn, IAccount } from '../../../model/types';
+import { AuthState } from '../../../core/auth/auth-state';
 import { AccountRepository } from '../data/account-repository';
 import { AccountCloseArt } from '../../../shared/ui/illustrations/account-close-art';
 
@@ -16,6 +17,7 @@ import { AccountCloseArt } from '../../../shared/ui/illustrations/account-close-
 })
 export class AccountClose {
   private readonly accountRepository = inject(AccountRepository);
+  private readonly familyFrozen = inject(AuthState).familyFrozen;
 
   readonly account = input.required<IAccount>();
   // All accounts the user can see; the dialog picks valid targets itself.
@@ -33,7 +35,8 @@ export class AccountClose {
   // Same currency (no FX) and an account the user may record on.
   protected readonly targets = computed(() =>
     this.accounts().filter(
-      (a) => a.id !== this.account().id && a.currency === this.account().currency && canRecordOn(a),
+      (a) =>
+        a.id !== this.account().id && a.currency === this.account().currency && canRecordOn(a, this.familyFrozen()),
     ),
   );
 

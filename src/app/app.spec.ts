@@ -30,7 +30,7 @@ describe('App', () => {
 
   beforeEach(async () => {
     settings = TEST_SETTINGS;
-    family = { id: 'f', name: 'Family', members: [], categoriesReviewed: true };
+    family = { id: 'f', name: 'Family', members: [], categoriesReviewed: true, entitled: true, frozen: false };
     seen = 0;
     await TestBed.configureTestingModule({
       imports: [App],
@@ -82,6 +82,15 @@ describe('App', () => {
     expect(await logIn()).toEqual(['Dashboard', 'Accounts', 'Categories', 'Transactions', 'Budgets', 'Family']);
     expect(TestBed.inject(LanguageService).current()).toBe('en');
     expect(document.documentElement.lang).toBe('en');
+  });
+
+  it('tells everyone in a frozen family that sharing is paused', async () => {
+    family = { ...family, frozen: true };
+    await logIn();
+    const notice = (fixture.nativeElement as HTMLElement).querySelector('.app-notice');
+
+    expect(notice?.textContent).toContain('Спільний доступ призупинено');
+    expect(notice?.querySelector('a')?.getAttribute('href')).toBe('/family');
   });
 
   it('tells the admin about family categories other members added, until dismissed', async () => {

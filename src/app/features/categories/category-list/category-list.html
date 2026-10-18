@@ -38,7 +38,7 @@
               </button>
               <div class="card-actions">
                 @if (cat.visibility === 'private') {
-                  <button type="button" class="text-button" (click)="shareCategory(cat)"
+                  <button type="button" class="text-button" [disabled]="familyFrozen()" (click)="shareCategory(cat)"
                           [attr.aria-label]="t('categories.shareAria', { name: cat.name })">{{ t('categories.share') }}</button>
                 } @else {
                   <button type="button" class="text-button" (click)="hideCategory(cat)"

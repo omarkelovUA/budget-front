@@ -2,20 +2,28 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 import { AuthState } from '../../../core/auth/auth-state';
 import { AuthRepository } from '../../../core/auth/data/auth-repository';
-import { FamilyRole, IFamily, IIncomingJoinRequest, IJoinRequest, IReceivedInvitation } from '../../../model/types';
+import {
+  FamilyRole,
+  IFamily,
+  IIncomingJoinRequest,
+  IJoinRequest,
+  IReceivedInvitation,
+  ISubscription,
+} from '../../../model/types';
 import { pressEscape, stubDialogs } from '../../../shared/ui/modal/modal.testing';
 import { FamilyRepository } from '../data/family-repository';
+import { SubscriptionRepository } from '../data/subscription-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
-import { FamilyPage } from './family-page';
+import { FamilyPage, PLAY_STORE_URL } from './family-page';
 
 const user = (id: string, displayName: string) => ({ id, email: `${id}@x.com`, displayName, familyId: 'f' });
 const member = (id: string, role: FamilyRole) => ({ user: user(id, id), role, joinedAt: new Date() });
 
 // The signed-in user is 'me'.
-const ALONE: IFamily = { id: 'own', name: 'Family', members: [member('me', 'admin')], categoriesReviewed: false };
-const AS_ADMIN: IFamily = { id: 'f', name: 'Smiths', members: [member('me', 'admin'), member('carol', 'member')], categoriesReviewed: true };
-const AS_MEMBER: IFamily = { id: 'f', name: 'Smiths', members: [member('alice', 'admin'), member('me', 'member')], categoriesReviewed: true };
-const NEW_OWN: IFamily = { id: 'new-own', name: 'Family', members: [member('me', 'admin')], categoriesReviewed: false };
+const ALONE: IFamily = { id: 'own', name: 'Family', members: [member('me', 'admin')], categoriesReviewed: false, entitled: true, frozen: false };
+const AS_ADMIN: IFamily = { id: 'f', name: 'Smiths', members: [member('me', 'admin'), member('carol', 'member')], categoriesReviewed: true, entitled: true, frozen: false };
+const AS_MEMBER: IFamily = { id: 'f', name: 'Smiths', members: [member('alice', 'admin'), member('me', 'member')], categoriesReviewed: true, entitled: true, frozen: false };
+const NEW_OWN: IFamily = { id: 'new-own', name: 'Family', members: [member('me', 'admin')], categoriesReviewed: false, entitled: true, frozen: false };
 
 const INVITATION: IReceivedInvitation = {
   id: 'inv-1',
@@ -46,6 +54,7 @@ describe('FamilyPage', () => {
   let family: IFamily;
   let received: IReceivedInvitation[] | null;
   let ownRequest: IJoinRequest | null;
+  let subscription: ISubscription | null;
   let fixture: ComponentFixture<FamilyPage>;
 
   const call =
@@ -55,12 +64,18 @@ describe('FamilyPage', () => {
       return result();
     };
 
-  async function render(options: { family: IFamily; received?: IReceivedInvitation[] | null; request?: IJoinRequest }) {
+  async function render(options: {
+    family: IFamily;
+    received?: IReceivedInvitation[] | null;
+    request?: IJoinRequest;
+    subscription?: ISubscription;
+  }) {
     stubDialogs();
     calls = [];
     family = options.family;
     received = options.received === undefined ? [] : options.received;
     ownRequest = options.request ?? null;
+    subscription = options.subscription ?? null;
     TestBed.configureTestingModule({
       imports: [FamilyPage],
       providers: [
@@ -89,11 +104,15 @@ describe('FamilyPage', () => {
             }),
             approveJoinRequest: call('approve', () => of(family)),
             declineJoinRequest: call('decline', () => of(undefined)),
-            acceptInvitation: call('accept', () => of({ ...AS_MEMBER, id: 'joneses' })),
+            acceptInvitation: call('accept', () => {
+              family = { ...AS_MEMBER, id: 'joneses' };
+              return of(family);
+            }),
             removeMember: call('remove', () => of(undefined)),
             leaveFamily: call('leave', () => (family === AS_ADMIN ? throwError(() => new Error('Busy')) : of(NEW_OWN))),
           },
         },
+        { provide: SubscriptionRepository, useValue: { getSubscription: () => of(subscription) } },
         {
           provide: CategoryRepository,
           useValue: {
@@ -305,6 +324,64 @@ describe('FamilyPage', () => {
       await click('app-modal .btn-danger');
       expect(calls).toEqual([['accept', 'inv-1']]);
       expect(el().querySelector('app-modal')).toBeNull();
+    });
+  });
+
+  describe('the family subscription', () => {
+    const subscriptionText = () => el().querySelector('.subscription')?.textContent?.replace(/\s+/g, ' ').trim();
+
+    it('sends an admin without one to the Android app, and adding people waits for it', async () => {
+      await render({ family: { ...ALONE, entitled: false } });
+
+      expect(subscriptionText()).toContain('потрібна сімейна підписка');
+      expect(el().querySelector('.subscription a')?.getAttribute('href')).toBe(PLAY_STORE_URL);
+      expect((el().querySelector('app-page-header .btn-tonal') as HTMLButtonElement).disabled).toBe(true);
+      expect((el().querySelector('.invitation-row .btn-filled') as HTMLButtonElement).disabled).toBe(true);
+    });
+
+    it('tells the admin of a frozen family that shared data is read-only, and the app remembers it', async () => {
+      await render({ family: { ...AS_ADMIN, entitled: false, frozen: true } });
+
+      expect(subscriptionText()).toContain('лише для перегляду');
+      expect(TestBed.inject(AuthState).familyFrozen()).toBe(true);
+    });
+
+    it('shows when the admin\'s own subscription renews or ends', async () => {
+      const own: ISubscription = {
+        source: 'google_play',
+        state: 'active',
+        expiresAt: new Date('2026-11-18T10:00:00Z'),
+        autoRenewing: true,
+        active: true,
+      };
+      await render({ family: AS_ADMIN, subscription: own });
+      expect(subscriptionText()).toContain('Активна, поновиться 18 листопада 2026');
+      expect(el().querySelector('.subscription a')).toBeNull();
+
+      TestBed.resetTestingModule();
+      await render({ family: AS_ADMIN, subscription: { ...own, state: 'canceled', autoRenewing: false } });
+      expect(subscriptionText()).toContain('Активна до 18 листопада 2026');
+    });
+
+    it('shows free access granted by hand', async () => {
+      await render({
+        family: AS_ADMIN,
+        subscription: { source: 'manual', state: 'active', expiresAt: null, autoRenewing: false, active: true },
+      });
+
+      expect(subscriptionText()).toContain('безкоштовний доступ без кінцевої дати');
+    });
+
+    it('says when another admin\'s subscription covers the family', async () => {
+      await render({ family: AS_ADMIN });
+
+      expect(subscriptionText()).toContain('підписка іншого адміністратора');
+    });
+
+    it('is the admins\' business only', async () => {
+      await render({ family: { ...AS_MEMBER, entitled: false, frozen: true } });
+
+      expect(el().querySelector('.subscription')).toBeNull();
     });
   });
 });

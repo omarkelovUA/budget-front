@@ -48,6 +48,7 @@
               [name]="'access-' + member.id"
               [value]="level"
               [checked]="accessOf(member.id) === level"
+              [disabled]="!canPick(member.id, level)"
               (change)="setAccess(member.id, level)"
             />
             <span class="visibility-label">{{ t('accounts.form.levels.' + level) }}</span>

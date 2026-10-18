@@ -14,6 +14,8 @@ const FAMILY: IFamily = {
   id: 'f',
   name: 'Smiths',
   categoriesReviewed: true,
+  entitled: true,
+  frozen: false,
   members: [
     { user: user('me', 'Me'), role: 'admin', joinedAt: new Date() },
     { user: user('bob', 'Bob'), role: 'member', joinedAt: new Date() },
@@ -122,5 +124,29 @@ describe('AccountForm', () => {
         grants: [{ userId: 'bob', level: 'shared' }],
       },
     ]);
+  });
+
+  it('only narrows access while the family is frozen', async () => {
+    TestBed.inject(AuthState).setFamily({ id: 'f', frozen: true });
+    fixture.componentRef.setInput('account', {
+      id: 'a',
+      name: 'Joint',
+      balance: 0,
+      currency: 'UAH',
+      icon: 'assets/card.svg',
+      color: 'green',
+      owner: { id: 'me', displayName: 'Me' },
+      access: 'owner',
+      grants: [{ userId: 'bob', displayName: 'Bob', level: 'visible' }],
+      closed: false,
+    });
+    await fixture.whenStable();
+
+    const enabled = Array.from((fixture.nativeElement as HTMLElement).querySelectorAll('.member-access')).map((row) =>
+      Array.from(row.querySelectorAll<HTMLInputElement>('input'))
+        .filter((input) => !input.disabled)
+        .map((input) => input.value),
+    );
+    expect(enabled).toEqual([['hidden', 'visible'], ['hidden']]);
   });
 });

@@ -1,7 +1,15 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  output,
+  signal,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { form, FormField, min, required } from '@angular/forms/signals';
 import { IBudget } from '../../../model/types';
+import { AuthState } from '../../../core/auth/auth-state';
 import { BudgetRepository } from '../data/budget-repository';
 import { CategoryRepository } from '../../categories/data/category-repository';
 import { TranslocoDirective } from '@jsverse/transloco';
@@ -32,7 +40,11 @@ export class BudgetForm {
   private readonly budgetRepository = inject(BudgetRepository);
   private readonly categoryRepository = inject(CategoryRepository);
 
-  protected readonly visibilities: IBudget['visibility'][] = ['private', 'shared'];
+  private readonly familyFrozen = inject(AuthState).familyFrozen;
+  // A frozen family takes no new shared budgets.
+  protected readonly visibilities = computed<IBudget['visibility'][]>(() =>
+    this.familyFrozen() ? ['private'] : ['private', 'shared'],
+  );
 
   protected readonly expenseCategoriesResource = rxResource({
     stream: () => this.categoryRepository.getCategories(),
